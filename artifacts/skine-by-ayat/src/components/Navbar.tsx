@@ -6,6 +6,9 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import logo from '@assets/IMG_7839_1784317781519.jpeg';
 
+const JOTFORM_URL = 'https://form.jotform.com/261913445488062';
+const INSTAGRAM_URL = 'https://instagram.com/skinebyayat';
+
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -50,6 +53,9 @@ export function Navbar() {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
+  // Show the OTHER language label so users know what they're switching TO
+  const langLabel = lang === 'ar' ? 'English' : 'العربية';
+
   return (
     <nav
       className={cn(
@@ -81,13 +87,13 @@ export function Navbar() {
             ))}
           </ul>
           
-          <div className="flex items-center gap-2 border-x border-border px-4 mx-2 h-6">
+          <div className="flex items-center gap-2 border-x border-border px-4 mx-2">
             <button
               onClick={toggleLang}
-              className="text-sm font-bold w-8 hover:text-primary transition-colors"
+              className="text-sm font-semibold px-3 py-1 rounded-full border border-border hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200"
               aria-label="Toggle language"
             >
-              {lang === 'ar' ? 'EN' : 'AR'}
+              {langLabel}
             </button>
             <button
               onClick={toggleTheme}
@@ -97,7 +103,7 @@ export function Navbar() {
               {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
             </button>
             <a
-              href="https://instagram.com"
+              href={INSTAGRAM_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="p-2 rounded-full hover:bg-muted transition-colors text-foreground/80 hover:text-foreground"
@@ -108,7 +114,7 @@ export function Navbar() {
           </div>
 
           <Button 
-            onClick={() => document.querySelector('#consultation')?.scrollIntoView({ behavior: 'smooth' })}
+            onClick={() => window.open(JOTFORM_URL, '_blank', 'noopener,noreferrer')}
             size="sm"
             className="rounded-full px-6"
           >
@@ -120,9 +126,9 @@ export function Navbar() {
         <div className="flex items-center gap-3 md:hidden">
           <button
             onClick={toggleLang}
-            className="text-sm font-bold hover:text-primary transition-colors"
+            className="text-xs font-semibold px-2 py-1 rounded-full border border-border hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200"
           >
-            {lang === 'ar' ? 'EN' : 'AR'}
+            {langLabel}
           </button>
           <button
             onClick={toggleTheme}
@@ -158,7 +164,7 @@ export function Navbar() {
           </ul>
           <div className="flex items-center justify-between pt-4 border-t border-border">
             <a
-              href="https://instagram.com"
+              href={INSTAGRAM_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 p-2 text-foreground/80 hover:text-foreground"
@@ -168,7 +174,7 @@ export function Navbar() {
             </a>
             <Button 
               onClick={() => {
-                document.querySelector('#consultation')?.scrollIntoView({ behavior: 'smooth' });
+                window.open(JOTFORM_URL, '_blank', 'noopener,noreferrer');
                 setIsMobileMenuOpen(false);
               }}
               size="sm"

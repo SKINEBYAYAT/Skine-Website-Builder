@@ -45,6 +45,7 @@ const translations: Record<string, Record<Language, string>> = {
   
   // Consultation
   'consultation.title': { ar: 'احجزي استشارتك', en: 'Book Your Consultation' },
+  'consultation.cta.desc': { ar: 'انقري على الزر أدناه لحجز استشارتك الجلدية المخصصة مع Skiné by Ayat.', en: 'Click the button below to book your personalized skincare consultation with Skiné by Ayat.' },
   
   // FAQ
   'faq.title': { ar: 'الأسئلة الشائعة', en: 'Frequently Asked Questions' },
@@ -59,11 +60,8 @@ const translations: Record<string, Record<Language, string>> = {
   
   // Contact
   'contact.title': { ar: 'تواصل معنا', en: 'Contact Us' },
-  'contact.form.name': { ar: 'الاسم', en: 'Name' },
-  'contact.form.email': { ar: 'البريد الإلكتروني أو واتساب', en: 'Email or WhatsApp' },
-  'contact.form.message': { ar: 'الرسالة', en: 'Message' },
-  'contact.form.submit': { ar: 'إرسال', en: 'Send Message' },
-  'contact.form.success': { ar: 'تم الإرسال بنجاح!', en: 'Message sent successfully!' },
+  'contact.whatsapp.subtitle': { ar: 'راسلينا مباشرة على واتساب', en: 'Message us directly on WhatsApp' },
+  'contact.instagram.subtitle': { ar: 'تابعينا على إنستغرام', en: 'Follow us on Instagram' },
   
   // Footer
   'footer.privacy': { ar: 'سياسة الخصوصية', en: 'Privacy Policy' },

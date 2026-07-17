@@ -2,6 +2,9 @@ import { Instagram } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import logo from '@assets/IMG_7839_1784317781519.jpeg';
 
+const JOTFORM_URL = 'https://form.jotform.com/261913445488062';
+const INSTAGRAM_URL = 'https://instagram.com/skinebyayat';
+
 export function Footer() {
   const { t } = useLanguage();
 
@@ -19,7 +22,7 @@ export function Footer() {
           <div className="flex flex-col items-center md:items-end gap-6">
             <div className="flex gap-4">
               <a 
-                href="https://instagram.com" 
+                href={INSTAGRAM_URL}
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-card border border-card-border flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300"
@@ -29,7 +32,7 @@ export function Footer() {
             </div>
             
             <button 
-              onClick={() => document.querySelector('#consultation')?.scrollIntoView({ behavior: 'smooth' })}
+              onClick={() => window.open(JOTFORM_URL, '_blank', 'noopener,noreferrer')}
               className="text-primary font-bold hover:underline underline-offset-4"
             >
               {t('nav.consultation')}

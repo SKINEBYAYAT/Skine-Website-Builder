@@ -4,6 +4,9 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import heroImg from '@assets/generated_images/hero_skincare.jpg';
 
+const JOTFORM_URL = 'https://form.jotform.com/261913445488062';
+const INSTAGRAM_URL = 'https://instagram.com/skinebyayat';
+
 export function Hero() {
   const { t, dir } = useLanguage();
 
@@ -20,6 +23,7 @@ export function Hero() {
             src={heroImg} 
             alt="Healthy glowing skin" 
             className="w-full h-full object-cover object-center absolute inset-0"
+            loading="lazy"
           />
         </div>
       </div>
@@ -45,7 +49,7 @@ export function Hero() {
               <Button 
                 size="lg" 
                 className="rounded-full text-base gap-2 group"
-                onClick={() => document.querySelector('#consultation')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() => window.open(JOTFORM_URL, '_blank', 'noopener,noreferrer')}
               >
                 {t('hero.cta.primary')}
                 <ArrowRight className={dir === 'rtl' ? 'rotate-180' : ''} size={18} />
@@ -56,7 +60,7 @@ export function Hero() {
                 className="rounded-full text-base gap-2"
                 asChild
               >
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
+                <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer">
                   <Instagram size={18} />
                   {t('hero.cta.secondary')}
                 </a>
