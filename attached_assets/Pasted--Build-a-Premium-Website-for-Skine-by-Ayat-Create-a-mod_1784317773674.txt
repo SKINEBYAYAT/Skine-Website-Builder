@@ -1,0 +1,334 @@
+# Build a Premium Website for "Skine by Ayat"
+
+Create a modern, elegant, luxury skincare consultation website.
+
+The design should feel similar to premium skincare brands such as CeraVe, La Roche-Posay, The Ordinary, SkinCeuticals, and modern medical aesthetic clinics.
+
+The website should focus on professionalism, trust, simplicity, and encouraging visitors to book a consultation.
+
+--------------------------------------------------
+
+# Brand
+
+Website Name:
+Skine by Ayat
+
+Logo:
+I will upload the official logo.
+
+Requirements:
+- Extract the website colors from the logo.
+- Use the logo as the navbar logo.
+- Keep branding consistent throughout the website.
+
+--------------------------------------------------
+
+# Language
+
+The website's default language must be Arabic (RTL).
+
+Add a professional language switcher in the navigation bar.
+
+Languages:
+- العربية (Default)
+- English
+
+Requirements:
+- Clicking the language button instantly translates the website.
+- Remember the selected language.
+- Arabic should use RTL layout.
+- English should automatically switch to LTR.
+- Translate every page including buttons, forms, menus, footer, FAQ, services, etc.
+
+--------------------------------------------------
+
+# Theme
+
+Luxury
+
+Minimal
+
+Modern
+
+Medical
+
+Elegant
+
+Soft animations
+
+Premium typography
+
+Lots of white space
+
+Rounded corners
+
+Soft shadows
+
+Glass effect only where appropriate
+
+--------------------------------------------------
+
+# Color Palette
+
+Generate the entire website color palette from my logo.
+
+Use:
+- Primary Color
+- Secondary Color
+- Accent Color
+- Background Color
+- Button Color
+- Hover Color
+- Text Color
+
+Everything should match the logo.
+
+--------------------------------------------------
+
+# Navigation
+
+Sticky navbar
+
+Blur background while scrolling
+
+Logo on the left
+
+Navigation links:
+
+- الرئيسية
+- من نحن
+- الخدمات
+- الاستشارة
+- الأسئلة الشائعة
+- تواصل معنا
+
+Also include:
+- Language Switcher
+- Instagram Icon
+- Dark Mode Toggle
+- Responsive Mobile Menu
+
+--------------------------------------------------
+
+# Hero Section
+
+Large premium hero.
+
+Heading:
+
+بشرة صحية تبدأ بالعناية الصحيحة
+
+Subheading:
+
+استشارات احترافية وروتين مخصص للعناية ببشرتك حسب احتياجاتها.
+
+Use my uploaded hero image.
+
+If needed, add a subtle gradient overlay.
+
+--------------------------------------------------
+
+# Hero Buttons
+
+Replace simple links with modern CTA buttons.
+
+Primary Button
+
+احجز استشارة
+
+- Large filled button
+- Rounded corners
+- Soft shadow
+- Arrow icon
+- Hover animation
+- Scroll to the embedded consultation form
+
+Secondary Button
+
+تابعنا على إنستغرام
+
+- Outline button
+- Instagram icon
+- Hover animation
+- Opens Instagram in a new tab
+
+These must be actual clickable buttons, not plain text.
+
+--------------------------------------------------
+
+# Remove
+
+Remove:
+
+- 1200+ Consultations
+- Client Rating
+- Fake statistics
+- Fake testimonials
+
+Do not replace them with fake numbers.
+
+--------------------------------------------------
+
+# About Section
+
+Create a professional About section introducing Skine by Ayat.
+
+--------------------------------------------------
+
+# Services
+
+Display services as elegant cards.
+
+Examples:
+
+- تحليل البشرة
+- علاج حب الشباب
+- البشرة الدهنية
+- البشرة الجافة
+- البشرة الحساسة
+- التصبغات
+- روتين العناية بالبشرة
+- توصيات المنتجات
+- متابعة النتائج
+
+--------------------------------------------------
+
+# Consultation
+
+Embed this Jotform directly:
+
+https://form.jotform.com/261913445488062
+
+Requirements:
+
+- Responsive
+- Looks native to the website
+- Do not redirect unless embedding isn't supported
+
+--------------------------------------------------
+
+# FAQ
+
+Create a modern accordion.
+
+Support both Arabic and English.
+
+--------------------------------------------------
+
+# Contact
+
+Include:
+
+- Instagram
+- WhatsApp
+- Email
+- Contact Form
+- Google Maps placeholder (optional)
+
+--------------------------------------------------
+
+# Footer
+
+Professional footer including:
+
+- Logo
+- Quick Links
+- Instagram
+- Consultation
+- Privacy Policy
+- Terms & Conditions
+- Copyright
+
+--------------------------------------------------
+
+# Images
+
+Replace every placeholder image with the images I upload.
+
+Optimize for speed.
+
+Maintain high quality.
+
+Rounded corners.
+
+Lazy loading.
+
+--------------------------------------------------
+
+# Animations
+
+Use smooth:
+
+- Fade-in
+- Slide-up
+- Hover animations
+- Button effects
+- Image zoom
+- Scroll animations
+
+Keep animations subtle and premium.
+
+--------------------------------------------------
+
+# Mobile Optimization
+
+Perfect mobile experience.
+
+Large touch targets.
+
+Fast loading.
+
+Fully responsive.
+
+--------------------------------------------------
+
+# Performance
+
+SEO optimized
+
+Fast loading
+
+Image optimization
+
+Accessibility
+
+Meta tags
+
+Open Graph tags
+
+Structured data
+
+Favicon
+
+--------------------------------------------------
+
+# Typography
+
+Arabic:
+- Cairo
+- Tajawal
+
+English:
+- Poppins
+- Inter
+- Manrope
+
+--------------------------------------------------
+
+# Design Inspiration
+
+The website should feel like a luxury skincare clinic—not a generic template.
+
+Use elegant spacing, premium cards, beautiful icons, subtle gradients, and modern UI throughout.
+
+The final result should be polished, professional, mobile-first, bilingual (Arabic/English), and focused on converting Instagram visitors into consultation bookings.
+
+--------------------------------------------------
+
+# Information I'll Provide
+
+- Official Logo
+- Hero Image
+- Instagram Profile URL
+- Jotform:
+https://form.jotform.com/261913445488062

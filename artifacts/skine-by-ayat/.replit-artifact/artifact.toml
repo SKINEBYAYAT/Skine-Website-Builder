@@ -1,0 +1,27 @@
+kind = "web"
+previewPath = "/"
+title = "Skine by Ayat"
+version = "1.0.0"
+id = "artifacts/skine-by-ayat"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 19600
+
+[services.development]
+run = "pnpm --filter @workspace/skine-by-ayat run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/skine-by-ayat", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/skine-by-ayat/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "19600"
+BASE_PATH = "/"
