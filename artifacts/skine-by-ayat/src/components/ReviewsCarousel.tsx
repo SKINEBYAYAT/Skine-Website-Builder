@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, MessageSquareQuote } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { ImageLightbox } from './ImageLightbox';
@@ -9,19 +9,18 @@ interface ReviewImage {
   url: string;
 }
 
-const AUTOPLAY_INTERVAL = 3500;
+const AUTOPLAY_INTERVAL = 4000;
 
 export function ReviewsCarousel() {
-  const { t, dir } = useLanguage();
+  const { t } = useLanguage();
   const [images, setImages] = useState<ReviewImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [current, setCurrent] = useState(0);
+  const [direction, setDirection] = useState(0);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [isPaused, setIsPaused] = useState(false);
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  // Touch swipe
   const touchStartX = useRef(0);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const fetchImages = useCallback(async () => {
     try {
@@ -30,7 +29,7 @@ export function ReviewsCarousel() {
       const data = await res.json();
       setImages(data.images ?? []);
     } catch {
-      // silently fail — section shows empty state
+      // silently fail
     } finally {
       setLoading(false);
     }
@@ -41,27 +40,29 @@ export function ReviewsCarousel() {
   const count = images.length;
 
   const prev = useCallback(() => {
+    setDirection(-1);
     setCurrent((i) => (i - 1 + count) % count);
   }, [count]);
 
   const next = useCallback(() => {
+    setDirection(1);
     setCurrent((i) => (i + 1) % count);
   }, [count]);
 
   // Autoplay
   useEffect(() => {
     if (count < 2 || isPaused) return;
-    timerRef.current = setTimeout(next, AUTOPLAY_INTERVAL);
+    timerRef.current = setTimeout(() => { setDirection(1); setCurrent((i) => (i + 1) % count); }, AUTOPLAY_INTERVAL);
     return () => { if (timerRef.current) clearTimeout(timerRef.current); };
-  }, [current, count, isPaused, next]);
+  }, [current, count, isPaused]);
 
   if (loading) {
     return (
       <section id="reviews" className="py-24 bg-background">
-        <div className="container mx-auto px-4 max-w-7xl">
-          <div className="flex justify-center gap-3">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="w-64 h-80 bg-muted animate-pulse rounded-2xl" />
+        <div className="container mx-auto px-4 max-w-5xl">
+          <div className="flex justify-center gap-4">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="w-64 h-96 bg-muted animate-pulse rounded-2xl" />
             ))}
           </div>
         </div>
@@ -69,8 +70,33 @@ export function ReviewsCarousel() {
     );
   }
 
+  // Visible window: show up to 3 cards (center + neighbors) on desktop, 1 on mobile
+  const getVisible = () => {
+    if (count === 0) return [];
+    if (count === 1) return [{ img: images[0], idx: 0, pos: 0 }];
+    const items = [];
+    for (let offset = -1; offset <= 1; offset++) {
+      const idx = (current + offset + count) % count;
+      items.push({ img: images[idx], idx, pos: offset });
+    }
+    return items;
+  };
+
+  const visible = getVisible();
+
+  const slideVariants = {
+    enter: (d: number) => ({ x: d > 0 ? 300 : -300, opacity: 0, scale: 0.85 }),
+    center: { x: 0, opacity: 1, scale: 1 },
+    exit: (d: number) => ({ x: d > 0 ? -300 : 300, opacity: 0, scale: 0.85 }),
+  };
+
   return (
-    <section id="reviews" className="py-24 bg-background overflow-hidden">
+    <section
+      id="reviews"
+      className="py-24 bg-background overflow-hidden"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
       <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-7xl">
         {/* Header */}
         <motion.div
@@ -96,98 +122,97 @@ export function ReviewsCarousel() {
         {count === 0 ? (
           <p className="text-center text-foreground/40 py-12">{t('reviews.empty')}</p>
         ) : (
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.2 }}
+          <div
+            onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
+            onTouchEnd={(e) => {
+              const delta = e.changedTouches[0].clientX - touchStartX.current;
+              if (Math.abs(delta) > 50) delta < 0 ? next() : prev();
+            }}
           >
-            {/* Carousel track */}
-            <div
-              className="relative"
-              onMouseEnter={() => setIsPaused(true)}
-              onMouseLeave={() => setIsPaused(false)}
-              onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
-              onTouchEnd={(e) => {
-                const delta = e.changedTouches[0].clientX - touchStartX.current;
-                if (Math.abs(delta) > 50) delta < 0 ? next() : prev();
-              }}
-            >
-              {/* Faded edge gradients */}
-              <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
-              <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
-
-              {/* Slides */}
-              <div className="overflow-hidden mx-8">
-                <motion.div
-                  className="flex gap-4"
-                  animate={{ x: dir === 'rtl'
-                    ? `calc(${current} * (var(--slide-w, 280px) + 16px))`
-                    : `calc(-${current} * (var(--slide-w, 280px) + 16px))` }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 35 }}
-                  style={{ '--slide-w': '280px' } as React.CSSProperties}
+            {/* Single-card display — full image, no cropping */}
+            <div className="relative flex items-center justify-center gap-4">
+              {/* Prev arrow */}
+              {count > 1 && (
+                <button
+                  onClick={prev}
+                  className="flex-none z-20 bg-background border border-border shadow-md rounded-full p-2.5 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200"
+                  aria-label="Previous"
                 >
-                  {/* Infinite: duplicate for loop feel */}
-                  {[...images, ...images].map((img, i) => (
-                    <div
-                      key={`${img.filename}-${i}`}
-                      className="flex-none w-[280px] sm:w-[300px] cursor-pointer group"
-                      onClick={() => setLightboxIndex(i % count)}
-                    >
-                      <div className="relative h-[380px] sm:h-[420px] rounded-2xl overflow-hidden shadow-lg ring-1 ring-border/20 group-hover:ring-primary/40 transition-all duration-300 group-hover:shadow-xl group-hover:-translate-y-1">
-                        <img
-                          src={img.url}
-                          alt={`Review ${(i % count) + 1}`}
-                          className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                          loading="lazy"
-                        />
-                        {/* Overlay on hover */}
-                        <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors duration-300 flex items-center justify-center">
-                          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-background/90 rounded-full p-3 shadow-lg">
-                            <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
-                            </svg>
-                          </div>
-                        </div>
+                  <ChevronLeft size={20} />
+                </button>
+              )}
+
+              {/* Card */}
+              <div className="relative overflow-hidden flex-1 max-w-sm mx-auto">
+                <AnimatePresence initial={false} custom={direction} mode="wait">
+                  <motion.div
+                    key={current}
+                    custom={direction}
+                    variants={slideVariants}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    transition={{ type: 'spring', stiffness: 350, damping: 35 }}
+                    className="cursor-pointer"
+                    onClick={() => setLightboxIndex(current)}
+                  >
+                    {/* Card wrapper — lets image dictate height */}
+                    <div className="rounded-3xl overflow-hidden shadow-xl ring-1 ring-border/20 hover:ring-primary/40 hover:shadow-2xl transition-all duration-300 bg-[#f9f4ef] group">
+                      <img
+                        src={images[current].url}
+                        alt={`Review ${current + 1}`}
+                        className="w-full h-auto object-contain transition-transform duration-500 group-hover:scale-[1.02]"
+                        style={{ maxHeight: '70vh' }}
+                        loading="lazy"
+                      />
+                      {/* Click-to-expand hint */}
+                      <div className="px-4 py-3 text-center">
+                        <span className="text-foreground/40 text-xs">
+                          {t('reviews.title')} {current + 1} / {count}
+                        </span>
                       </div>
                     </div>
-                  ))}
-                </motion.div>
+                  </motion.div>
+                </AnimatePresence>
               </div>
 
-              {/* Navigation arrows */}
-              <button
-                onClick={prev}
-                className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-background border border-border shadow-md rounded-full p-2.5 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200"
-                aria-label="Previous"
-              >
-                <ChevronLeft size={20} />
-              </button>
-              <button
-                onClick={next}
-                className="absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-background border border-border shadow-md rounded-full p-2.5 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200"
-                aria-label="Next"
-              >
-                <ChevronRight size={20} />
-              </button>
+              {/* Next arrow */}
+              {count > 1 && (
+                <button
+                  onClick={next}
+                  className="flex-none z-20 bg-background border border-border shadow-md rounded-full p-2.5 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200"
+                  aria-label="Next"
+                >
+                  <ChevronRight size={20} />
+                </button>
+              )}
             </div>
 
-            {/* Dot indicators */}
-            <div className="flex justify-center gap-2 mt-8">
-              {images.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCurrent(i)}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${
-                    i === current % count
-                      ? 'bg-primary w-6'
-                      : 'bg-primary/30 w-1.5 hover:bg-primary/60'
-                  }`}
-                  aria-label={`Go to review ${i + 1}`}
-                />
-              ))}
-            </div>
-          </motion.div>
+            {/* Thumbnail strip (if multiple images) */}
+            {count > 1 && (
+              <div className="flex justify-center gap-2 mt-6 flex-wrap">
+                {images.map((img, i) => (
+                  <button
+                    key={img.filename}
+                    onClick={() => { setDirection(i > current ? 1 : -1); setCurrent(i); }}
+                    className={`relative w-12 h-12 rounded-xl overflow-hidden border-2 transition-all duration-200 flex-none ${
+                      i === current
+                        ? 'border-primary shadow-md scale-110'
+                        : 'border-border/40 opacity-60 hover:opacity-100 hover:border-primary/50'
+                    }`}
+                    aria-label={`Go to review ${i + 1}`}
+                  >
+                    <img
+                      src={img.url}
+                      alt={`Thumbnail ${i + 1}`}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         )}
       </div>
 

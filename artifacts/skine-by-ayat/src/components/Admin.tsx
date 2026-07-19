@@ -1,20 +1,23 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Upload, Trash2, ChevronUp, ChevronDown, LogOut,
-  Lock, CheckCircle, AlertCircle, ImageIcon, X,
+  Upload, Trash2, LogOut,
+  Lock, CheckCircle, AlertCircle, ImageIcon, X, GripVertical,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-// ─── Simple password gate ────────────────────────────────────────────────────
-// Change ADMIN_PASSWORD env var (VITE_ADMIN_PASSWORD) or it defaults to 'skine2025'
-const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD ?? 'skine2025';
+// ─── Password ────────────────────────────────────────────────────────────────
+// Default: skine2025
+// To customise: set environment variable VITE_ADMIN_PASSWORD in Replit Secrets
+const RAW_PW = import.meta.env.VITE_ADMIN_PASSWORD;
+const ADMIN_PASSWORD = (typeof RAW_PW === 'string' && RAW_PW.trim() !== '') ? RAW_PW.trim() : 'skine2025';
 
 type Collection = 'reviews' | 'before-after';
 interface APIImage { filename: string; url: string; }
 type Status = { type: 'success' | 'error'; message: string } | null;
 
+// ─── Data hook ───────────────────────────────────────────────────────────────
 function useImages(collection: Collection) {
   const [images, setImages] = useState<APIImage[]>([]);
   const [loading, setLoading] = useState(true);
@@ -37,9 +40,7 @@ function useImages(collection: Collection) {
 }
 
 // ─── Upload zone ─────────────────────────────────────────────────────────────
-function UploadZone({
-  collection, onUploaded,
-}: { collection: Collection; onUploaded: () => void }) {
+function UploadZone({ collection, onUploaded }: { collection: Collection; onUploaded: () => void }) {
   const { t } = useLanguage();
   const [uploading, setUploading] = useState(false);
   const [status, setStatus] = useState<Status>(null);
@@ -103,11 +104,8 @@ function UploadZone({
             <span className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
             {t('admin.uploading')}
           </span>
-        ) : (
-          t('admin.upload')
-        )}
+        ) : t('admin.upload')}
       </Button>
-
       {status && (
         <p className={`mt-3 text-sm flex items-center justify-center gap-1.5 ${
           status.type === 'success' ? 'text-green-600' : 'text-destructive'
@@ -120,7 +118,7 @@ function UploadZone({
   );
 }
 
-// ─── Image grid with reorder + delete ────────────────────────────────────────
+// ─── Drag-and-drop image grid ─────────────────────────────────────────────────
 function ImageGrid({
   collection, images, setImages, reload,
 }: {
@@ -132,21 +130,16 @@ function ImageGrid({
   const { t } = useLanguage();
   const [saveStatus, setSaveStatus] = useState<Status>(null);
   const [deletingFile, setDeletingFile] = useState<string | null>(null);
+  const dragItem = useRef<number | null>(null);
+  const dragOver = useRef<number | null>(null);
+  const [draggingIdx, setDraggingIdx] = useState<number | null>(null);
 
-  const move = (index: number, direction: -1 | 1) => {
-    const newImages = [...images];
-    const target = index + direction;
-    if (target < 0 || target >= newImages.length) return;
-    [newImages[index], newImages[target]] = [newImages[target], newImages[index]];
-    setImages(newImages);
-  };
-
-  const saveOrder = async () => {
+  const saveOrder = async (ordered: APIImage[]) => {
     try {
       const res = await fetch(`/api/images/${collection}/reorder`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ order: images.map((img) => img.filename) }),
+        body: JSON.stringify({ order: ordered.map((img) => img.filename) }),
       });
       if (res.ok) setSaveStatus({ type: 'success', message: t('admin.saved') });
       else throw new Error();
@@ -156,16 +149,36 @@ function ImageGrid({
     setTimeout(() => setSaveStatus(null), 3000);
   };
 
+  const handleDragStart = (index: number) => {
+    dragItem.current = index;
+    setDraggingIdx(index);
+  };
+
+  const handleDragEnter = (index: number) => {
+    dragOver.current = index;
+    if (dragItem.current === null || dragItem.current === index) return;
+    const newImages = [...images];
+    const dragged = newImages.splice(dragItem.current, 1)[0];
+    newImages.splice(index, 0, dragged);
+    dragItem.current = index;
+    setImages(newImages);
+  };
+
+  const handleDragEnd = () => {
+    setDraggingIdx(null);
+    saveOrder(images);
+    dragItem.current = null;
+    dragOver.current = null;
+  };
+
   const deleteImage = async (filename: string) => {
     if (!confirm(t('admin.delete') + '?')) return;
     setDeletingFile(filename);
     try {
-      await fetch(`/api/images/${collection}/${encodeURIComponent(filename)}`, {
-        method: 'DELETE',
-      });
+      await fetch(`/api/images/${collection}/${encodeURIComponent(filename)}`, { method: 'DELETE' });
       reload();
     } catch {
-      // nothing
+      //
     } finally {
       setDeletingFile(null);
     }
@@ -182,86 +195,90 @@ function ImageGrid({
 
   return (
     <div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 mb-5">
-        {images.map((img, index) => (
-          <motion.div
-            key={img.filename}
-            layout
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            className="relative group rounded-xl overflow-hidden border border-border aspect-[3/4] bg-muted"
-          >
-            <img
-              src={img.url}
-              alt={`Image ${index + 1}`}
-              className="w-full h-full object-cover"
-              loading="lazy"
-            />
-
-            {/* Order badge */}
-            <div className="absolute top-2 start-2 bg-black/60 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
-              {index + 1}
-            </div>
-
-            {/* Action overlay */}
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-colors duration-200 flex flex-col items-center justify-center gap-1.5 opacity-0 group-hover:opacity-100">
-              <div className="flex gap-1">
-                <button
-                  onClick={() => move(index, -1)}
-                  disabled={index === 0}
-                  className="p-1.5 bg-white/90 rounded-full hover:bg-white disabled:opacity-30 transition"
-                  title={t('admin.move.up')}
-                >
-                  <ChevronUp size={14} />
-                </button>
-                <button
-                  onClick={() => move(index, 1)}
-                  disabled={index === images.length - 1}
-                  className="p-1.5 bg-white/90 rounded-full hover:bg-white disabled:opacity-30 transition"
-                  title={t('admin.move.down')}
-                >
-                  <ChevronDown size={14} />
-                </button>
-              </div>
-              <button
-                onClick={() => deleteImage(img.filename)}
-                disabled={deletingFile === img.filename}
-                className="p-1.5 bg-red-500 text-white rounded-full hover:bg-red-600 transition"
-                title={t('admin.delete')}
-              >
-                {deletingFile === img.filename ? (
-                  <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin inline-block" />
-                ) : (
-                  <Trash2 size={14} />
-                )}
-              </button>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-
-      <div className="flex items-center gap-4">
-        <Button size="sm" onClick={saveOrder} className="rounded-full gap-2">
-          <CheckCircle size={15} />
-          {t('admin.save.order')}
-        </Button>
-        {saveStatus && (
-          <AnimatePresence>
-            <motion.p
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0 }}
-              className={`text-sm flex items-center gap-1.5 ${
-                saveStatus.type === 'success' ? 'text-green-600' : 'text-destructive'
+      <p className="text-foreground/50 text-sm mb-4 flex items-center gap-1.5">
+        <GripVertical size={14} />
+        {t('admin.save.order')} — drag cards to reorder, changes save automatically
+      </p>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <AnimatePresence>
+          {images.map((img, index) => (
+            <motion.div
+              key={img.filename}
+              layout
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: draggingIdx === index ? 0.5 : 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.2 }}
+              draggable
+              onDragStart={() => handleDragStart(index)}
+              onDragEnter={() => handleDragEnter(index)}
+              onDragEnd={handleDragEnd}
+              onDragOver={(e) => e.preventDefault()}
+              className={`relative group rounded-2xl overflow-hidden border bg-[#f9f4ef] cursor-grab active:cursor-grabbing select-none transition-all ${
+                draggingIdx === index
+                  ? 'border-primary ring-2 ring-primary/30 shadow-lg'
+                  : 'border-border hover:border-primary/40 hover:shadow-md'
               }`}
             >
-              {saveStatus.type === 'success' ? <CheckCircle size={14} /> : <AlertCircle size={14} />}
-              {saveStatus.message}
-            </motion.p>
-          </AnimatePresence>
-        )}
+              {/* Image — full, no crop */}
+              <div className="p-2">
+                <img
+                  src={img.url}
+                  alt={`Image ${index + 1}`}
+                  className="w-full h-auto object-contain rounded-xl"
+                  style={{ maxHeight: '200px' }}
+                  loading="lazy"
+                  draggable={false}
+                />
+              </div>
+
+              {/* Order badge */}
+              <div className="absolute top-2 start-2 bg-black/60 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
+                {index + 1}
+              </div>
+
+              {/* Drag handle */}
+              <div className="absolute top-2 end-2 bg-white/80 backdrop-blur-sm rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <GripVertical size={12} className="text-foreground/60" />
+              </div>
+
+              {/* Delete button */}
+              <div className="absolute bottom-2 inset-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button
+                  onClick={() => deleteImage(img.filename)}
+                  disabled={deletingFile === img.filename}
+                  className="w-full py-1.5 bg-red-500/90 backdrop-blur-sm text-white text-xs font-medium rounded-xl flex items-center justify-center gap-1.5 hover:bg-red-600 transition"
+                >
+                  {deletingFile === img.filename ? (
+                    <span className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <>
+                      <Trash2 size={11} />
+                      {t('admin.delete')}
+                    </>
+                  )}
+                </button>
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
+
+      {saveStatus && (
+        <AnimatePresence>
+          <motion.p
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className={`mt-4 text-sm flex items-center gap-1.5 ${
+              saveStatus.type === 'success' ? 'text-green-600' : 'text-destructive'
+            }`}
+          >
+            {saveStatus.type === 'success' ? <CheckCircle size={14} /> : <AlertCircle size={14} />}
+            {saveStatus.message}
+          </motion.p>
+        </AnimatePresence>
+      )}
     </div>
   );
 }
@@ -271,28 +288,21 @@ function CollectionPanel({ collection, label }: { collection: Collection; label:
   const { images, setImages, loading, reload } = useImages(collection);
 
   return (
-    <section className="mb-12">
+    <section className="mb-14">
       <h3 className="text-xl font-bold text-foreground mb-5 flex items-center gap-2">
         <ImageIcon size={20} className="text-primary" />
         {label}
       </h3>
-
       <UploadZone collection={collection} onUploaded={reload} />
-
       <div className="mt-6">
         {loading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="aspect-[3/4] bg-muted animate-pulse rounded-xl" />
+              <div key={i} className="aspect-[3/4] bg-muted animate-pulse rounded-2xl" />
             ))}
           </div>
         ) : (
-          <ImageGrid
-            collection={collection}
-            images={images}
-            setImages={setImages}
-            reload={reload}
-          />
+          <ImageGrid collection={collection} images={images} setImages={setImages} reload={reload} />
         )}
       </div>
     </section>
@@ -327,7 +337,6 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
         </div>
         <h1 className="text-2xl font-bold text-foreground mb-2">{t('admin.title')}</h1>
         <p className="text-foreground/50 text-sm mb-8">Skiné by Ayat</p>
-
         <form onSubmit={submit} className="text-start space-y-4">
           <div>
             <label className="block text-sm font-medium text-foreground mb-1.5">
@@ -338,13 +347,14 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
               value={pw}
               onChange={(e) => { setPw(e.target.value); setError(false); }}
               placeholder={t('admin.password.prompt')}
+              autoComplete="current-password"
               className="w-full px-4 py-2.5 rounded-xl border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 transition"
               autoFocus
             />
             {error && (
               <p className="text-destructive text-xs mt-2 flex items-center gap-1.5">
                 <AlertCircle size={12} />
-                {t('admin.wrong.password')}
+                {t('admin.wrong.password')} — try <strong>skine2025</strong>
               </p>
             )}
           </div>
@@ -360,25 +370,15 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
 // ─── Admin page root ──────────────────────────────────────────────────────────
 export function Admin() {
   const { t } = useLanguage();
-  const [authed, setAuthed] = useState(() => {
-    return sessionStorage.getItem('skine-admin-auth') === '1';
-  });
+  const [authed, setAuthed] = useState(() => sessionStorage.getItem('skine-admin-auth') === '1');
 
-  const login = () => {
-    sessionStorage.setItem('skine-admin-auth', '1');
-    setAuthed(true);
-  };
-
-  const logout = () => {
-    sessionStorage.removeItem('skine-admin-auth');
-    setAuthed(false);
-  };
+  const login = () => { sessionStorage.setItem('skine-admin-auth', '1'); setAuthed(true); };
+  const logout = () => { sessionStorage.removeItem('skine-admin-auth'); setAuthed(false); };
 
   if (!authed) return <LoginScreen onLogin={login} />;
 
   return (
     <div className="min-h-screen bg-muted/20">
-      {/* Admin navbar */}
       <header className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b border-border px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -390,10 +390,7 @@ export function Admin() {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <a
-            href="/"
-            className="text-sm text-foreground/60 hover:text-foreground transition flex items-center gap-1.5"
-          >
+          <a href="/" className="text-sm text-foreground/60 hover:text-foreground transition flex items-center gap-1.5">
             <X size={14} />
             {t('nav.home')}
           </a>
@@ -404,10 +401,9 @@ export function Admin() {
         </div>
       </header>
 
-      {/* Content */}
       <main className="max-w-5xl mx-auto px-4 md:px-8 py-10">
-        <CollectionPanel collection="reviews" label={t('admin.reviews')} />
-        <hr className="border-border my-8" />
+        <CollectionPanel collection="reviews"      label={t('admin.reviews')} />
+        <hr className="border-border my-2" />
         <CollectionPanel collection="before-after" label={t('admin.beforeafter')} />
       </main>
     </div>

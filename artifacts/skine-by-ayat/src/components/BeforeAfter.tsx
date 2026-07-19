@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { ImageLightbox } from './ImageLightbox';
@@ -9,13 +9,14 @@ interface BAImage {
   url: string;
 }
 
-const AUTOPLAY_INTERVAL = 4000;
+const AUTOPLAY_INTERVAL = 4500;
 
 export function BeforeAfter() {
-  const { t, dir } = useLanguage();
+  const { t } = useLanguage();
   const [images, setImages] = useState<BAImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [current, setCurrent] = useState(0);
+  const [direction, setDirection] = useState(0);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [isPaused, setIsPaused] = useState(false);
   const touchStartX = useRef(0);
@@ -37,22 +38,22 @@ export function BeforeAfter() {
 
   const count = images.length;
 
-  const prev = useCallback(() => setCurrent((i) => (i - 1 + count) % count), [count]);
-  const next = useCallback(() => setCurrent((i) => (i + 1) % count), [count]);
+  const prev = useCallback(() => { setDirection(-1); setCurrent((i) => (i - 1 + count) % count); }, [count]);
+  const next = useCallback(() => { setDirection(1);  setCurrent((i) => (i + 1) % count); }, [count]);
 
   useEffect(() => {
     if (count < 2 || isPaused) return;
-    const t = setTimeout(next, AUTOPLAY_INTERVAL);
-    return () => clearTimeout(t);
-  }, [current, count, isPaused, next]);
+    const id = setTimeout(() => { setDirection(1); setCurrent((i) => (i + 1) % count); }, AUTOPLAY_INTERVAL);
+    return () => clearTimeout(id);
+  }, [current, count, isPaused]);
 
   if (loading) {
     return (
-      <section id="before-after" className="py-24 bg-background">
-        <div className="container mx-auto px-4 max-w-7xl">
+      <section id="before-after" className="py-24 bg-muted/30">
+        <div className="container mx-auto px-4 max-w-5xl">
           <div className="flex justify-center gap-4">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="w-72 h-[440px] bg-muted animate-pulse rounded-2xl" />
+              <div key={i} className="w-64 h-96 bg-muted animate-pulse rounded-2xl" />
             ))}
           </div>
         </div>
@@ -60,8 +61,19 @@ export function BeforeAfter() {
     );
   }
 
+  const slideVariants = {
+    enter: (d: number) => ({ x: d > 0 ? 320 : -320, opacity: 0, scale: 0.88 }),
+    center: { x: 0, opacity: 1, scale: 1 },
+    exit:  (d: number) => ({ x: d > 0 ? -320 : 320, opacity: 0, scale: 0.88 }),
+  };
+
   return (
-    <section id="before-after" className="py-24 bg-muted/30 overflow-hidden">
+    <section
+      id="before-after"
+      className="py-24 bg-muted/30 overflow-hidden"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
       <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-7xl">
         {/* Header */}
         <motion.div
@@ -87,100 +99,86 @@ export function BeforeAfter() {
         {count === 0 ? (
           <p className="text-center text-foreground/40 py-12">{t('beforeafter.empty')}</p>
         ) : (
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.2 }}
+          <div
+            onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
+            onTouchEnd={(e) => {
+              const delta = e.changedTouches[0].clientX - touchStartX.current;
+              if (Math.abs(delta) > 50) delta < 0 ? next() : prev();
+            }}
           >
-            <div
-              className="relative"
-              onMouseEnter={() => setIsPaused(true)}
-              onMouseLeave={() => setIsPaused(false)}
-              onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
-              onTouchEnd={(e) => {
-                const delta = e.changedTouches[0].clientX - touchStartX.current;
-                if (Math.abs(delta) > 50) delta < 0 ? next() : prev();
-              }}
-            >
-              {/* Edge fade */}
-              <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-muted/30 to-transparent z-10 pointer-events-none" />
-              <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-muted/30 to-transparent z-10 pointer-events-none" />
-
-              {/* Slides */}
-              <div className="overflow-hidden mx-8">
-                <motion.div
-                  className="flex gap-5"
-                  animate={{
-                    x: dir === 'rtl'
-                      ? `calc(${current} * (var(--slide-w, 300px) + 20px))`
-                      : `calc(-${current} * (var(--slide-w, 300px) + 20px))`,
-                  }}
-                  transition={{ type: 'spring', stiffness: 280, damping: 35 }}
-                  style={{ '--slide-w': '300px' } as React.CSSProperties}
+            <div className="relative flex items-center justify-center gap-4">
+              {count > 1 && (
+                <button
+                  onClick={prev}
+                  className="flex-none z-20 bg-background border border-border shadow-lg rounded-full p-3 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200"
+                  aria-label="Previous"
                 >
-                  {[...images, ...images].map((img, i) => (
-                    <div
-                      key={`${img.filename}-${i}`}
-                      className="flex-none w-[300px] sm:w-[320px] cursor-pointer group"
-                      onClick={() => setLightboxIndex(i % count)}
-                    >
-                      <div className="relative rounded-3xl overflow-hidden shadow-lg ring-1 ring-border/20 group-hover:ring-primary/40 group-hover:shadow-2xl group-hover:-translate-y-1.5 transition-all duration-300">
-                        {/* Image */}
-                        <div className="h-[460px]">
-                          <img
-                            src={img.url}
-                            alt={`Result ${(i % count) + 1}`}
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                            loading="lazy"
-                          />
-                        </div>
+                  <ChevronLeft size={22} />
+                </button>
+              )}
 
-                        {/* Zoom hint overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-6">
-                          <span className="text-white text-sm font-medium bg-white/20 backdrop-blur-sm px-4 py-1.5 rounded-full">
-                            {dir === 'rtl' ? 'اضغط للتكبير' : 'Click to enlarge'}
-                          </span>
-                        </div>
+              <div className="flex-1 max-w-md mx-auto overflow-hidden">
+                <AnimatePresence initial={false} custom={direction} mode="wait">
+                  <motion.div
+                    key={current}
+                    custom={direction}
+                    variants={slideVariants}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    transition={{ type: 'spring', stiffness: 320, damping: 35 }}
+                    className="cursor-pointer group"
+                    onClick={() => setLightboxIndex(current)}
+                  >
+                    <div className="rounded-3xl overflow-hidden shadow-2xl ring-1 ring-border/20 group-hover:ring-primary/40 group-hover:shadow-2xl transition-all duration-300 bg-[#f9f4ef]">
+                      <img
+                        src={images[current].url}
+                        alt={`Result ${current + 1}`}
+                        className="w-full h-auto object-contain transition-transform duration-500 group-hover:scale-[1.02]"
+                        style={{ maxHeight: '72vh' }}
+                        loading="lazy"
+                      />
+                      <div className="px-4 py-3 text-center">
+                        <span className="text-foreground/40 text-xs">
+                          {current + 1} / {count} — {t('beforeafter.title')}
+                        </span>
                       </div>
                     </div>
-                  ))}
-                </motion.div>
+                  </motion.div>
+                </AnimatePresence>
               </div>
 
-              {/* Arrows */}
-              <button
-                onClick={prev}
-                className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-background border border-border shadow-lg rounded-full p-3 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200"
-                aria-label="Previous"
-              >
-                <ChevronLeft size={22} />
-              </button>
-              <button
-                onClick={next}
-                className="absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-background border border-border shadow-lg rounded-full p-3 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200"
-                aria-label="Next"
-              >
-                <ChevronRight size={22} />
-              </button>
+              {count > 1 && (
+                <button
+                  onClick={next}
+                  className="flex-none z-20 bg-background border border-border shadow-lg rounded-full p-3 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200"
+                  aria-label="Next"
+                >
+                  <ChevronRight size={22} />
+                </button>
+              )}
             </div>
 
-            {/* Dots */}
-            <div className="flex justify-center gap-2 mt-8">
-              {images.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCurrent(i)}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${
-                    i === current % count
-                      ? 'bg-primary w-6'
-                      : 'bg-primary/30 w-1.5 hover:bg-primary/60'
-                  }`}
-                  aria-label={`Go to image ${i + 1}`}
-                />
-              ))}
-            </div>
-          </motion.div>
+            {/* Thumbnail strip */}
+            {count > 1 && (
+              <div className="flex justify-center gap-2 mt-6 flex-wrap">
+                {images.map((img, i) => (
+                  <button
+                    key={img.filename}
+                    onClick={() => { setDirection(i > current ? 1 : -1); setCurrent(i); }}
+                    className={`relative w-12 h-12 rounded-xl overflow-hidden border-2 transition-all duration-200 flex-none ${
+                      i === current
+                        ? 'border-primary shadow-md scale-110'
+                        : 'border-border/40 opacity-60 hover:opacity-100 hover:border-primary/50'
+                    }`}
+                    aria-label={`Go to image ${i + 1}`}
+                  >
+                    <img src={img.url} alt="" className="w-full h-full object-cover" loading="lazy" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         )}
       </div>
 
