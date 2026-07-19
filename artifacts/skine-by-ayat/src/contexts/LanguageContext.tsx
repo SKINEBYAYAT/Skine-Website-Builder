@@ -17,20 +17,28 @@ const translations: Record<string, Record<Language, string>> = {
   'nav.consultation': { ar: 'الاستشارة', en: 'Consultation' },
   'nav.faq': { ar: 'الأسئلة الشائعة', en: 'FAQ' },
   'nav.contact': { ar: 'تواصل معنا', en: 'Contact' },
-  
+
   // Hero
   'hero.title': { ar: 'بشرة صحية تبدأ بالعناية الصحيحة', en: 'Healthy Skin Starts with Proper Care' },
   'hero.subtitle': { ar: 'استشارات احترافية وروتين مخصص للعناية ببشرتك حسب احتياجاتها.', en: 'Professional consultations and a personalized skincare routine tailored to your skin\'s needs.' },
   'hero.cta.primary': { ar: 'احجز استشارة', en: 'Book a Consultation' },
   'hero.cta.secondary': { ar: 'تابعنا على إنستغرام', en: 'Follow us on Instagram' },
-  
+
   // About
   'about.title': { ar: 'من نحن', en: 'About Us' },
-  'about.content': { 
-    ar: 'Skiné by Ayat هي مبادرة متخصصة في الاستشارات الجلدية الاحترافية. نؤمن أن كل بشرة فريدة وتستحق عناية مخصصة. هدفنا مساعدتك في فهم بشرتك وبناء روتين يناسب احتياجاتها الفعلية.', 
-    en: 'Skiné by Ayat is a specialized platform for professional skincare consultations. We believe every skin is unique and deserves personalized care. Our goal is to help you understand your skin and build a routine that truly meets its needs.' 
+  'about.para1': {
+    ar: 'بخبرة تزيد عن خمس سنوات، وتشرفت بكوني أول وأصغر خبيرة في مجال العناية بالبشرة تتم استضافتها على التلفزيون للحديث عن أسس العناية الصحيحة بالبشرة.',
+    en: 'With over five years of experience, I was honored to be the first and youngest skincare expert to be hosted on television to speak about the fundamentals of proper skincare.',
   },
-  
+  'about.para2': {
+    ar: 'أؤمن أن كل بشرة لها احتياجات مختلفة، لذلك لا أعتمد على الحلول العامة، بل أقدم استشارات شخصية وخطط عناية مصممة بما يتناسب مع طبيعة بشرتك ومشكلاتها وأهدافك، لمساعدتك على اتخاذ قرارات صحيحة وبناء روتين فعّال يمنح بشرتك العناية التي تستحقها.',
+    en: 'I believe every skin has different needs, so I don\'t rely on generic solutions. Instead, I offer personalized consultations and tailored skincare plans designed to match your skin\'s nature, concerns, and goals — helping you make the right decisions and build an effective routine that gives your skin the care it deserves.',
+  },
+  'about.para3': {
+    ar: 'لأن البشرة الصحية تبدأ بفهمها أولًا.',
+    en: 'Because healthy skin starts with understanding it first.',
+  },
+
   // Services
   'services.title': { ar: 'خدماتنا', en: 'Our Services' },
   'service.1.title': { ar: 'تحليل البشرة', en: 'Skin Analysis' },
@@ -42,11 +50,25 @@ const translations: Record<string, Record<Language, string>> = {
   'service.7.title': { ar: 'روتين العناية بالبشرة', en: 'Skincare Routine' },
   'service.8.title': { ar: 'توصيات المنتجات', en: 'Product Recommendations' },
   'service.9.title': { ar: 'متابعة النتائج', en: 'Progress Tracking' },
-  
+
   // Consultation
   'consultation.title': { ar: 'احجزي استشارتك', en: 'Book Your Consultation' },
   'consultation.cta.desc': { ar: 'انقري على الزر أدناه لحجز استشارتك الجلدية المخصصة مع Skiné by Ayat.', en: 'Click the button below to book your personalized skincare consultation with Skiné by Ayat.' },
-  
+
+  // Reviews Carousel
+  'reviews.title': { ar: 'آراء العملاء', en: 'Client Reviews' },
+  'reviews.subtitle': { ar: 'ما يقوله عملاؤنا عن تجربتهم معنا', en: 'What our clients say about their experience with us' },
+  'reviews.empty': { ar: 'لا توجد مراجعات حالياً', en: 'No reviews yet' },
+
+  // Consultation Reviews
+  'consult.reviews.title': { ar: 'تجارب الاستشارات', en: 'Consultation Experiences' },
+  'consult.reviews.subtitle': { ar: 'قصص حقيقية من عملاء حوّلت الاستشارة بشرتهم', en: 'Real stories from clients whose skin was transformed through consultation' },
+
+  // Before & After
+  'beforeafter.title': { ar: 'قبل وبعد', en: 'Before & After' },
+  'beforeafter.subtitle': { ar: 'نتائج حقيقية لعملاء حقيقيين', en: 'Real results for real clients' },
+  'beforeafter.empty': { ar: 'لا توجد صور حالياً', en: 'No images yet' },
+
   // FAQ
   'faq.title': { ar: 'الأسئلة الشائعة', en: 'Frequently Asked Questions' },
   'faq.1.q': { ar: 'كيف يتم تقديم الاستشارة؟', en: 'How is the consultation conducted?' },
@@ -57,16 +79,33 @@ const translations: Record<string, Record<Language, string>> = {
   'faq.3.a': { ar: 'تختلف المدة حسب نوع الاستشارة، وسيتم إبلاغك بالوقت المتوقع عند التواصل.', en: 'Duration varies by consultation type — you\'ll be informed of the estimated time when we contact you.' },
   'faq.4.q': { ar: 'هل يمكنني إلغاء موعدي؟', en: 'Can I cancel my appointment?' },
   'faq.4.a': { ar: 'نعم، يمكنك التواصل معنا قبل 24 ساعة من موعدك لإعادة الجدولة أو الإلغاء.', en: 'Yes, you can contact us at least 24 hours before your appointment to reschedule or cancel.' },
-  
+
   // Contact
   'contact.title': { ar: 'تواصل معنا', en: 'Contact Us' },
   'contact.whatsapp.subtitle': { ar: 'راسلينا مباشرة على واتساب', en: 'Message us directly on WhatsApp' },
   'contact.instagram.subtitle': { ar: 'تابعينا على إنستغرام', en: 'Follow us on Instagram' },
-  
+
   // Footer
   'footer.privacy': { ar: 'سياسة الخصوصية', en: 'Privacy Policy' },
   'footer.terms': { ar: 'الشروط والأحكام', en: 'Terms of Service' },
-  'footer.copyright': { ar: '© 2025 Skiné by Ayat — جميع الحقوق محفوظة', en: '© 2025 Skiné by Ayat — All rights reserved' }
+  'footer.copyright': { ar: '© 2025 Skiné by Ayat — جميع الحقوق محفوظة', en: '© 2025 Skiné by Ayat — All rights reserved' },
+
+  // Admin
+  'admin.title': { ar: 'لوحة الإدارة', en: 'Admin Panel' },
+  'admin.reviews': { ar: 'آراء العملاء', en: 'Client Reviews' },
+  'admin.beforeafter': { ar: 'قبل وبعد', en: 'Before & After' },
+  'admin.upload': { ar: 'رفع صورة', en: 'Upload Image' },
+  'admin.delete': { ar: 'حذف', en: 'Delete' },
+  'admin.save.order': { ar: 'حفظ الترتيب', en: 'Save Order' },
+  'admin.logout': { ar: 'تسجيل الخروج', en: 'Log Out' },
+  'admin.password.prompt': { ar: 'أدخلي كلمة المرور', en: 'Enter password' },
+  'admin.password.label': { ar: 'كلمة المرور', en: 'Password' },
+  'admin.login': { ar: 'دخول', en: 'Login' },
+  'admin.wrong.password': { ar: 'كلمة مرور خاطئة', en: 'Incorrect password' },
+  'admin.move.up': { ar: 'تحريك لأعلى', en: 'Move Up' },
+  'admin.move.down': { ar: 'تحريك لأسفل', en: 'Move Down' },
+  'admin.uploading': { ar: 'جارٍ الرفع...', en: 'Uploading...' },
+  'admin.saved': { ar: 'تم الحفظ', en: 'Saved' },
 };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);

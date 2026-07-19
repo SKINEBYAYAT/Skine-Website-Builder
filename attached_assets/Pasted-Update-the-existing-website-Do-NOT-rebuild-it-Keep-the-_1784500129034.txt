@@ -1,0 +1,114 @@
+Update the existing website. Do NOT rebuild it. Keep the current design and branding, and make the following changes.
+
+--------------------------------------------------
+1. Update the Introduction Section
+--------------------------------------------------
+
+Replace the current introduction with the following Arabic text:
+
+بخبرة تزيد عن خمس سنوات، وتشرفت بكوني أول وأصغر خبيرة في مجال العناية بالبشرة تتم استضافتها على التلفزيون للحديث عن أسس العناية الصحيحة بالبشرة.
+
+أؤمن أن كل بشرة لها احتياجات مختلفة، لذلك لا أعتمد على الحلول العامة، بل أقدم استشارات شخصية وخطط عناية مصممة بما يتناسب مع طبيعة بشرتك ومشكلاتها وأهدافك، لمساعدتك على اتخاذ قرارات صحيحة وبناء روتين فعّال يمنح بشرتك العناية التي تستحقها.
+
+لأن البشرة الصحية تبدأ بفهمها أولًا.
+
+Style this section professionally:
+- Elegant typography
+- Spacious layout
+- Include my profile image beside the text (if uploaded)
+- Soft fade-in animation
+- Use the website's brand colors.
+
+--------------------------------------------------
+2. Add a Client Reviews Section
+--------------------------------------------------
+
+Create a modern section titled:
+
+"آراء العملاء"
+
+Instead of text testimonials, make this section display uploaded client review screenshots.
+
+Requirements:
+
+- As the website administrator, I can upload an unlimited number of review images.
+- Reviews will be screenshots from WhatsApp, Instagram, or other platforms.
+- Display them inside a beautiful horizontal carousel.
+- Visitors can swipe left and right on mobile.
+- Desktop users can use Previous and Next arrows.
+- Infinite looping.
+- Smooth sliding animation.
+- Auto-play with manual controls.
+- Clicking an image opens it in a full-screen lightbox.
+- Users can zoom and swipe between all review images.
+
+Admin Features:
+- Upload unlimited review images.
+- Delete review images.
+- Replace review images.
+- Reorder images with drag-and-drop.
+- Changes appear automatically without editing code.
+
+The section should perfectly match the premium design of the website.
+
+--------------------------------------------------
+3. Add Consultation Reviews
+--------------------------------------------------
+
+Create a separate section titled:
+
+"تجارب الاستشارات"
+
+This section should showcase reviews specifically about clients' consultation experiences.
+
+Design:
+- Modern cards
+- Professional layout
+- Quote icon
+- Optional client photo
+- Optional consultation date
+- Easy to update later.
+
+--------------------------------------------------
+4. Add Before & After Gallery
+--------------------------------------------------
+
+Create a premium section titled:
+
+"قبل وبعد"
+
+Requirements:
+
+- As the website administrator, I can upload an unlimited number of before-and-after images.
+- Display all uploaded images in a beautiful horizontal carousel.
+- Visitors can swipe left and right to browse all results.
+- Desktop users can use Previous and Next arrows.
+- Infinite looping.
+- Smooth animations.
+- Clicking any image opens a full-screen gallery.
+- Users can swipe through every uploaded image in full-screen mode.
+- Images should maintain high quality and load efficiently.
+
+Admin Features:
+- Upload unlimited images.
+- Delete images.
+- Replace images.
+- Reorder images with drag-and-drop.
+- Changes appear instantly without editing code.
+- Support both portrait and landscape images without breaking the layout.
+
+The gallery should have a premium, modern design that matches the rest of the website.
+
+--------------------------------------------------
+5. Overall Design
+--------------------------------------------------
+
+Ensure all new sections match the existing premium style of the website.
+
+Maintain:
+- Elegant spacing
+- Smooth animations
+- Brand colors
+- Fully responsive layout
+- Fast loading
+- Modern UI consistent with the rest of the website.

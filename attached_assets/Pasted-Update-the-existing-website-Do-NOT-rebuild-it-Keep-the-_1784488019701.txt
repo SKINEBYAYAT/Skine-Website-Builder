@@ -1,0 +1,84 @@
+Update the existing website. Do NOT rebuild it. Keep the current design and branding, and make the following changes.
+
+--------------------------------------------------
+1. Update the Introduction Section
+--------------------------------------------------
+
+Replace the current introduction with the following Arabic text:
+
+بخبرة تزيد عن خمس سنوات، وتشرفت بكوني أول وأصغر خبيرة في مجال العناية بالبشرة تتم استضافتها على التلفزيون للحديث عن أسس العناية الصحيحة بالبشرة.
+
+أؤمن أن كل بشرة لها احتياجات مختلفة، لذلك لا أعتمد على الحلول العامة، بل أقدم استشارات شخصية وخطط عناية مصممة بما يتناسب مع طبيعة بشرتك ومشكلاتها وأهدافك، لمساعدتك على اتخاذ قرارات صحيحة وبناء روتين فعّال يمنح بشرتك العناية التي تستحقها.
+
+لأن البشرة الصحية تبدأ بفهمها أولًا.
+
+Style this section professionally:
+- Elegant typography
+- Spacious layout
+- Include my profile image beside the text (if uploaded)
+- Soft fade-in animation
+- Use the website's brand colors
+
+--------------------------------------------------
+2. Add a Client Reviews Section
+--------------------------------------------------
+
+Create a modern "آراء العملاء" section.
+
+Requirements:
+- Premium testimonial cards
+- Rounded corners
+- Soft shadows
+- Quote icon
+- Client name (optional)
+- 5-star rating display (only for testimonials, not as a website statistic)
+- Smooth slider/carousel
+- Responsive on mobile
+
+This section should be easy for me to edit later by adding or removing testimonials.
+
+--------------------------------------------------
+3. Add Consultation Reviews
+--------------------------------------------------
+
+Create a separate section titled:
+
+"تجارب الاستشارات"
+
+This section should showcase reviews specifically about clients' consultation experiences.
+
+Design:
+- Modern cards
+- Professional layout
+- Quote icon
+- Optional client photo
+- Optional consultation date
+- Easy to update later
+
+--------------------------------------------------
+4. Add Before & After Gallery
+--------------------------------------------------
+
+Create a premium "قبل وبعد" section.
+
+Requirements:
+- Before/After image comparison slider for each case.
+- Also support a responsive gallery layout.
+- Clicking an image should open it in a lightbox.
+- Include a short caption below each comparison.
+- Optimize images for fast loading.
+- Allow me to upload and replace before/after photos easily in the future.
+
+--------------------------------------------------
+5. Overall Design
+--------------------------------------------------
+
+Ensure all new sections match the existing premium style of the website.
+
+Maintain:
+- Elegant spacing
+- Smooth animations
+- Brand colors
+- Fully responsive layout
+- Fast loading
+- Modern UI consistent with the rest of the website
