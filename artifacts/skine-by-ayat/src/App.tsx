@@ -5,7 +5,6 @@ import { Hero } from '@/components/Hero';
 import { About } from '@/components/About';
 import { Services } from '@/components/Services';
 import { ReviewsCarousel } from '@/components/ReviewsCarousel';
-import { ConsultationReviews } from '@/components/ConsultationReviews';
 import { BeforeAfter } from '@/components/BeforeAfter';
 import { Consultation } from '@/components/Consultation';
 import { FAQ } from '@/components/FAQ';
@@ -31,7 +30,6 @@ function MainSite() {
         <About />
         <Services />
         <ReviewsCarousel />
-        <ConsultationReviews />
         <BeforeAfter />
         <Consultation />
         <FAQ />

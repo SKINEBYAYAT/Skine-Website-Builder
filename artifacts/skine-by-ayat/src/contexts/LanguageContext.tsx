@@ -60,10 +60,6 @@ const translations: Record<string, Record<Language, string>> = {
   'reviews.subtitle': { ar: 'ما يقوله عملاؤنا عن تجربتهم معنا', en: 'What our clients say about their experience with us' },
   'reviews.empty': { ar: 'لا توجد مراجعات حالياً', en: 'No reviews yet' },
 
-  // Consultation Reviews
-  'consult.reviews.title': { ar: 'تجارب الاستشارات', en: 'Consultation Experiences' },
-  'consult.reviews.subtitle': { ar: 'قصص حقيقية من عملاء حوّلت الاستشارة بشرتهم', en: 'Real stories from clients whose skin was transformed through consultation' },
-
   // Before & After
   'beforeafter.title': { ar: 'قبل وبعد', en: 'Before & After' },
   'beforeafter.subtitle': { ar: 'نتائج حقيقية لعملاء حقيقيين', en: 'Real results for real clients' },
