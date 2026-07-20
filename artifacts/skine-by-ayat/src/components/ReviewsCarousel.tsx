@@ -130,7 +130,7 @@ export function ReviewsCarousel() {
             }}
           >
             {/* Single-card display — full image, no cropping */}
-            <div className="relative flex items-center justify-center gap-4">
+            <div className="relative flex items-center justify-center gap-4" dir="ltr">
               {/* Prev arrow */}
               {count > 1 && (
                 <button

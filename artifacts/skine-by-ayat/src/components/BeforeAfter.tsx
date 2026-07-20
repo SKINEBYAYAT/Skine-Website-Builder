@@ -106,7 +106,7 @@ export function BeforeAfter() {
               if (Math.abs(delta) > 50) delta < 0 ? next() : prev();
             }}
           >
-            <div className="relative flex items-center justify-center gap-4">
+            <div className="relative flex items-center justify-center gap-4" dir="ltr">
               {count > 1 && (
                 <button
                   onClick={prev}
