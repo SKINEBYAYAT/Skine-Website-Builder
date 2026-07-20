@@ -74,7 +74,7 @@ const translations: Record<string, Record<Language, string>> = {
   'faq.1.q': { ar: 'كيف يتم تقديم الاستشارة؟', en: 'How is the consultation conducted?' },
   'faq.1.a': { ar: 'تتم الاستشارة عبر نموذج الحجز الإلكتروني، ثم نتواصل معك لتحليل بشرتك وتقديم روتين مخصص.', en: 'The consultation is done through our booking form, then we\'ll reach out to analyze your skin and provide a personalized routine.' },
   'faq.2.q': { ar: 'هل الاستشارة مدفوعة؟', en: 'Is the consultation paid?' },
-  'faq.2.a': { ar: 'يرجى التواصل معنا لمعرفة تفاصيل الأسعار المتاحة حالياً.', en: 'Please contact us for current pricing details.' },
+  'faq.2.a': { ar: 'نعم، الاستشارة مدفوعة، لأنها لا تقتصر على التقييم الأولي، بل تشمل تشخيصًا دقيقًا لحالتك ووضع خطة علاجية مخصصة وفقًا لاحتياجاتك، لضمان أفضل النتائج.', en: 'Please contact us for current pricing details.' },
   'faq.3.q': { ar: 'كم يستغرق وقت الاستشارة؟', en: 'How long does a consultation take?' },
   'faq.3.a': { ar: 'تختلف المدة حسب نوع الاستشارة، وسيتم إبلاغك بالوقت المتوقع عند التواصل.', en: 'Duration varies by consultation type — you\'ll be informed of the estimated time when we contact you.' },
   'faq.4.q': { ar: 'هل يمكنني إلغاء موعدي؟', en: 'Can I cancel my appointment?' },
