@@ -2,8 +2,8 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Upload, Trash2, LogOut, Lock, CheckCircle, AlertCircle,
-  ImageIcon, X, GripVertical, Map, Image, ChevronDown, Plus,
-  DollarSign,
+  ImageIcon, X, GripVertical, Map, ChevronDown, Plus,
+  DollarSign, RefreshCw,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -29,6 +29,51 @@ interface PricingPackage {
   services: PricingService[];
 }
 interface PricingData { packages: PricingPackage[]; }
+
+// ─── Confirmation dialog ──────────────────────────────────────────────────────
+function ConfirmDialog({
+  message,
+  onConfirm,
+  onCancel,
+}: {
+  message: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+}) {
+  return (
+    <div className="fixed inset-0 z-[200] flex items-center justify-center px-4">
+      <div
+        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+        onClick={onCancel}
+      />
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        className="relative bg-background rounded-2xl border border-border shadow-2xl p-6 w-full max-w-sm z-10"
+      >
+        <div className="flex items-start gap-3 mb-5">
+          <div className="w-9 h-9 rounded-xl bg-red-100 flex items-center justify-center flex-none">
+            <Trash2 size={16} className="text-red-600" />
+          </div>
+          <p className="text-sm text-foreground leading-relaxed pt-1.5">{message}</p>
+        </div>
+        <div className="flex gap-2 justify-end">
+          <Button variant="outline" size="sm" className="rounded-full" onClick={onCancel}>
+            Cancel
+          </Button>
+          <Button
+            size="sm"
+            className="rounded-full bg-red-500 hover:bg-red-600 text-white border-0"
+            onClick={onConfirm}
+          >
+            Delete
+          </Button>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
 
 // ─── Shared status banner ─────────────────────────────────────────────────────
 function StatusBanner({ status }: { status: Status }) {
@@ -59,11 +104,7 @@ function StatusBanner({ status }: { status: Status }) {
 
 // ─── Accordion section wrapper ────────────────────────────────────────────────
 function Section({
-  icon,
-  title,
-  subtitle,
-  defaultOpen = false,
-  children,
+  icon, title, subtitle, defaultOpen = false, children,
 }: {
   icon: React.ReactNode;
   title: string;
@@ -89,9 +130,7 @@ function Section({
         </div>
         <ChevronDown
           size={18}
-          className={`text-foreground/40 transition-transform duration-200 ${
-            open ? 'rotate-180' : ''
-          }`}
+          className={`text-foreground/40 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
         />
       </button>
       <AnimatePresence initial={false}>
@@ -129,19 +168,19 @@ function useImages(collection: Collection) {
     }
   }, [collection]);
 
-  useEffect(() => {
-    reload();
-  }, [reload]);
+  useEffect(() => { reload(); }, [reload]);
   return { images, setImages, loading, reload };
 }
 
-// ─── Upload zone (multi-image collections) ────────────────────────────────────
+// ─── Upload zone ──────────────────────────────────────────────────────────────
 function UploadZone({
   collection,
   onUploaded,
+  compact = false,
 }: {
   collection: Collection;
   onUploaded: () => void;
+  compact?: boolean;
 }) {
   const { t } = useLanguage();
   const [uploading, setUploading] = useState(false);
@@ -158,12 +197,9 @@ function UploadZone({
       const fd = new FormData();
       fd.append('image', file);
       try {
-        const res = await fetch(`/api/images/${collection}`, {
-          method: 'POST',
-          body: fd,
-        });
+        const res = await fetch(`/api/images/${collection}`, { method: 'POST', body: fd });
         if (res.ok) succeeded++;
-        else throw new Error('Upload failed');
+        else throw new Error();
       } catch {
         setStatus({ type: 'error', message: `Failed: ${file.name}` });
       }
@@ -175,24 +211,41 @@ function UploadZone({
     setUploading(false);
   };
 
+  if (compact) {
+    return (
+      <>
+        <input
+          ref={inputRef}
+          type="file"
+          accept="image/jpeg,image/png,image/webp,image/gif"
+          multiple
+          className="hidden"
+          onChange={(e) => upload(e.target.files)}
+        />
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => inputRef.current?.click()}
+          disabled={uploading}
+          className="rounded-full gap-1.5 w-full"
+        >
+          <Upload size={14} />
+          {uploading ? t('admin.uploading') : 'Upload Images'}
+        </Button>
+        <StatusBanner status={status} />
+      </>
+    );
+  }
+
   return (
     <div className="space-y-3">
       <div
         className={`border-2 border-dashed rounded-2xl p-8 text-center transition-colors duration-200 ${
-          dragOver
-            ? 'border-primary bg-primary/5'
-            : 'border-border hover:border-primary/50'
+          dragOver ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'
         }`}
-        onDragOver={(e) => {
-          e.preventDefault();
-          setDragOver(true);
-        }}
+        onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
         onDragLeave={() => setDragOver(false)}
-        onDrop={(e) => {
-          e.preventDefault();
-          setDragOver(false);
-          upload(e.dataTransfer.files);
-        }}
+        onDrop={(e) => { e.preventDefault(); setDragOver(false); upload(e.dataTransfer.files); }}
       >
         <input
           ref={inputRef}
@@ -204,11 +257,9 @@ function UploadZone({
         />
         <Upload size={28} className="mx-auto mb-3 text-primary/60" />
         <p className="font-semibold text-foreground mb-1 text-sm">
-          {uploading ? t('admin.uploading') : t('admin.upload')}
+          {uploading ? t('admin.uploading') : 'Drop images here or click to upload'}
         </p>
-        <p className="text-foreground/50 text-xs mb-4">
-          JPG, PNG, WebP, GIF · max 25 MB
-        </p>
+        <p className="text-foreground/50 text-xs mb-4">JPG, PNG, WebP, GIF · max 25 MB</p>
         <Button
           variant="outline"
           size="sm"
@@ -224,29 +275,140 @@ function UploadZone({
   );
 }
 
-// ─── Drag-reorderable image grid ──────────────────────────────────────────────
+// ─── Image card (preview + actions) ──────────────────────────────────────────
+function ImageCard({
+  image,
+  index,
+  collection,
+  onDelete,
+  onReplaced,
+  dragHandleProps,
+}: {
+  image: APIImage;
+  index: number;
+  collection: Collection;
+  onDelete: (filename: string) => void;
+  onReplaced: () => void;
+  dragHandleProps: {
+    onDragStart: () => void;
+    onDragOver: (e: React.DragEvent) => void;
+    onDrop: () => void;
+  };
+}) {
+  const { t } = useLanguage();
+  const [confirm, setConfirm] = useState(false);
+  const [replacing, setReplacing] = useState(false);
+  const replaceRef = useRef<HTMLInputElement>(null);
+
+  const handleReplace = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    setReplacing(true);
+    const fd = new FormData();
+    fd.append('image', files[0]);
+    try {
+      // Upload new image first
+      const uploadRes = await fetch(`/api/images/${collection}`, { method: 'POST', body: fd });
+      if (!uploadRes.ok) throw new Error();
+      // Then delete the old one
+      await fetch(`/api/images/${collection}/${encodeURIComponent(image.filename)}`, { method: 'DELETE' });
+      onReplaced();
+    } catch {
+      // still refresh to avoid inconsistent state
+      onReplaced();
+    }
+    setReplacing(false);
+  };
+
+  return (
+    <>
+      {confirm && (
+        <ConfirmDialog
+          message="Are you sure you want to delete this image? This cannot be undone."
+          onConfirm={() => { setConfirm(false); onDelete(image.filename); }}
+          onCancel={() => setConfirm(false)}
+        />
+      )}
+
+      <div
+        draggable
+        onDragStart={dragHandleProps.onDragStart}
+        onDragOver={dragHandleProps.onDragOver}
+        onDrop={dragHandleProps.onDrop}
+        className="group bg-background border border-border rounded-2xl overflow-hidden shadow-sm flex flex-col"
+      >
+        {/* Image preview */}
+        <div className="relative bg-muted/30 aspect-[3/4] overflow-hidden">
+          <img
+            src={image.url}
+            alt={`Image ${index + 1}`}
+            className="w-full h-full object-contain"
+          />
+          {/* Drag handle overlay */}
+          <div className="absolute top-2 left-2 bg-background/80 backdrop-blur-sm rounded-lg p-1.5 opacity-0 group-hover:opacity-100 transition-opacity cursor-grab active:cursor-grabbing shadow-sm">
+            <GripVertical size={14} className="text-foreground/50" />
+          </div>
+          {/* Image number badge */}
+          <div className="absolute top-2 right-2 bg-background/80 backdrop-blur-sm rounded-lg px-2 py-0.5 text-xs font-medium text-foreground/60">
+            #{index + 1}
+          </div>
+        </div>
+
+        {/* Action buttons */}
+        <div className="p-3 flex gap-2">
+          {/* Replace */}
+          <input
+            ref={replaceRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/gif"
+            className="hidden"
+            onChange={(e) => handleReplace(e.target.files)}
+          />
+          <button
+            onClick={() => replaceRef.current?.click()}
+            disabled={replacing}
+            title="Replace image"
+            className="flex-1 flex items-center justify-center gap-1.5 text-xs font-medium text-foreground/60 hover:text-primary border border-border rounded-xl py-2 transition-colors hover:border-primary/40 hover:bg-primary/5 disabled:opacity-50"
+          >
+            <RefreshCw size={13} className={replacing ? 'animate-spin' : ''} />
+            {replacing ? 'Replacing…' : 'Replace'}
+          </button>
+
+          {/* Delete */}
+          <button
+            onClick={() => setConfirm(true)}
+            title="Delete image"
+            className="flex-1 flex items-center justify-center gap-1.5 text-xs font-medium text-red-400 hover:text-red-600 border border-border rounded-xl py-2 transition-colors hover:border-red-200 hover:bg-red-50"
+          >
+            <Trash2 size={13} />
+            Delete
+          </button>
+        </div>
+      </div>
+    </>
+  );
+}
+
+// ─── Drag-reorderable image grid (card-based) ─────────────────────────────────
 function ImageGrid({
   collection,
   images,
   setImages,
   onDelete,
+  onReplaced,
 }: {
   collection: Collection;
   images: APIImage[];
   setImages: React.Dispatch<React.SetStateAction<APIImage[]>>;
   onDelete: (filename: string) => void;
+  onReplaced: () => void;
 }) {
-  const { t } = useLanguage();
   const dragIdx = useRef<number | null>(null);
 
-  const handleDragStart = (i: number) => {
-    dragIdx.current = i;
-  };
-  const handleDrop = async (i: number) => {
-    if (dragIdx.current === null || dragIdx.current === i) return;
+  const handleDrop = async (targetIdx: number) => {
+    if (dragIdx.current === null || dragIdx.current === targetIdx) return;
     const next = [...images];
     const [moved] = next.splice(dragIdx.current, 1);
-    next.splice(i, 0, moved);
+    next.splice(targetIdx, 0, moved);
     dragIdx.current = null;
     setImages(next);
     await fetch(`/api/images/${collection}/reorder`, {
@@ -260,7 +422,7 @@ function ImageGrid({
     return (
       <div className="text-center py-10 text-foreground/30 text-sm">
         <ImageIcon size={32} className="mx-auto mb-2 opacity-30" />
-        No images yet
+        No images yet — upload some above.
       </div>
     );
   }
@@ -268,29 +430,19 @@ function ImageGrid({
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-4">
       {images.map((img, i) => (
-        <div
+        <ImageCard
           key={img.filename}
-          draggable
-          onDragStart={() => handleDragStart(i)}
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={() => handleDrop(i)}
-          className="group relative rounded-2xl overflow-hidden bg-muted/40 border border-border shadow-sm cursor-grab active:cursor-grabbing"
-        >
-          <img
-            src={img.url}
-            alt={`Image ${i + 1}`}
-            className="w-full aspect-[3/4] object-contain bg-[#f9f4ef]"
-          />
-          <div className="absolute top-2 left-2 bg-background/70 backdrop-blur-sm rounded-lg p-1 opacity-0 group-hover:opacity-100 transition-opacity">
-            <GripVertical size={14} className="text-foreground/50" />
-          </div>
-          <button
-            onClick={() => onDelete(img.filename)}
-            className="absolute bottom-0 inset-x-0 py-2.5 bg-red-500/90 text-white text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1.5 hover:bg-red-600"
-          >
-            <Trash2 size={13} /> {t('admin.delete')}
-          </button>
-        </div>
+          image={img}
+          index={i}
+          collection={collection}
+          onDelete={onDelete}
+          onReplaced={onReplaced}
+          dragHandleProps={{
+            onDragStart: () => { dragIdx.current = i; },
+            onDragOver: (e) => e.preventDefault(),
+            onDrop: () => handleDrop(i),
+          }}
+        />
       ))}
     </div>
   );
@@ -299,10 +451,8 @@ function ImageGrid({
 // ─── Collection panel (reviews / before-after) ────────────────────────────────
 function CollectionPanel({
   collection,
-  label,
 }: {
   collection: Collection;
-  label: string;
 }) {
   const { images, setImages, loading, reload } = useImages(collection);
   const [status, setStatus] = useState<Status>(null);
@@ -313,11 +463,11 @@ function CollectionPanel({
         `/api/images/${collection}/${encodeURIComponent(filename)}`,
         { method: 'DELETE' },
       );
-      if (!res.ok) throw new Error('Delete failed');
-      setStatus({ type: 'success', message: 'Deleted' });
+      if (!res.ok) throw new Error();
+      setStatus({ type: 'success', message: 'Image deleted.' });
       reload();
     } catch {
-      setStatus({ type: 'error', message: 'Delete failed' });
+      setStatus({ type: 'error', message: 'Delete failed — please try again.' });
     }
   };
 
@@ -326,174 +476,21 @@ function CollectionPanel({
       <UploadZone collection={collection} onUploaded={reload} />
       <StatusBanner status={status} />
       {loading ? (
-        <div className="text-center py-8 text-foreground/30 text-sm">
-          Loading…
-        </div>
+        <div className="text-center py-8 text-foreground/30 text-sm">Loading…</div>
       ) : (
         <ImageGrid
           collection={collection}
           images={images}
           setImages={setImages}
           onDelete={handleDelete}
+          onReplaced={reload}
         />
       )}
-    </div>
-  );
-}
-
-// ─── Site image panel (hero / about) ─────────────────────────────────────────
-type SiteKey = 'hero' | 'about';
-
-function SiteImagePanel({
-  siteKey,
-  label,
-}: {
-  siteKey: SiteKey;
-  label: string;
-}) {
-  const { t } = useLanguage();
-  const [currentUrl, setCurrentUrl] = useState<string | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
-  const [uploading, setUploading] = useState(false);
-  const [status, setStatus] = useState<Status>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [dragOver, setDragOver] = useState(false);
-
-  const loadCurrent = useCallback(async () => {
-    try {
-      const res = await fetch(`/api/site-images/${siteKey}`);
-      const data = await res.json();
-      setCurrentUrl(data.url ?? null);
-    } catch {}
-  }, [siteKey]);
-
-  useEffect(() => {
-    loadCurrent();
-  }, [loadCurrent]);
-
-  const upload = async (files: FileList | null) => {
-    if (!files || files.length === 0) return;
-    const file = files[0];
-    const reader = new FileReader();
-    reader.onload = (e) => setPreview(e.target?.result as string);
-    reader.readAsDataURL(file);
-
-    setUploading(true);
-    setStatus(null);
-    const fd = new FormData();
-    fd.append('image', file);
-    try {
-      const res = await fetch(`/api/site-images/${siteKey}`, {
-        method: 'POST',
-        body: fd,
-      });
-      if (!res.ok) throw new Error('Upload failed');
-      const data = await res.json();
-      setCurrentUrl(data.url);
-      setPreview(null);
-      setStatus({ type: 'success', message: t('admin.saved') });
-    } catch {
-      setStatus({ type: 'error', message: 'Upload failed' });
-      setPreview(null);
-    }
-    setUploading(false);
-  };
-
-  const revert = async () => {
-    try {
-      await fetch(`/api/site-images/${siteKey}`, { method: 'DELETE' });
-      setCurrentUrl(null);
-      setPreview(null);
-      setStatus({ type: 'success', message: 'Reverted to default' });
-    } catch {
-      setStatus({ type: 'error', message: 'Failed' });
-    }
-  };
-
-  const displayUrl = preview ?? currentUrl;
-
-  return (
-    <div className="space-y-4 pt-4">
-      <p className="text-sm font-medium text-foreground">{label}</p>
-
-      {displayUrl ? (
-        <div className="relative rounded-2xl overflow-hidden border border-border bg-[#f9f4ef] max-h-64">
-          <img
-            src={displayUrl}
-            alt={label}
-            className="w-full h-64 object-contain"
-          />
-          {preview && (
-            <div className="absolute inset-0 bg-background/60 flex items-center justify-center">
-              <span className="text-sm font-medium text-foreground">
-                {t('admin.uploading')}
-              </span>
-            </div>
-          )}
-        </div>
-      ) : (
-        <div className="rounded-2xl border-2 border-dashed border-border bg-muted/20 h-40 flex items-center justify-center">
-          <div className="text-center text-foreground/30">
-            <ImageIcon size={28} className="mx-auto mb-2" />
-            <p className="text-xs">Using default image</p>
-          </div>
-        </div>
-      )}
-
-      <div
-        className={`border-2 border-dashed rounded-2xl p-5 text-center transition-colors duration-200 ${
-          dragOver
-            ? 'border-primary bg-primary/5'
-            : 'border-border hover:border-primary/50'
-        }`}
-        onDragOver={(e) => {
-          e.preventDefault();
-          setDragOver(true);
-        }}
-        onDragLeave={() => setDragOver(false)}
-        onDrop={(e) => {
-          e.preventDefault();
-          setDragOver(false);
-          upload(e.dataTransfer.files);
-        }}
-      >
-        <input
-          ref={inputRef}
-          type="file"
-          accept="image/jpeg,image/png,image/webp,image/gif"
-          className="hidden"
-          onChange={(e) => upload(e.target.files)}
-        />
-        <div className="flex items-center justify-center gap-3">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => inputRef.current?.click()}
-            disabled={uploading}
-            className="rounded-full gap-1.5"
-          >
-            <Upload size={14} />
-            {uploading ? t('admin.uploading') : t('admin.replace')}
-          </Button>
-          {currentUrl && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={revert}
-              disabled={uploading}
-              className="rounded-full gap-1.5 text-red-500 hover:text-red-600 hover:bg-red-50"
-            >
-              <Trash2 size={14} />
-              {t('admin.revert')}
-            </Button>
-          )}
-        </div>
-        <p className="text-foreground/40 text-xs mt-2">
-          JPG, PNG, WebP, GIF · max 25 MB
+      {images.length > 0 && (
+        <p className="text-center text-xs text-foreground/30 pt-1">
+          Drag cards to reorder · {images.length} image{images.length !== 1 ? 's' : ''}
         </p>
-      </div>
-
-      <StatusBanner status={status} />
+      )}
     </div>
   );
 }
@@ -508,9 +505,7 @@ function MapsPanel() {
   useEffect(() => {
     fetch('/api/settings')
       .then((r) => r.json())
-      .then((data: Record<string, string>) => {
-        setValue(data['maps_url'] ?? '');
-      })
+      .then((data: Record<string, string>) => { setValue(data['maps_url'] ?? ''); })
       .catch(() => {});
   }, []);
 
@@ -526,7 +521,7 @@ function MapsPanel() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ value }),
       });
-      if (!res.ok) throw new Error('Save failed');
+      if (!res.ok) throw new Error();
       setStatus({ type: 'success', message: t('admin.saved') });
     } catch {
       setStatus({ type: 'error', message: 'Save failed' });
@@ -552,9 +547,7 @@ function MapsPanel() {
 
   return (
     <div className="space-y-4 pt-4">
-      <p className="text-xs text-foreground/50 leading-relaxed">
-        {t('admin.maps.hint')}
-      </p>
+      <p className="text-xs text-foreground/50 leading-relaxed">{t('admin.maps.hint')}</p>
 
       <textarea
         value={value}
@@ -565,38 +558,26 @@ function MapsPanel() {
         dir="ltr"
       />
 
-      {/* Conversion feedback */}
       {value.trim() && (
         <div className="text-xs rounded-xl px-4 py-3 border">
           {embedPreview ? (
             <p className="text-green-700 flex items-center gap-1.5">
-              <CheckCircle size={13} />
-              URL converted successfully — map will display on site.
+              <CheckCircle size={13} /> URL converted — map will display on site.
             </p>
           ) : shortLink ? (
             <div className="text-amber-700 space-y-1">
               <p className="font-medium">Short links cannot be auto-converted.</p>
-              <p>
-                In Google Maps, tap <strong>Share → Embed a map → Copy HTML</strong>,
-                then paste the full <code className="bg-amber-50 px-1 rounded">
-                  &lt;iframe …&gt;</code> code or just the <code className="bg-amber-50 px-1 rounded">src="…"</code> URL here.
-              </p>
+              <p>In Google Maps tap <strong>Share → Embed a map → Copy HTML</strong>, then paste the full <code className="bg-amber-50 px-1 rounded">src="…"</code> URL here.</p>
             </div>
           ) : (
             <div className="text-amber-700 space-y-1">
               <p className="font-medium">Could not convert this URL automatically.</p>
-              <p>
-                Open Google Maps → find your location → tap{' '}
-                <strong>Share → Embed a map</strong> → copy the{' '}
-                <code className="bg-amber-50 px-1 rounded">src</code> URL from the
-                iframe code and paste it here.
-              </p>
+              <p>Open Google Maps → find your location → tap <strong>Share → Embed a map</strong> → copy the <code className="bg-amber-50 px-1 rounded">src</code> URL and paste it here.</p>
             </div>
           )}
         </div>
       )}
 
-      {/* Live map preview */}
       {embedPreview && (
         <div className="rounded-2xl overflow-hidden border border-border">
           <iframe
@@ -613,12 +594,7 @@ function MapsPanel() {
       )}
 
       <div className="flex gap-2 flex-wrap items-center">
-        <Button
-          size="sm"
-          onClick={save}
-          disabled={saving}
-          className="rounded-full gap-1.5"
-        >
+        <Button size="sm" onClick={save} disabled={saving} className="rounded-full gap-1.5">
           {saving ? t('admin.saving') : t('admin.maps.save')}
         </Button>
         {value.trim() && (
@@ -629,8 +605,7 @@ function MapsPanel() {
             disabled={saving}
             className="rounded-full gap-1.5 text-red-500 hover:text-red-600 hover:bg-red-50"
           >
-            <X size={14} />
-            {t('admin.maps.clear')}
+            <X size={14} /> {t('admin.maps.clear')}
           </Button>
         )}
         <StatusBanner status={status} />
@@ -708,18 +683,11 @@ function PricingPanel() {
   const addService = (pkgIdx: number) => {
     if (!data) return;
     const pkgs = [...data.packages];
-    pkgs[pkgIdx] = {
-      ...pkgs[pkgIdx],
-      services: [...pkgs[pkgIdx].services, { ar: '', en: '' }],
-    };
+    pkgs[pkgIdx] = { ...pkgs[pkgIdx], services: [...pkgs[pkgIdx].services, { ar: '', en: '' }] };
     setData({ packages: pkgs });
   };
 
-  const updateService = (
-    pkgIdx: number,
-    svcIdx: number,
-    patch: Partial<PricingService>,
-  ) => {
+  const updateService = (pkgIdx: number, svcIdx: number, patch: Partial<PricingService>) => {
     if (!data) return;
     const pkgs = [...data.packages];
     const svcs = [...pkgs[pkgIdx].services];
@@ -731,153 +699,75 @@ function PricingPanel() {
   const removeService = (pkgIdx: number, svcIdx: number) => {
     if (!data) return;
     const pkgs = [...data.packages];
-    pkgs[pkgIdx] = {
-      ...pkgs[pkgIdx],
-      services: pkgs[pkgIdx].services.filter((_, i) => i !== svcIdx),
-    };
+    pkgs[pkgIdx] = { ...pkgs[pkgIdx], services: pkgs[pkgIdx].services.filter((_, i) => i !== svcIdx) };
     setData({ packages: pkgs });
   };
 
   if (!data) {
-    return (
-      <div className="text-center py-8 text-foreground/30 text-sm pt-4">
-        Loading…
-      </div>
-    );
+    return <div className="text-center py-8 text-foreground/30 text-sm pt-4">Loading…</div>;
   }
 
   return (
     <div className="space-y-5 pt-4">
       {data.packages.map((pkg, pkgIdx) => (
-        <div
-          key={pkg.id}
-          className="border border-border rounded-2xl overflow-hidden"
-        >
-          {/* Package header */}
+        <div key={pkg.id} className="border border-border rounded-2xl overflow-hidden">
           <div className="bg-muted/30 px-4 py-4 flex items-start gap-3">
-            {/* Reorder arrows */}
             <div className="flex flex-col gap-0.5 pt-1 flex-none">
-              <button
-                onClick={() => movePkg(pkgIdx, -1)}
-                disabled={pkgIdx === 0}
-                className="text-foreground/40 hover:text-foreground disabled:opacity-20 transition leading-none text-xs px-1"
-                title="Move up"
-              >
-                ▲
-              </button>
-              <button
-                onClick={() => movePkg(pkgIdx, 1)}
-                disabled={pkgIdx === data.packages.length - 1}
-                className="text-foreground/40 hover:text-foreground disabled:opacity-20 transition leading-none text-xs px-1"
-                title="Move down"
-              >
-                ▼
-              </button>
+              <button onClick={() => movePkg(pkgIdx, -1)} disabled={pkgIdx === 0}
+                className="text-foreground/40 hover:text-foreground disabled:opacity-20 transition leading-none text-xs px-1" title="Move up">▲</button>
+              <button onClick={() => movePkg(pkgIdx, 1)} disabled={pkgIdx === data.packages.length - 1}
+                className="text-foreground/40 hover:text-foreground disabled:opacity-20 transition leading-none text-xs px-1" title="Move down">▼</button>
             </div>
-
-            {/* Fields */}
             <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-2">
-              <input
-                value={pkg.nameEn}
-                onChange={(e) => updatePkg(pkgIdx, { nameEn: e.target.value })}
+              <input value={pkg.nameEn} onChange={(e) => updatePkg(pkgIdx, { nameEn: e.target.value })}
                 placeholder="Package name (EN)"
-                className="rounded-xl border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
-                dir="ltr"
-              />
-              <input
-                value={pkg.nameAr}
-                onChange={(e) => updatePkg(pkgIdx, { nameAr: e.target.value })}
+                className="rounded-xl border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" dir="ltr" />
+              <input value={pkg.nameAr} onChange={(e) => updatePkg(pkgIdx, { nameAr: e.target.value })}
                 placeholder="اسم الباقة (AR)"
-                className="rounded-xl border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
-                dir="rtl"
-              />
-              <input
-                value={pkg.price}
-                onChange={(e) => updatePkg(pkgIdx, { price: e.target.value })}
+                className="rounded-xl border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" dir="rtl" />
+              <input value={pkg.price} onChange={(e) => updatePkg(pkgIdx, { price: e.target.value })}
                 placeholder="$40"
-                className="rounded-xl border border-border bg-background px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/30"
-                dir="ltr"
-              />
+                className="rounded-xl border border-border bg-background px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/30" dir="ltr" />
             </div>
-
-            {/* Featured toggle + delete */}
             <div className="flex items-center gap-3 flex-none">
               <label className="flex items-center gap-1.5 text-xs text-foreground/50 cursor-pointer select-none">
-                <input
-                  type="checkbox"
-                  checked={!!pkg.featured}
-                  onChange={(e) =>
-                    updatePkg(pkgIdx, { featured: e.target.checked })
-                  }
-                  className="rounded accent-primary"
-                />
+                <input type="checkbox" checked={!!pkg.featured}
+                  onChange={(e) => updatePkg(pkgIdx, { featured: e.target.checked })}
+                  className="rounded accent-primary" />
                 {t('admin.featured')}
               </label>
-              <button
-                onClick={() => removePkg(pkgIdx)}
-                className="text-red-400 hover:text-red-600 transition"
-                title="Remove package"
-              >
+              <button onClick={() => removePkg(pkgIdx)} className="text-red-400 hover:text-red-600 transition" title="Remove package">
                 <Trash2 size={16} />
               </button>
             </div>
           </div>
-
-          {/* Services list */}
           <div className="p-4 space-y-2">
             {pkg.services.map((svc, svcIdx) => (
               <div key={svcIdx} className="flex items-center gap-2">
-                <input
-                  value={svc.en}
-                  onChange={(e) =>
-                    updateService(pkgIdx, svcIdx, { en: e.target.value })
-                  }
+                <input value={svc.en} onChange={(e) => updateService(pkgIdx, svcIdx, { en: e.target.value })}
                   placeholder="Service (EN)"
-                  className="flex-1 rounded-xl border border-border bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
-                  dir="ltr"
-                />
-                <input
-                  value={svc.ar}
-                  onChange={(e) =>
-                    updateService(pkgIdx, svcIdx, { ar: e.target.value })
-                  }
+                  className="flex-1 rounded-xl border border-border bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" dir="ltr" />
+                <input value={svc.ar} onChange={(e) => updateService(pkgIdx, svcIdx, { ar: e.target.value })}
                   placeholder="الخدمة (AR)"
-                  className="flex-1 rounded-xl border border-border bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
-                  dir="rtl"
-                />
-                <button
-                  onClick={() => removeService(pkgIdx, svcIdx)}
-                  className="text-red-400 hover:text-red-600 transition flex-none"
-                >
-                  <X size={15} />
-                </button>
+                  className="flex-1 rounded-xl border border-border bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" dir="rtl" />
+                <button onClick={() => removeService(pkgIdx, svcIdx)} className="text-red-400 hover:text-red-600 transition flex-none"><X size={15} /></button>
               </div>
             ))}
-            <button
-              onClick={() => addService(pkgIdx)}
-              className="flex items-center gap-1.5 text-sm text-primary hover:text-primary/80 transition mt-1"
-            >
+            <button onClick={() => addService(pkgIdx)}
+              className="flex items-center gap-1.5 text-sm text-primary hover:text-primary/80 transition mt-1">
               <Plus size={14} /> {t('admin.add.service')}
             </button>
           </div>
         </div>
       ))}
 
-      {/* Add package */}
-      <button
-        onClick={addPkg}
-        className="flex items-center gap-2 text-sm text-primary border border-primary/30 hover:border-primary rounded-xl px-4 py-3 transition w-full justify-center"
-      >
+      <button onClick={addPkg}
+        className="flex items-center gap-2 text-sm text-primary border border-primary/30 hover:border-primary rounded-xl px-4 py-3 transition w-full justify-center">
         <Plus size={15} /> {t('admin.add.package')}
       </button>
 
-      {/* Save */}
       <div className="flex items-center gap-3 flex-wrap">
-        <Button
-          onClick={() => data && save(data)}
-          disabled={saving}
-          className="rounded-full gap-1.5"
-        >
+        <Button onClick={() => data && save(data)} disabled={saving} className="rounded-full gap-1.5">
           {saving ? t('admin.saving') : t('admin.save.all')}
         </Button>
         <StatusBanner status={status} />
@@ -911,19 +801,11 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
           <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
             <Lock size={24} className="text-primary" />
           </div>
-          <h1 className="text-xl font-bold text-foreground">
-            {t('admin.title')}
-          </h1>
+          <h1 className="text-xl font-bold text-foreground">{t('admin.title')}</h1>
           <p className="text-muted-foreground text-sm mt-1">Skiné by Ayat</p>
         </div>
 
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            attempt();
-          }}
-          className="space-y-4"
-        >
+        <form onSubmit={(e) => { e.preventDefault(); attempt(); }} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-foreground mb-1.5">
               {t('admin.password.label')}
@@ -941,9 +823,7 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
               <AlertCircle size={13} /> {error}
             </p>
           )}
-          <Button type="submit" className="w-full rounded-full">
-            {t('admin.login')}
-          </Button>
+          <Button type="submit" className="w-full rounded-full">{t('admin.login')}</Button>
         </form>
       </motion.div>
     </div>
@@ -957,14 +837,8 @@ export function Admin() {
     () => sessionStorage.getItem('skine-admin-auth') === '1',
   );
 
-  const login = () => {
-    sessionStorage.setItem('skine-admin-auth', '1');
-    setAuthed(true);
-  };
-  const logout = () => {
-    sessionStorage.removeItem('skine-admin-auth');
-    setAuthed(false);
-  };
+  const login = () => { sessionStorage.setItem('skine-admin-auth', '1'); setAuthed(true); };
+  const logout = () => { sessionStorage.removeItem('skine-admin-auth'); setAuthed(false); };
 
   if (!authed) return <LoginScreen onLogin={login} />;
 
@@ -977,87 +851,43 @@ export function Admin() {
             <Lock size={15} className="text-primary" />
           </div>
           <div>
-            <h1 className="font-bold text-foreground leading-none">
-              {t('admin.title')}
-            </h1>
+            <h1 className="font-bold text-foreground leading-none">{t('admin.title')}</h1>
             <p className="text-foreground/50 text-xs mt-0.5">Skiné by Ayat</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <a
-            href="/"
-            className="text-sm text-foreground/60 hover:text-foreground transition flex items-center gap-1.5"
-          >
-            <X size={14} />
-            {t('nav.home')}
+          <a href="/" className="text-sm text-foreground/60 hover:text-foreground transition flex items-center gap-1.5">
+            <X size={14} /> {t('nav.home')}
           </a>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={logout}
-            className="gap-1.5 rounded-full"
-          >
-            <LogOut size={14} />
-            {t('admin.logout')}
+          <Button variant="outline" size="sm" onClick={logout} className="gap-1.5 rounded-full">
+            <LogOut size={14} /> {t('admin.logout')}
           </Button>
         </div>
       </header>
 
       {/* Sections */}
       <main className="max-w-3xl mx-auto px-4 md:px-8 py-10">
-        {/* 1 — Website Images */}
-        <Section
-          icon={<Image size={17} />}
-          title={t('admin.site.images')}
-          subtitle="Hero image & About photo"
-          defaultOpen
-        >
-          <div className="space-y-6 divide-y divide-border">
-            <SiteImagePanel siteKey="hero" label={t('admin.hero.image')} />
-            <div className="pt-4">
-              <SiteImagePanel siteKey="about" label={t('admin.about.image')} />
-            </div>
-          </div>
-        </Section>
 
-        {/* 2 — Pricing */}
-        <Section
-          icon={<DollarSign size={17} />}
-          title={t('admin.pricing')}
-          subtitle="Edit prices, services & packages"
-        >
+        {/* 1 — Pricing */}
+        <Section icon={<DollarSign size={17} />} title={t('admin.pricing')} subtitle="Edit prices, services & packages">
           <PricingPanel />
         </Section>
 
-        {/* 3 — Client Reviews */}
-        <Section
-          icon={<ImageIcon size={17} />}
-          title={t('admin.reviews')}
-          subtitle="Upload, reorder & delete review screenshots"
-        >
-          <CollectionPanel collection="reviews" label={t('admin.reviews')} />
+        {/* 2 — Client Reviews */}
+        <Section icon={<ImageIcon size={17} />} title={t('admin.reviews')} subtitle="Upload, replace, reorder & delete review screenshots" defaultOpen>
+          <CollectionPanel collection="reviews" />
         </Section>
 
-        {/* 4 — Before & After */}
-        <Section
-          icon={<ImageIcon size={17} />}
-          title={t('admin.beforeafter')}
-          subtitle="Upload, reorder & delete result photos"
-        >
-          <CollectionPanel
-            collection="before-after"
-            label={t('admin.beforeafter')}
-          />
+        {/* 3 — Before & After */}
+        <Section icon={<ImageIcon size={17} />} title={t('admin.beforeafter')} subtitle="Upload, replace, reorder & delete result photos">
+          <CollectionPanel collection="before-after" />
         </Section>
 
-        {/* 5 — Google Maps */}
-        <Section
-          icon={<Map size={17} />}
-          title={t('admin.maps')}
-          subtitle="Paste a Google Maps link to show your location"
-        >
+        {/* 4 — Google Maps */}
+        <Section icon={<Map size={17} />} title={t('admin.maps')} subtitle="Paste a Google Maps link to show your location">
           <MapsPanel />
         </Section>
+
       </main>
     </div>
   );

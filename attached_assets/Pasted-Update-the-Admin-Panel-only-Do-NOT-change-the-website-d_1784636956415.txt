@@ -1,0 +1,75 @@
+Update the Admin Panel only. Do NOT change the website design or frontend.
+
+--------------------------------------------------
+1. Remove "Website Images"
+--------------------------------------------------
+
+Remove the entire "Website Images" section from the Admin Panel.
+
+I no longer need it.
+
+Also remove:
+- Hero/Main Woman Image upload
+- Product Image upload
+
+Do not leave empty space after removing this section.
+
+--------------------------------------------------
+2. Add Delete Function to Client Reviews
+--------------------------------------------------
+
+Currently I can upload review images, but I cannot delete them.
+
+For every uploaded Client Review image, add:
+
+- Delete button (trash icon)
+- Edit/Replace button
+- Drag & Drop reorder
+- Image preview
+
+When I click Delete:
+- Ask for confirmation:
+  "Are you sure you want to delete this review?"
+- If confirmed, permanently remove the image.
+- Update the review carousel immediately.
+
+--------------------------------------------------
+3. Add Delete Function to Before & After
+--------------------------------------------------
+
+Currently I can upload Before & After images, but I cannot delete them.
+
+For every uploaded image, add:
+
+- Delete button (trash icon)
+- Replace button
+- Drag & Drop reorder
+- Image preview
+
+When I click Delete:
+- Ask for confirmation.
+- Remove the image immediately.
+- Update the gallery automatically.
+
+--------------------------------------------------
+4. Admin Experience
+
+The Admin Panel should be easy to use.
+
+For every uploaded image (Client Reviews and Before & After), display it inside its own card with action buttons.
+
+Each card should contain:
+- Image preview
+- Replace
+- Delete
+- Drag handle for sorting
+
+--------------------------------------------------
+5. Final Requirements
+
+- Remove the Website Images section completely.
+- Add fully working Delete functionality to Client Reviews.
+- Add fully working Delete functionality to Before & After.
+- Ensure deleted images are removed from both the Admin Panel and the public website.
+- No coding should be required to manage images.
+- Keep the Admin Panel responsive and modern.
