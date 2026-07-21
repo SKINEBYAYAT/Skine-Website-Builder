@@ -2,26 +2,23 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { MessageSquare, Instagram, MapPin } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { convertToEmbedUrl } from '@/lib/mapsUtils';
 
 const WHATSAPP_URL = 'https://wa.me/96171538316';
 const INSTAGRAM_URL = 'https://instagram.com/skinebyayat';
 
-/** Extract the iframe src if the user pasted full iframe HTML, otherwise use as-is */
-function normaliseMapUrl(raw: string): string {
-  const match = raw.match(/src=["']([^"']+)["']/);
-  return match ? match[1] : raw;
-}
-
 export function Contact() {
   const { t } = useLanguage();
-  const [mapsUrl, setMapsUrl] = useState<string | null>(null);
+  const [embedUrl, setEmbedUrl] = useState<string | null>(null);
 
   useEffect(() => {
     fetch('/api/settings')
       .then((r) => r.json())
       .then((data: Record<string, string>) => {
         const raw = data['maps_url'];
-        if (raw && raw.trim()) setMapsUrl(normaliseMapUrl(raw.trim()));
+        if (raw && raw.trim()) {
+          setEmbedUrl(convertToEmbedUrl(raw.trim()));
+        }
       })
       .catch(() => {});
   }, []);
@@ -99,8 +96,8 @@ export function Contact() {
           </motion.a>
         </div>
 
-        {/* Google Maps embed — shown only when a URL has been saved in Admin */}
-        {mapsUrl && (
+        {/* Google Maps embed — only shown when a convertible URL is saved */}
+        {embedUrl && (
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -110,14 +107,16 @@ export function Contact() {
           >
             <div className="flex items-center gap-2 mb-4 justify-center">
               <MapPin size={18} className="text-primary" />
-              <h3 className="font-semibold text-foreground text-lg">{t('contact.location')}</h3>
+              <h3 className="font-semibold text-foreground text-lg">
+                {t('contact.location')}
+              </h3>
             </div>
             <div className="rounded-3xl overflow-hidden shadow-lg border border-border">
               <iframe
-                src={mapsUrl}
+                src={embedUrl}
                 width="100%"
-                height="360"
-                style={{ border: 0 }}
+                height="380"
+                style={{ border: 0, display: 'block' }}
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"

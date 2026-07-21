@@ -115,6 +115,18 @@ const translations: Record<string, Record<Language, string>> = {
   'admin.current': { ar: 'الصورة الحالية', en: 'Current Image' },
   'admin.revert': { ar: 'إعادة الصورة الافتراضية', en: 'Revert to Default' },
   'admin.saving': { ar: 'جارٍ الحفظ...', en: 'Saving...' },
+  'admin.pricing': { ar: 'الأسعار', en: 'Pricing' },
+  'admin.add.package': { ar: 'إضافة باقة', en: 'Add Package' },
+  'admin.add.service': { ar: 'إضافة خدمة', en: 'Add Service' },
+  'admin.save.all': { ar: 'حفظ التغييرات', en: 'Save Changes' },
+  'admin.featured': { ar: 'مميز', en: 'Featured' },
+
+  // Pricing section
+  'pricing.title': { ar: 'الأسعار', en: 'Pricing' },
+  'pricing.subtitle': { ar: 'اختاري الباقة المناسبة لبشرتك', en: 'Choose the package that suits your skin' },
+  'pricing.popular': { ar: 'الأكثر طلبًا', en: 'Most Popular' },
+  'pricing.session': { ar: 'جلسة', en: 'session' },
+  'pricing.cta': { ar: 'احجزي استشارتك', en: 'Book Consultation' },
 };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);

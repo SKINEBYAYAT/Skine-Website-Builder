@@ -1,0 +1,136 @@
+Update the existing website. Do NOT rebuild it. Keep the current branding, colors, and layout. Make the following changes only.
+
+--------------------------------------------------
+1. Remove the First Two Images
+--------------------------------------------------
+
+Remove the first two images currently displayed on the homepage (the woman image and the product image).
+
+Do not leave an empty space after removing them.
+Reorganize the layout so the next section moves up naturally.
+Keep the design clean and balanced.
+
+--------------------------------------------------
+2. Fix Google Maps
+--------------------------------------------------
+
+The current Google Maps implementation does not work.
+
+When I paste a normal Google Maps link, the website displays:
+"www.google.com refused to connect."
+
+Fix this by using a proper Google Maps Embed.
+
+Requirements:
+
+- In the Admin Panel, keep only one field called:
+  "Google Maps Link"
+
+- The website should automatically convert or use the correct Google Maps Embed URL.
+
+- If I paste a normal Google Maps Share link, the website should extract the location and display it correctly.
+
+- If conversion is not possible, automatically prompt me to paste the Google Maps Embed link instead.
+
+- Never display "Google refused to connect."
+
+- Show the embedded interactive map directly on the Contact section.
+
+- Make the map responsive on desktop and mobile.
+
+--------------------------------------------------
+3. Add a Pricing Section
+--------------------------------------------------
+
+Create a new section titled:
+
+الأسعار
+
+(English: Pricing)
+
+Use premium pricing cards that match the website design.
+
+--------------------------------------------------
+Card 1
+
+Basic Facial
+
+Price:
+$40
+
+Include:
+
+• Deep Cleansing
+• Gentle Exfoliation
+• Enzyme Therapy
+• Deep Extraction
+• Lymphatic Massage
+• Customized Mask
+• Finishing Care
+
+Add a "Book Consultation" button that opens the existing Jotform in a new tab.
+
+--------------------------------------------------
+Card 2
+
+Hydrafacial
+
+Price:
+$45
+
+Include:
+
+• Deep Cleansing
+• Gentle Exfoliation
+• Enzyme Therapy
+• Deep Extraction
+• Hydra Dermabrasion
+• Oxygen Infusion
+• Lymphatic Massage
+• Customized Mask
+• Finishing Care
+
+Add a "Book Consultation" button that opens the existing Jotform in a new tab.
+
+--------------------------------------------------
+4. Pricing Design
+
+Requirements:
+
+- Premium luxury card design.
+- Rounded corners.
+- Soft shadows.
+- Brand colors.
+- Mobile responsive.
+- Equal card heights.
+- Smooth hover animation.
+- Checkmark icon beside every included service.
+- Display prices prominently.
+- Support Arabic and English translations.
+
+--------------------------------------------------
+5. Admin Panel
+
+Create a new Admin section called:
+
+Pricing
+
+Allow me to:
+
+- Edit prices.
+- Edit service names.
+- Add new services inside each package.
+- Remove services.
+- Create additional pricing packages in the future.
+- Reorder pricing cards.
+
+No coding should be required.
+
+--------------------------------------------------
+6. Final Check
+
+- Remove the first two homepage images completely.
+- Fix the Google Maps embedding issue.
+- Add the new Pricing section in both Arabic and English.
+- Keep the existing premium design.
+- Keep all animations and responsiveness.
