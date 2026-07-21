@@ -7,6 +7,16 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const SETTINGS_FILE = path.resolve(__dirname, '../../data/settings.json');
 
+function getSingleParam(value: string | string[] | undefined): string | null {
+  if (typeof value === 'string') {
+    return value;
+  }
+  if (Array.isArray(value) && value.length > 0) {
+    return value[0];
+  }
+  return null;
+}
+
 function readSettings(): Record<string, string> {
   try {
     if (fs.existsSync(SETTINGS_FILE)) {
@@ -24,17 +34,25 @@ function writeSettings(data: Record<string, string>): void {
 const router = Router();
 
 // GET all settings
-router.get('/settings', (_req, res) => {
+router.get('/settings', (_req, res): void => {
   res.json(readSettings());
 });
 
 // PUT /settings/:key  — body: { value: string }
-router.put('/settings/:key', (req, res) => {
-  const { key } = req.params;
+router.put('/settings/:key', (req, res): void => {
+  const key = getSingleParam(req.params.key);
   const { value } = req.body as { value?: unknown };
-  if (typeof value !== 'string') {
-    return res.status(400).json({ error: 'body must be { value: string }' });
+
+  if (!key) {
+    res.status(400).json({ error: 'Key is required' });
+    return;
   }
+
+  if (typeof value !== 'string') {
+    res.status(400).json({ error: 'body must be { value: string }' });
+    return;
+  }
+
   const settings = readSettings();
   settings[key] = value;
   writeSettings(settings);
@@ -42,8 +60,14 @@ router.put('/settings/:key', (req, res) => {
 });
 
 // DELETE /settings/:key
-router.delete('/settings/:key', (req, res) => {
-  const { key } = req.params;
+router.delete('/settings/:key', (req, res): void => {
+  const key = getSingleParam(req.params.key);
+
+  if (!key) {
+    res.status(400).json({ error: 'Key is required' });
+    return;
+  }
+
   const settings = readSettings();
   delete settings[key];
   writeSettings(settings);
