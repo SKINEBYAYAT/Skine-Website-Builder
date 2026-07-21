@@ -1,0 +1,89 @@
+Update the existing website. Do NOT rebuild it. Keep the current design, branding, and functionality. Make the following changes only.
+
+--------------------------------------------------
+1. Website Credit
+--------------------------------------------------
+
+At the very bottom of the footer, add a small, elegant developer credit.
+
+Text:
+
+Website designed & developed by Marwan Web Development
+
+Make "Marwan Web Development" a clickable link that opens my Instagram profile in a new tab:
+
+https://www.instagram.com/marwan.web.dev?igsh=NHZ1bm1saGpmcjBk&utm_source=qr
+
+Requirements:
+- Keep the text small and professional.
+- Use the website's typography and colors.
+- Add a subtle hover effect.
+- Place it below the copyright.
+
+--------------------------------------------------
+2. Google Maps Location
+--------------------------------------------------
+
+Add a "Location" section to the Contact page.
+
+Requirements:
+- Display an embedded Google Map.
+- The map URL should be editable from the Admin Panel.
+- In the Admin Panel, create a field called:
+  "Google Maps Link"
+- I should only need to paste a Google Maps share/embed link and click Save.
+- The website should automatically update the embedded map.
+- If no link is set, hide the map section or display a simple placeholder.
+
+--------------------------------------------------
+3. Admin Editable Website Images
+--------------------------------------------------
+
+There are currently two static images on the website:
+- The image of the woman.
+- The product image below it.
+
+I want both of these images to be fully editable from the Admin Panel.
+
+Create a new Admin section called:
+
+Website Images
+
+Inside it, add two upload controls:
+
+1. Hero/Main Woman Image
+2. Product Image
+
+Requirements:
+- Upload a new image.
+- Replace the current image.
+- Preview the uploaded image before saving.
+- Save changes without editing any code.
+- Keep the same layout and styling after replacing images.
+- Automatically optimize images for fast loading.
+- Support JPG, PNG, WebP, and GIF formats.
+
+--------------------------------------------------
+4. Admin Panel Improvements
+--------------------------------------------------
+
+Organize the Admin Panel into clear sections:
+
+- Website Images
+- Client Reviews
+- Before & After Gallery
+- Consultation Reviews
+- Google Maps Location
+- Website Settings
+
+The Admin Panel should remain clean, modern, mobile-friendly, and easy to use.
+
+--------------------------------------------------
+5. Final Requirements
+--------------------------------------------------
+
+- Do not change the website's design or layout.
+- Keep all existing animations.
+- Keep the website responsive.
+- Ensure all new admin features work without requiring code changes.
+- All changes should be saved immediately from the Admin Panel.

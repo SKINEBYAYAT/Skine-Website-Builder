@@ -1,12 +1,30 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { MessageSquare, Instagram } from 'lucide-react';
+import { MessageSquare, Instagram, MapPin } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const WHATSAPP_URL = 'https://wa.me/96171538316';
 const INSTAGRAM_URL = 'https://instagram.com/skinebyayat';
 
+/** Extract the iframe src if the user pasted full iframe HTML, otherwise use as-is */
+function normaliseMapUrl(raw: string): string {
+  const match = raw.match(/src=["']([^"']+)["']/);
+  return match ? match[1] : raw;
+}
+
 export function Contact() {
   const { t } = useLanguage();
+  const [mapsUrl, setMapsUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch('/api/settings')
+      .then((r) => r.json())
+      .then((data: Record<string, string>) => {
+        const raw = data['maps_url'];
+        if (raw && raw.trim()) setMapsUrl(normaliseMapUrl(raw.trim()));
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <section id="contact" className="py-24 bg-card/30">
@@ -80,6 +98,34 @@ export function Contact() {
             </div>
           </motion.a>
         </div>
+
+        {/* Google Maps embed — shown only when a URL has been saved in Admin */}
+        {mapsUrl && (
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="mt-10"
+          >
+            <div className="flex items-center gap-2 mb-4 justify-center">
+              <MapPin size={18} className="text-primary" />
+              <h3 className="font-semibold text-foreground text-lg">{t('contact.location')}</h3>
+            </div>
+            <div className="rounded-3xl overflow-hidden shadow-lg border border-border">
+              <iframe
+                src={mapsUrl}
+                width="100%"
+                height="360"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Location"
+              />
+            </div>
+          </motion.div>
+        )}
       </div>
     </section>
   );

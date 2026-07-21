@@ -80,6 +80,7 @@ const translations: Record<string, Record<Language, string>> = {
   'contact.title': { ar: 'تواصل معنا', en: 'Contact Us' },
   'contact.whatsapp.subtitle': { ar: 'راسلينا مباشرة على واتساب', en: 'Message us directly on WhatsApp' },
   'contact.instagram.subtitle': { ar: 'تابعينا على إنستغرام', en: 'Follow us on Instagram' },
+  'contact.location': { ar: 'موقعنا', en: 'Our Location' },
 
   // Footer
   'footer.privacy': { ar: 'سياسة الخصوصية', en: 'Privacy Policy' },
@@ -102,6 +103,18 @@ const translations: Record<string, Record<Language, string>> = {
   'admin.move.down': { ar: 'تحريك لأسفل', en: 'Move Down' },
   'admin.uploading': { ar: 'جارٍ الرفع...', en: 'Uploading...' },
   'admin.saved': { ar: 'تم الحفظ', en: 'Saved' },
+  'admin.site.images': { ar: 'صور الموقع', en: 'Website Images' },
+  'admin.hero.image': { ar: 'الصورة الرئيسية', en: 'Hero / Main Image' },
+  'admin.about.image': { ar: 'صورة التعريف', en: 'About / Profile Image' },
+  'admin.maps': { ar: 'موقع على الخريطة', en: 'Google Maps Location' },
+  'admin.maps.label': { ar: 'رابط Google Maps', en: 'Google Maps Link' },
+  'admin.maps.hint': { ar: 'الصق رابط المشاركة أو رابط التضمين من Google Maps', en: 'Paste the share link or embed URL from Google Maps' },
+  'admin.maps.save': { ar: 'حفظ الرابط', en: 'Save Link' },
+  'admin.maps.clear': { ar: 'حذف الخريطة', en: 'Clear Map' },
+  'admin.replace': { ar: 'استبدال الصورة', en: 'Replace Image' },
+  'admin.current': { ar: 'الصورة الحالية', en: 'Current Image' },
+  'admin.revert': { ar: 'إعادة الصورة الافتراضية', en: 'Revert to Default' },
+  'admin.saving': { ar: 'جارٍ الحفظ...', en: 'Saving...' },
 };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);

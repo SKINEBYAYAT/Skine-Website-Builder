@@ -1,9 +1,20 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
-import aboutImg from '@assets/generated_images/about_skincare.jpg';
+import staticAboutImg from '@assets/generated_images/about_skincare.jpg';
 
 export function About() {
   const { t, dir } = useLanguage();
+  const [aboutImg, setAboutImg] = useState<string>(staticAboutImg);
+
+  useEffect(() => {
+    fetch('/api/site-images/about')
+      .then((r) => r.json())
+      .then((data: { url: string | null }) => {
+        if (data.url) setAboutImg(data.url);
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <section id="about" className="py-24 bg-card/30">

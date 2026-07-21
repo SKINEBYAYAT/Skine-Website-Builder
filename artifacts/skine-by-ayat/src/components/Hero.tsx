@@ -1,14 +1,25 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Instagram } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
-import heroImg from '@assets/generated_images/hero_skincare.jpg';
+import staticHeroImg from '@assets/generated_images/hero_skincare.jpg';
 
 const JOTFORM_URL = 'https://form.jotform.com/261913445488062';
 const INSTAGRAM_URL = 'https://instagram.com/skinebyayat';
 
 export function Hero() {
   const { t, dir } = useLanguage();
+  const [heroImg, setHeroImg] = useState<string>(staticHeroImg);
+
+  useEffect(() => {
+    fetch('/api/site-images/hero')
+      .then((r) => r.json())
+      .then((data: { url: string | null }) => {
+        if (data.url) setHeroImg(data.url);
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <section className="relative min-h-[90vh] flex items-center pt-20 overflow-hidden">
@@ -20,7 +31,7 @@ export function Hero() {
                style={{ right: dir === 'rtl' ? 0 : 'auto', left: dir === 'rtl' ? 'auto' : 0, transform: dir === 'rtl' ? 'rotate(180deg)' : 'none' }} />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent md:hidden block z-10" />
           <img 
-            src={heroImg} 
+            src={heroImg}
             alt="Healthy glowing skin" 
             className="w-full h-full object-cover object-center absolute inset-0"
             loading="lazy"
