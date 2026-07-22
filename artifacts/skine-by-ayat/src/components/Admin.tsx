@@ -18,6 +18,15 @@ type Collection = 'reviews' | 'before-after';
 interface APIImage { filename: string; url: string; }
 type Status = { type: 'success' | 'error'; message: string } | null;
 
+// ─── Before & After types ─────────────────────────────────────────────────────
+interface BAPair {
+  id: string;
+  beforeFilename: string;
+  afterFilename: string;
+  beforeUrl: string;
+  afterUrl: string;
+}
+
 // ─── Pricing types ────────────────────────────────────────────────────────────
 interface PricingService { ar: string; en: string; }
 interface PricingPackage {
@@ -451,6 +460,316 @@ function ImageGrid({
         />
       ))}
     </div>
+  );
+}
+
+// ─── Before & After panel ─────────────────────────────────────────────────────
+function BeforeAfterPanel() {
+  const [pairs, setPairs] = useState<BAPair[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [status, setStatus] = useState<Status>(null);
+
+  // Add-pair form state
+  const [beforeFile, setBeforeFile] = useState<File | null>(null);
+  const [afterFile, setAfterFile] = useState<File | null>(null);
+  const [beforePreview, setBeforePreview] = useState<string | null>(null);
+  const [afterPreview, setAfterPreview] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const beforeInputRef = useRef<HTMLInputElement>(null);
+  const afterInputRef  = useRef<HTMLInputElement>(null);
+  const dragIdx        = useRef<number | null>(null);
+
+  const reload = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/before-after');
+      const d = await res.json();
+      setPairs(d.pairs ?? []);
+    } catch { setPairs([]); }
+    finally { setLoading(false); }
+  }, []);
+
+  useEffect(() => { reload(); }, [reload]);
+
+  // Preview helpers
+  const pickBefore = (files: FileList | null) => {
+    if (!files?.length) return;
+    setBeforeFile(files[0]);
+    setBeforePreview(URL.createObjectURL(files[0]));
+  };
+  const pickAfter = (files: FileList | null) => {
+    if (!files?.length) return;
+    setAfterFile(files[0]);
+    setAfterPreview(URL.createObjectURL(files[0]));
+  };
+
+  // Submit new pair
+  const submitPair = async () => {
+    if (!beforeFile || !afterFile) {
+      setStatus({ type: 'error', message: 'Please select both a Before and an After photo.' });
+      return;
+    }
+    setUploading(true);
+    setStatus(null);
+    const fd = new FormData();
+    fd.append('beforeImage', beforeFile);
+    fd.append('afterImage',  afterFile);
+    try {
+      const res = await fetch('/api/before-after', { method: 'POST', body: fd });
+      if (!res.ok) throw new Error();
+      setBeforeFile(null); setAfterFile(null);
+      setBeforePreview(null); setAfterPreview(null);
+      setStatus({ type: 'success', message: 'Pair added.' });
+      reload();
+    } catch {
+      setStatus({ type: 'error', message: 'Upload failed — try again.' });
+    }
+    setUploading(false);
+  };
+
+  // Replace before or after image of an existing pair
+  const replaceSide = async (pairId: string, side: 'before' | 'after', files: FileList | null) => {
+    if (!files?.length) return;
+    const fd = new FormData();
+    fd.append('image', files[0]);
+    try {
+      const res = await fetch(`/api/before-after/${pairId}/${side}`, { method: 'PUT', body: fd });
+      if (!res.ok) throw new Error();
+      setStatus({ type: 'success', message: `${side === 'before' ? 'Before' : 'After'} photo replaced.` });
+      reload();
+    } catch {
+      setStatus({ type: 'error', message: 'Replace failed — try again.' });
+    }
+  };
+
+  // Delete pair
+  const deletePair = async (pairId: string) => {
+    try {
+      const res = await fetch(`/api/before-after/${pairId}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error();
+      setStatus({ type: 'success', message: 'Pair deleted.' });
+      reload();
+    } catch {
+      setStatus({ type: 'error', message: 'Delete failed — try again.' });
+    }
+  };
+
+  // Reorder pairs via drag
+  const handleDrop = async (targetIdx: number) => {
+    if (dragIdx.current === null || dragIdx.current === targetIdx) return;
+    const next = [...pairs];
+    const [moved] = next.splice(dragIdx.current, 1);
+    next.splice(targetIdx, 0, moved);
+    dragIdx.current = null;
+    setPairs(next);
+    await fetch('/api/before-after/reorder', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ order: next.map((p) => p.id) }),
+    });
+  };
+
+  return (
+    <div className="space-y-5 pt-4">
+
+      {/* ── Add new pair ── */}
+      <div className="border-2 border-dashed border-border rounded-2xl p-5 space-y-4">
+        <p className="text-sm font-semibold text-foreground/80">Add New Before & After Pair</p>
+
+        <div className="grid grid-cols-2 gap-4">
+          {/* Before slot */}
+          <div className="space-y-2">
+            <p className="text-xs font-medium text-foreground/60 uppercase tracking-wide">Before Photo</p>
+            <input ref={beforeInputRef} type="file" accept="image/*" className="hidden" onChange={(e) => pickBefore(e.target.files)} />
+            <button
+              onClick={() => beforeInputRef.current?.click()}
+              className={`w-full rounded-xl border-2 transition-all overflow-hidden ${
+                beforePreview ? 'border-primary/40' : 'border-border hover:border-primary/50 bg-muted/30'
+              }`}
+              style={{ minHeight: 120 }}
+            >
+              {beforePreview ? (
+                <img src={beforePreview} alt="Before preview" className="w-full h-auto object-cover" style={{ maxHeight: 180 }} />
+              ) : (
+                <div className="flex flex-col items-center justify-center py-8 gap-2 text-foreground/30">
+                  <ImageIcon size={24} />
+                  <span className="text-xs">Click to select</span>
+                </div>
+              )}
+            </button>
+            {beforePreview && (
+              <button onClick={() => { setBeforeFile(null); setBeforePreview(null); }}
+                className="text-xs text-red-400 hover:text-red-600 transition w-full text-center">
+                Remove
+              </button>
+            )}
+          </div>
+
+          {/* After slot */}
+          <div className="space-y-2">
+            <p className="text-xs font-medium text-foreground/60 uppercase tracking-wide">After Photo</p>
+            <input ref={afterInputRef} type="file" accept="image/*" className="hidden" onChange={(e) => pickAfter(e.target.files)} />
+            <button
+              onClick={() => afterInputRef.current?.click()}
+              className={`w-full rounded-xl border-2 transition-all overflow-hidden ${
+                afterPreview ? 'border-primary/40' : 'border-border hover:border-primary/50 bg-muted/30'
+              }`}
+              style={{ minHeight: 120 }}
+            >
+              {afterPreview ? (
+                <img src={afterPreview} alt="After preview" className="w-full h-auto object-cover" style={{ maxHeight: 180 }} />
+              ) : (
+                <div className="flex flex-col items-center justify-center py-8 gap-2 text-foreground/30">
+                  <ImageIcon size={24} />
+                  <span className="text-xs">Click to select</span>
+                </div>
+              )}
+            </button>
+            {afterPreview && (
+              <button onClick={() => { setAfterFile(null); setAfterPreview(null); }}
+                className="text-xs text-red-400 hover:text-red-600 transition w-full text-center">
+                Remove
+              </button>
+            )}
+          </div>
+        </div>
+
+        <Button
+          onClick={submitPair}
+          disabled={uploading || !beforeFile || !afterFile}
+          className="rounded-full gap-1.5 w-full"
+        >
+          <Upload size={14} />
+          {uploading ? 'Uploading…' : 'Add Pair'}
+        </Button>
+      </div>
+
+      <StatusBanner status={status} />
+
+      {/* ── Existing pairs ── */}
+      {loading ? (
+        <div className="text-center py-8 text-foreground/30 text-sm">Loading…</div>
+      ) : pairs.length === 0 ? (
+        <div className="text-center py-10 text-foreground/30 text-sm">
+          <ImageIcon size={32} className="mx-auto mb-2 opacity-30" />
+          No pairs yet — add one above.
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {pairs.map((pair, i) => (
+            <BAPairCard
+              key={pair.id}
+              pair={pair}
+              index={i}
+              onDelete={() => deletePair(pair.id)}
+              onReplaceBefore={(files) => replaceSide(pair.id, 'before', files)}
+              onReplaceAfter={(files) => replaceSide(pair.id, 'after', files)}
+              dragHandleProps={{
+                onDragStart: () => { dragIdx.current = i; },
+                onDragOver: (e) => e.preventDefault(),
+                onDrop: () => handleDrop(i),
+              }}
+            />
+          ))}
+          <p className="text-center text-xs text-foreground/30 pt-1">
+            ↕ Drag cards to reorder · {pairs.length} pair{pairs.length !== 1 ? 's' : ''}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Before & After pair card ─────────────────────────────────────────────────
+function BAPairCard({
+  pair,
+  index,
+  onDelete,
+  onReplaceBefore,
+  onReplaceAfter,
+  dragHandleProps,
+}: {
+  pair: BAPair;
+  index: number;
+  onDelete: () => void;
+  onReplaceBefore: (files: FileList | null) => void;
+  onReplaceAfter:  (files: FileList | null) => void;
+  dragHandleProps: {
+    onDragStart: () => void;
+    onDragOver: (e: React.DragEvent) => void;
+    onDrop: () => void;
+  };
+}) {
+  const [confirm, setConfirm] = useState(false);
+  const replaceBeforeRef = useRef<HTMLInputElement>(null);
+  const replaceAfterRef  = useRef<HTMLInputElement>(null);
+
+  return (
+    <>
+      {confirm && (
+        <ConfirmDialog
+          message="Delete this Before & After pair? Both photos will be removed and this cannot be undone."
+          onConfirm={() => { setConfirm(false); onDelete(); }}
+          onCancel={() => setConfirm(false)}
+        />
+      )}
+
+      <div
+        draggable
+        onDragStart={dragHandleProps.onDragStart}
+        onDragOver={dragHandleProps.onDragOver}
+        onDrop={dragHandleProps.onDrop}
+        className="border border-border rounded-2xl overflow-hidden bg-background"
+      >
+        <div className="flex items-center gap-3 px-4 py-3 bg-muted/30 border-b border-border">
+          <div className="cursor-grab active:cursor-grabbing text-foreground/30 hover:text-foreground/60 transition flex-none">
+            <GripVertical size={16} />
+          </div>
+          <span className="text-xs text-foreground/50 flex-1">Pair {index + 1}</span>
+          <button
+            onClick={() => setConfirm(true)}
+            className="text-red-400 hover:text-red-600 transition flex items-center gap-1 text-xs"
+          >
+            <Trash2 size={13} /> Delete pair
+          </button>
+        </div>
+
+        <div className="grid grid-cols-2 gap-0">
+          {/* Before */}
+          <div className="p-3 space-y-2 border-r border-border">
+            <p className="text-xs font-semibold text-foreground/50 uppercase tracking-wide">Before</p>
+            <div className="rounded-xl overflow-hidden bg-muted/20">
+              <img src={pair.beforeUrl} alt="Before" className="w-full h-auto object-cover" style={{ maxHeight: 200 }} />
+            </div>
+            <input ref={replaceBeforeRef} type="file" accept="image/*" className="hidden"
+              onChange={(e) => onReplaceBefore(e.target.files)} />
+            <button
+              onClick={() => replaceBeforeRef.current?.click()}
+              className="flex items-center gap-1 text-xs text-primary hover:text-primary/70 transition"
+            >
+              <RefreshCw size={11} /> Replace Before
+            </button>
+          </div>
+
+          {/* After */}
+          <div className="p-3 space-y-2">
+            <p className="text-xs font-semibold text-foreground/50 uppercase tracking-wide">After</p>
+            <div className="rounded-xl overflow-hidden bg-muted/20">
+              <img src={pair.afterUrl} alt="After" className="w-full h-auto object-cover" style={{ maxHeight: 200 }} />
+            </div>
+            <input ref={replaceAfterRef} type="file" accept="image/*" className="hidden"
+              onChange={(e) => onReplaceAfter(e.target.files)} />
+            <button
+              onClick={() => replaceAfterRef.current?.click()}
+              className="flex items-center gap-1 text-xs text-primary hover:text-primary/70 transition"
+            >
+              <RefreshCw size={11} /> Replace After
+            </button>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
 
@@ -1143,8 +1462,8 @@ export function Admin() {
         </Section>
 
         {/* 3 — Before & After */}
-        <Section icon={<ImageIcon size={17} />} title={t('admin.beforeafter')} subtitle="Upload, replace, reorder & delete result photos">
-          <CollectionPanel collection="before-after" />
+        <Section icon={<ImageIcon size={17} />} title={t('admin.beforeafter')} subtitle="Add, replace, reorder & delete before/after pairs">
+          <BeforeAfterPanel />
         </Section>
 
         {/* 4 — Google Maps */}

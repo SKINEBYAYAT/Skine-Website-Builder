@@ -1,19 +1,153 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Sparkles, X, ZoomIn } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { ImageLightbox } from './ImageLightbox';
 
-interface BAImage {
-  filename: string;
-  url: string;
+interface BAPair {
+  id: string;
+  beforeUrl: string;
+  afterUrl: string;
 }
 
-const AUTOPLAY_INTERVAL = 4500;
+const AUTOPLAY_INTERVAL = 5000;
 
+// ─── Split-view lightbox ───────────────────────────────────────────────────────
+function PairLightbox({
+  pairs,
+  startIndex,
+  onClose,
+}: {
+  pairs: BAPair[];
+  startIndex: number;
+  onClose: () => void;
+}) {
+  const { t } = useLanguage();
+  const [index, setIndex] = useState(startIndex);
+  const touchStartX = useRef(0);
+
+  const prev = useCallback(() => setIndex((i) => (i - 1 + pairs.length) % pairs.length), [pairs.length]);
+  const next = useCallback(() => setIndex((i) => (i + 1) % pairs.length), [pairs.length]);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+      if (e.key === 'ArrowLeft') prev();
+      if (e.key === 'ArrowRight') next();
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [onClose, prev, next]);
+
+  const pair = pairs[index];
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        key="lb-overlay"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-[200] bg-black/95 flex flex-col items-center justify-center"
+        onClick={onClose}
+        onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
+        onTouchEnd={(e) => {
+          const d = e.changedTouches[0].clientX - touchStartX.current;
+          if (Math.abs(d) > 50) d < 0 ? next() : prev();
+        }}
+      >
+        {/* Counter */}
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 text-white/60 text-sm z-10">
+          {index + 1} / {pairs.length}
+        </div>
+
+        {/* Close */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-white/70 hover:text-white z-10 p-2 rounded-full hover:bg-white/10 transition-colors"
+        >
+          <X size={24} />
+        </button>
+
+        {/* Prev */}
+        {pairs.length > 1 && (
+          <button
+            onClick={(e) => { e.stopPropagation(); prev(); }}
+            className="absolute left-3 top-1/2 -translate-y-1/2 z-10 text-white/70 hover:text-white p-3 rounded-full hover:bg-white/10 transition-colors"
+          >
+            <ChevronLeft size={32} />
+          </button>
+        )}
+        {/* Next */}
+        {pairs.length > 1 && (
+          <button
+            onClick={(e) => { e.stopPropagation(); next(); }}
+            className="absolute right-3 top-1/2 -translate-y-1/2 z-10 text-white/70 hover:text-white p-3 rounded-full hover:bg-white/10 transition-colors"
+          >
+            <ChevronRight size={32} />
+          </button>
+        )}
+
+        {/* Side-by-side pair */}
+        <motion.div
+          key={index}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.95 }}
+          transition={{ duration: 0.2 }}
+          className="flex gap-1 max-w-[92vw] max-h-[85vh] items-end"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Before */}
+          <div className="flex flex-col items-center gap-2 flex-1 min-w-0">
+            <span className="text-white/70 text-xs font-semibold uppercase tracking-widest">
+              {t('beforeafter.before')}
+            </span>
+            <img
+              src={pair.beforeUrl}
+              alt="Before"
+              className="max-h-[78vh] max-w-full object-contain rounded-xl shadow-2xl"
+            />
+          </div>
+
+          {/* Divider */}
+          <div className="w-px self-stretch bg-white/20 flex-none mx-1" />
+
+          {/* After */}
+          <div className="flex flex-col items-center gap-2 flex-1 min-w-0">
+            <span className="text-white/70 text-xs font-semibold uppercase tracking-widest">
+              {t('beforeafter.after')}
+            </span>
+            <img
+              src={pair.afterUrl}
+              alt="After"
+              className="max-h-[78vh] max-w-full object-contain rounded-xl shadow-2xl"
+            />
+          </div>
+        </motion.div>
+
+        {/* Dot indicators */}
+        {pairs.length > 1 && pairs.length <= 20 && (
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5">
+            {pairs.map((_, i) => (
+              <button
+                key={i}
+                onClick={(e) => { e.stopPropagation(); setIndex(i); }}
+                className={`h-1.5 rounded-full transition-all ${
+                  i === index ? 'bg-white w-4' : 'bg-white/40 w-1.5'
+                }`}
+              />
+            ))}
+          </div>
+        )}
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
+// ─── Public section ───────────────────────────────────────────────────────────
 export function BeforeAfter() {
   const { t } = useLanguage();
-  const [images, setImages] = useState<BAImage[]>([]);
+  const [pairs, setPairs] = useState<BAPair[]>([]);
   const [loading, setLoading] = useState(true);
   const [current, setCurrent] = useState(0);
   const [direction, setDirection] = useState(0);
@@ -21,23 +155,15 @@ export function BeforeAfter() {
   const [isPaused, setIsPaused] = useState(false);
   const touchStartX = useRef(0);
 
-  const fetchImages = useCallback(async () => {
-    try {
-      const res = await fetch('/api/images/before-after');
-      if (!res.ok) return;
-      const data = await res.json();
-      setImages(data.images ?? []);
-    } catch {
-      // silently fail
-    } finally {
-      setLoading(false);
-    }
+  useEffect(() => {
+    fetch('/api/before-after')
+      .then((r) => r.json())
+      .then((d) => setPairs(d.pairs ?? []))
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, []);
 
-  useEffect(() => { fetchImages(); }, [fetchImages]);
-
-  const count = images.length;
-
+  const count = pairs.length;
   const prev = useCallback(() => { setDirection(-1); setCurrent((i) => (i - 1 + count) % count); }, [count]);
   const next = useCallback(() => { setDirection(1);  setCurrent((i) => (i + 1) % count); }, [count]);
 
@@ -50,21 +176,22 @@ export function BeforeAfter() {
   if (loading) {
     return (
       <section id="before-after" className="py-24 bg-muted/30">
-        <div className="container mx-auto px-4 max-w-5xl">
-          <div className="flex justify-center gap-4">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="w-64 h-96 bg-muted animate-pulse rounded-2xl" />
-            ))}
-          </div>
+        <div className="container mx-auto px-4 max-w-5xl flex justify-center gap-4">
+          {[...Array(2)].map((_, i) => (
+            <div key={i} className="flex gap-2">
+              <div className="w-36 h-64 bg-muted animate-pulse rounded-2xl" />
+              <div className="w-36 h-64 bg-muted animate-pulse rounded-2xl" />
+            </div>
+          ))}
         </div>
       </section>
     );
   }
 
   const slideVariants = {
-    enter: (d: number) => ({ x: d > 0 ? 320 : -320, opacity: 0, scale: 0.88 }),
+    enter: (d: number) => ({ x: d > 0 ? 360 : -360, opacity: 0, scale: 0.9 }),
     center: { x: 0, opacity: 1, scale: 1 },
-    exit:  (d: number) => ({ x: d > 0 ? -320 : 320, opacity: 0, scale: 0.88 }),
+    exit:  (d: number) => ({ x: d > 0 ? -360 : 360, opacity: 0, scale: 0.9 }),
   };
 
   return (
@@ -117,7 +244,7 @@ export function BeforeAfter() {
                 </button>
               )}
 
-              <div className="flex-1 max-w-md mx-auto overflow-hidden">
+              <div className="flex-1 max-w-2xl mx-auto overflow-hidden">
                 <AnimatePresence initial={false} custom={direction} mode="wait">
                   <motion.div
                     key={current}
@@ -126,21 +253,56 @@ export function BeforeAfter() {
                     initial="enter"
                     animate="center"
                     exit="exit"
-                    transition={{ type: 'spring', stiffness: 320, damping: 35 }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 32 }}
                     className="cursor-pointer group"
                     onClick={() => setLightboxIndex(current)}
                   >
-                    <div className="rounded-3xl overflow-hidden shadow-2xl ring-1 ring-border/20 group-hover:ring-primary/40 group-hover:shadow-2xl transition-all duration-300 bg-[#f9f4ef]">
-                      <img
-                        src={images[current].url}
-                        alt={`Result ${current + 1}`}
-                        className="w-full h-auto object-contain transition-transform duration-500 group-hover:scale-[1.02]"
-                        style={{ maxHeight: '72vh' }}
-                        loading="lazy"
-                      />
-                      <div className="px-4 py-3 text-center">
+                    <div className="rounded-3xl overflow-hidden shadow-2xl ring-1 ring-border/20 group-hover:ring-primary/40 transition-all duration-300 bg-[#f9f4ef]">
+                      {/* Split view */}
+                      <div className="flex">
+                        {/* Before half */}
+                        <div className="flex-1 min-w-0 relative">
+                          <img
+                            src={pairs[current].beforeUrl}
+                            alt="Before"
+                            className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                            style={{ maxHeight: '68vh', objectPosition: 'center top' }}
+                            loading="lazy"
+                          />
+                          <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/60 to-transparent py-3 px-3">
+                            <span className="text-white text-xs font-semibold uppercase tracking-widest">
+                              {t('beforeafter.before')}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Divider */}
+                        <div className="w-0.5 bg-white/80 flex-none self-stretch z-10" />
+
+                        {/* After half */}
+                        <div className="flex-1 min-w-0 relative">
+                          <img
+                            src={pairs[current].afterUrl}
+                            alt="After"
+                            className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                            style={{ maxHeight: '68vh', objectPosition: 'center top' }}
+                            loading="lazy"
+                          />
+                          <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/60 to-transparent py-3 px-3 text-right">
+                            <span className="text-white text-xs font-semibold uppercase tracking-widest">
+                              {t('beforeafter.after')}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Footer */}
+                      <div className="px-4 py-3 flex items-center justify-between">
                         <span className="text-foreground/40 text-xs">
-                          {current + 1} / {count} — {t('beforeafter.title')}
+                          {current + 1} / {count}
+                        </span>
+                        <span className="flex items-center gap-1 text-primary/60 text-xs">
+                          <ZoomIn size={12} /> {t('beforeafter.title')}
                         </span>
                       </div>
                     </div>
@@ -159,22 +321,18 @@ export function BeforeAfter() {
               )}
             </div>
 
-            {/* Thumbnail strip */}
+            {/* Dot strip */}
             {count > 1 && (
-              <div className="flex justify-center gap-2 mt-6 flex-wrap">
-                {images.map((img, i) => (
+              <div className="flex justify-center gap-2 mt-6">
+                {pairs.map((_, i) => (
                   <button
-                    key={img.filename}
+                    key={i}
                     onClick={() => { setDirection(i > current ? 1 : -1); setCurrent(i); }}
-                    className={`relative w-12 h-12 rounded-xl overflow-hidden border-2 transition-all duration-200 flex-none ${
-                      i === current
-                        ? 'border-primary shadow-md scale-110'
-                        : 'border-border/40 opacity-60 hover:opacity-100 hover:border-primary/50'
+                    className={`h-1.5 rounded-full transition-all duration-200 ${
+                      i === current ? 'bg-primary w-6' : 'bg-border w-1.5 hover:bg-primary/40'
                     }`}
-                    aria-label={`Go to image ${i + 1}`}
-                  >
-                    <img src={img.url} alt="" className="w-full h-full object-cover" loading="lazy" />
-                  </button>
+                    aria-label={`Go to pair ${i + 1}`}
+                  />
                 ))}
               </div>
             )}
@@ -183,8 +341,8 @@ export function BeforeAfter() {
       </div>
 
       {lightboxIndex !== null && (
-        <ImageLightbox
-          images={images}
+        <PairLightbox
+          pairs={pairs}
           startIndex={lightboxIndex}
           onClose={() => setLightboxIndex(null)}
         />

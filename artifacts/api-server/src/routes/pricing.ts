@@ -70,27 +70,9 @@ const DEFAULT_PRICING: PricingData = {
       ],
     },
     {
-      id: 'glow-skin-treatment',
-      nameAr: 'علاج توهج البشرة',
-      nameEn: 'Glow Skin Treatment',
-      packages: [],
-    },
-    {
-      id: 'microneedling-peels',
-      nameAr: 'الإبر الدقيقة والتقشير',
-      nameEn: 'Microneedling & Peels',
-      packages: [],
-    },
-    {
-      id: 'bundle',
-      nameAr: 'الباقات المجمعة',
-      nameEn: 'Bundle',
-      packages: [],
-    },
-    {
-      id: 'packages',
+      id: 'bundles',
       nameAr: 'الباقات',
-      nameEn: 'Packages',
+      nameEn: 'Bundles',
       packages: [
         {
           id: 'glow-package',

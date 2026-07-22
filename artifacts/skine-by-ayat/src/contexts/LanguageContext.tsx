@@ -72,9 +72,11 @@ const translations: Record<string, Record<Language, string>> = {
   'reviews.empty': { ar: 'لا توجد مراجعات حالياً', en: 'No reviews yet' },
 
   // Before & After
-  'beforeafter.title': { ar: 'قبل وبعد', en: 'Before & After' },
+  'beforeafter.title':  { ar: 'قبل وبعد', en: 'Before & After' },
   'beforeafter.subtitle': { ar: 'نتائج حقيقية لعملاء حقيقيين', en: 'Real results for real clients' },
-  'beforeafter.empty': { ar: 'لا توجد صور حالياً', en: 'No images yet' },
+  'beforeafter.empty':  { ar: 'لا توجد صور حالياً', en: 'No images yet' },
+  'beforeafter.before': { ar: 'قبل', en: 'Before' },
+  'beforeafter.after':  { ar: 'بعد', en: 'After' },
 
   // FAQ
   'faq.title': { ar: 'الأسئلة الشائعة', en: 'Frequently Asked Questions' },
