@@ -256,7 +256,7 @@ export function Pricing() {
 
                         <Button
                           onClick={() => window.open(
-                            `${JOTFORM_URL}?selectedPackage=${encodeURIComponent(pkg.nameEn)}`,
+                            `${JOTFORM_URL}?input26=${encodeURIComponent(pkg.nameEn)}`,
                             '_blank',
                             'noopener,noreferrer'
                           )}
