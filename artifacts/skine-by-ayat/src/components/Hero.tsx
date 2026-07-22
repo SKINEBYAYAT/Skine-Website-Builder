@@ -33,7 +33,7 @@ export function Hero() {
       </motion.div>
 
       {/* ── Text content below the image ── */}
-      <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-4xl py-14">
+      <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-3xl py-14">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -41,19 +41,22 @@ export function Hero() {
           className="text-center"
         >
           {/* Brand label */}
-          <span className="inline-block py-1.5 px-4 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
+          <span className="inline-block py-1.5 px-4 rounded-full bg-primary/10 text-primary text-sm font-medium mb-8">
             Skiné by Ayat
           </span>
 
-          {/* Main heading */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-[1.2] mb-5">
-            {t('hero.title')}
-          </h1>
-
-          {/* Description */}
-          <p className="text-lg md:text-xl text-foreground/70 mb-10 leading-relaxed max-w-2xl mx-auto">
-            {t('hero.subtitle')}
-          </p>
+          {/* About paragraphs */}
+          <div className="space-y-5 mb-10 text-right" dir="rtl">
+            <p className="text-lg md:text-xl text-foreground/80 leading-relaxed">
+              {t('hero.para1')}
+            </p>
+            <p className="text-lg md:text-xl text-foreground/80 leading-relaxed">
+              {t('hero.para2')}
+            </p>
+            <p className="text-base md:text-lg text-primary font-semibold italic">
+              {t('hero.tagline')}
+            </p>
+          </div>
 
           {/* CTA buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

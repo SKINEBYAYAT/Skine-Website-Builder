@@ -20,8 +20,18 @@ const translations: Record<string, Record<Language, string>> = {
   'nav.reviews': { ar: 'آراء العملاء', en: 'Reviews' },
 
   // Hero
-  'hero.title': { ar: 'بشرة صحية تبدأ بالعناية الصحيحة', en: 'Healthy Skin Starts with Proper Care' },
-  'hero.subtitle': { ar: 'استشارات احترافية وروتين مخصص للعناية ببشرتك حسب احتياجاتها.', en: 'Professional consultations and a personalized skincare routine tailored to your skin\'s needs.' },
+  'hero.para1': {
+    ar: 'بخبرة تزيد عن خمس سنوات، وتشرفت بكوني أول وأصغر خبيرة في مجال العناية بالبشرة تتم استضافتها على التلفزيون للحديث عن أسس العناية الصحيحة بالبشرة.',
+    en: 'With over five years of experience, I was honored to be the first and youngest skincare expert to be hosted on television to speak about the fundamentals of proper skincare.',
+  },
+  'hero.para2': {
+    ar: 'أؤمن أن كل بشرة لها احتياجات مختلفة، لذلك لا أعتمد على الحلول العامة، بل أقدم استشارات شخصية وخطط عناية مصممة بما يتناسب مع طبيعة بشرتك ومشكلاتها وأهدافك، لمساعدتك على اتخاذ قرارات صحيحة وبناء روتين فعّال يمنح بشرتك العناية التي تستحقها.',
+    en: 'I believe every skin has different needs, so I don\'t rely on generic solutions. Instead, I offer personalized consultations and tailored skincare plans designed to match your skin\'s nature, concerns, and goals — helping you make the right decisions and build an effective routine that gives your skin the care it deserves.',
+  },
+  'hero.tagline': {
+    ar: 'لأن البشرة الصحية تبدأ بفهمها أولًا.',
+    en: 'Because healthy skin starts with understanding it first.',
+  },
   'hero.cta.primary': { ar: 'احجز استشارة', en: 'Book a Consultation' },
   'hero.cta.secondary': { ar: 'تابعنا على إنستغرام', en: 'Follow us on Instagram' },
 

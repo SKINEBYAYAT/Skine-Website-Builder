@@ -16,7 +16,7 @@ export function Footer() {
           <div className="flex flex-col items-center md:items-start gap-4">
             <img src={logo} alt="Skiné by Ayat" className="h-16 w-auto rounded-lg object-cover" />
             <p className="text-muted-foreground text-center md:text-start max-w-xs mt-2">
-              {t('hero.subtitle')}
+              {t('hero.tagline')}
             </p>
           </div>
 

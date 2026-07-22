@@ -1,0 +1,85 @@
+{
+  "packages": [
+    {
+      "id": "basic-facial",
+      "nameAr": "فيشل أساسي",
+      "nameEn": "Basic Facial",
+      "price": "$40",
+      "services": [
+        {
+          "ar": "تنظيف عميق",
+          "en": "Deep Cleansing"
+        },
+        {
+          "ar": "تقشير لطيف",
+          "en": "Gentle Exfoliation"
+        },
+        {
+          "ar": "علاج الإنزيم",
+          "en": "Enzyme Therapy"
+        },
+        {
+          "ar": "استخراج عميق",
+          "en": "Deep Extraction"
+        },
+        {
+          "ar": "تدليك لمفاوي",
+          "en": "Lymphatic Massage"
+        },
+        {
+          "ar": "قناع مخصص",
+          "en": "Customized Mask"
+        },
+        {
+          "ar": "العناية النهائية",
+          "en": "Finishing Care"
+        }
+      ]
+    },
+    {
+      "id": "hydrafacial",
+      "nameAr": "هيدرافيشل",
+      "nameEn": "Hydrafacial",
+      "price": "$45",
+      "featured": true,
+      "services": [
+        {
+          "ar": "تنظيف عميق",
+          "en": "Deep Cleansing"
+        },
+        {
+          "ar": "تقشير لطيف",
+          "en": "Gentle Exfoliation"
+        },
+        {
+          "ar": "علاج الإنزيم",
+          "en": "Enzyme Therapy"
+        },
+        {
+          "ar": "استخراج عميق",
+          "en": "Deep Extraction"
+        },
+        {
+          "ar": "هيدرا ديرمابريجن",
+          "en": "Hydra Dermabrasion"
+        },
+        {
+          "ar": "حقن الأكسجين",
+          "en": "Oxygen Infusion"
+        },
+        {
+          "ar": "تدليك لمفاوي",
+          "en": "Lymphatic Massage"
+        },
+        {
+          "ar": "قناع مخصص",
+          "en": "Customized Mask"
+        },
+        {
+          "ar": "العناية النهائية",
+          "en": "Finishing Care"
+        }
+      ]
+    }
+  ]
+}
