@@ -13,7 +13,6 @@ const translations: Record<string, Record<Language, string>> = {
   // Nav
   'nav.home': { ar: 'الرئيسية', en: 'Home' },
   'nav.about': { ar: 'من نحن', en: 'About' },
-  'nav.services': { ar: 'الخدمات', en: 'Services' },
   'nav.consultation': { ar: 'الاستشارة', en: 'Consultation' },
   'nav.faq': { ar: 'الأسئلة الشائعة', en: 'FAQ' },
   'nav.contact': { ar: 'تواصل معنا', en: 'Contact' },
