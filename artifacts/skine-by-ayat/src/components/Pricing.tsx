@@ -255,7 +255,11 @@ export function Pricing() {
                         </ul>
 
                         <Button
-                          onClick={() => window.open(JOTFORM_URL, '_blank', 'noopener,noreferrer')}
+                          onClick={() => window.open(
+                            `${JOTFORM_URL}?selectedPackage=${encodeURIComponent(pkg.nameEn)}`,
+                            '_blank',
+                            'noopener,noreferrer'
+                          )}
                           className="w-full mt-8 rounded-full font-semibold text-base"
                           variant="outline"
                           size="lg"
