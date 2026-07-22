@@ -689,13 +689,14 @@ function ServiceRow({
           dir="rtl"
         />
 
-        {/* Delete button */}
+        {/* Delete button — always visible */}
         <button
           onClick={() => setConfirmDelete(true)}
           title="Delete service"
-          className="flex-none p-1 rounded-lg text-foreground/30 hover:text-red-500 hover:bg-red-50 transition-colors opacity-0 group-hover:opacity-100"
+          className="flex-none flex items-center gap-1.5 bg-red-500 hover:bg-red-600 active:bg-red-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg shadow-sm transition-colors"
         >
-          <Trash2 size={14} />
+          <Trash2 size={13} />
+          Delete
         </button>
       </div>
     </>
