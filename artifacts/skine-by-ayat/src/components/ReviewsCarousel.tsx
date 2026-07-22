@@ -12,7 +12,8 @@ interface ReviewImage {
 const AUTOPLAY_INTERVAL = 4000;
 
 export function ReviewsCarousel() {
-  const { t } = useLanguage();
+  const { t, dir } = useLanguage();
+  const isRTL = dir === 'rtl';
   const [images, setImages] = useState<ReviewImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [current, setCurrent] = useState(0);
@@ -39,22 +40,30 @@ export function ReviewsCarousel() {
 
   const count = images.length;
 
+  // In RTL, "prev" (index-1) slides content from left → flip direction sign
   const prev = useCallback(() => {
-    setDirection(-1);
+    setDirection(isRTL ? 1 : -1);
     setCurrent((i) => (i - 1 + count) % count);
-  }, [count]);
+  }, [count, isRTL]);
 
   const next = useCallback(() => {
-    setDirection(1);
+    setDirection(isRTL ? -1 : 1);
     setCurrent((i) => (i + 1) % count);
-  }, [count]);
+  }, [count, isRTL]);
 
-  // Autoplay
+  // RTL-aware arrow handlers: physical left = next in RTL, physical right = prev in RTL
+  const onLeftArrow  = isRTL ? next : prev;
+  const onRightArrow = isRTL ? prev : next;
+
+  // Autoplay always advances index +1; direction sign follows RTL
   useEffect(() => {
     if (count < 2 || isPaused) return;
-    timerRef.current = setTimeout(() => { setDirection(1); setCurrent((i) => (i + 1) % count); }, AUTOPLAY_INTERVAL);
+    timerRef.current = setTimeout(() => {
+      setDirection(isRTL ? -1 : 1);
+      setCurrent((i) => (i + 1) % count);
+    }, AUTOPLAY_INTERVAL);
     return () => { if (timerRef.current) clearTimeout(timerRef.current); };
-  }, [current, count, isPaused]);
+  }, [current, count, isPaused, isRTL]);
 
   if (loading) {
     return (
@@ -126,15 +135,15 @@ export function ReviewsCarousel() {
             onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
             onTouchEnd={(e) => {
               const delta = e.changedTouches[0].clientX - touchStartX.current;
-              if (Math.abs(delta) > 50) delta < 0 ? next() : prev();
+              if (Math.abs(delta) > 50) delta < 0 ? onRightArrow() : onLeftArrow();
             }}
           >
             {/* Single-card display — full image, no cropping */}
             <div className="relative flex items-center justify-center gap-4" dir="ltr">
-              {/* Prev arrow */}
+              {/* Left arrow — prev in LTR, next in RTL */}
               {count > 1 && (
                 <button
-                  onClick={prev}
+                  onClick={onLeftArrow}
                   className="flex-none z-20 bg-background border border-border shadow-md rounded-full p-2.5 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200"
                   aria-label="Previous"
                 >
@@ -176,10 +185,10 @@ export function ReviewsCarousel() {
                 </AnimatePresence>
               </div>
 
-              {/* Next arrow */}
+              {/* Right arrow — next in LTR, prev in RTL */}
               {count > 1 && (
                 <button
-                  onClick={next}
+                  onClick={onRightArrow}
                   className="flex-none z-20 bg-background border border-border shadow-md rounded-full p-2.5 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200"
                   aria-label="Next"
                 >
@@ -194,7 +203,7 @@ export function ReviewsCarousel() {
                 {images.map((img, i) => (
                   <button
                     key={img.filename}
-                    onClick={() => { setDirection(i > current ? 1 : -1); setCurrent(i); }}
+                    onClick={() => { setDirection((i > current ? 1 : -1) * (isRTL ? -1 : 1)); setCurrent(i); }}
                     className={`relative w-12 h-12 rounded-xl overflow-hidden border-2 transition-all duration-200 flex-none ${
                       i === current
                         ? 'border-primary shadow-md scale-110'

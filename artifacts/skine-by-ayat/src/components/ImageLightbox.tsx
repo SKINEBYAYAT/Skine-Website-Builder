@@ -1,6 +1,7 @@
 import { useEffect, useCallback, useState } from 'react';
 import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface LightboxProps {
   images: { url: string; filename?: string }[];
@@ -9,6 +10,8 @@ interface LightboxProps {
 }
 
 export function ImageLightbox({ images, startIndex, onClose }: LightboxProps) {
+  const { dir } = useLanguage();
+  const isRTL = dir === 'rtl';
   const [index, setIndex] = useState(startIndex);
   const [zoomed, setZoomed] = useState(false);
 
@@ -22,15 +25,18 @@ export function ImageLightbox({ images, startIndex, onClose }: LightboxProps) {
     setIndex((i) => (i + 1) % images.length);
   }, [images.length]);
 
+  const onLeftArrow  = isRTL ? next : prev;
+  const onRightArrow = isRTL ? prev : next;
+
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
-      if (e.key === 'ArrowLeft') prev();
-      if (e.key === 'ArrowRight') next();
+      if (e.key === 'ArrowLeft')  isRTL ? next() : prev();
+      if (e.key === 'ArrowRight') isRTL ? prev() : next();
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [onClose, prev, next]);
+  }, [onClose, prev, next, isRTL]);
 
   // Swipe support
   let touchStartX = 0;
@@ -40,7 +46,7 @@ export function ImageLightbox({ images, startIndex, onClose }: LightboxProps) {
   const handleTouchEnd = (e: React.TouchEvent) => {
     const delta = e.changedTouches[0].clientX - touchStartX;
     if (Math.abs(delta) > 50) {
-      delta < 0 ? next() : prev();
+      delta < 0 ? onRightArrow() : onLeftArrow();
     }
   };
 

@@ -21,22 +21,27 @@ function PairLightbox({
   startIndex: number;
   onClose: () => void;
 }) {
-  const { t } = useLanguage();
+  const { t, dir } = useLanguage();
+  const isRTL = dir === 'rtl';
   const [index, setIndex] = useState(startIndex);
   const touchStartX = useRef(0);
 
   const prev = useCallback(() => setIndex((i) => (i - 1 + pairs.length) % pairs.length), [pairs.length]);
   const next = useCallback(() => setIndex((i) => (i + 1) % pairs.length), [pairs.length]);
 
+  // RTL-aware arrow handlers: physical left = next in RTL, physical right = prev in RTL
+  const onLeftArrow  = isRTL ? next : prev;
+  const onRightArrow = isRTL ? prev : next;
+
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
-      if (e.key === 'ArrowLeft') prev();
-      if (e.key === 'ArrowRight') next();
+      if (e.key === 'ArrowLeft')  isRTL ? next() : prev();
+      if (e.key === 'ArrowRight') isRTL ? prev() : next();
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [onClose, prev, next]);
+  }, [onClose, prev, next, isRTL]);
 
   const pair = pairs[index];
 
@@ -52,7 +57,8 @@ function PairLightbox({
         onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
         onTouchEnd={(e) => {
           const d = e.changedTouches[0].clientX - touchStartX.current;
-          if (Math.abs(d) > 50) d < 0 ? next() : prev();
+          // Swipe left (d<0) → advance forward; in RTL forward = prev() since index direction is flipped
+          if (Math.abs(d) > 50) d < 0 ? onRightArrow() : onLeftArrow();
         }}
       >
         {/* Counter */}
@@ -68,19 +74,19 @@ function PairLightbox({
           <X size={24} />
         </button>
 
-        {/* Prev */}
+        {/* Left arrow — prev in LTR, next in RTL */}
         {pairs.length > 1 && (
           <button
-            onClick={(e) => { e.stopPropagation(); prev(); }}
+            onClick={(e) => { e.stopPropagation(); onLeftArrow(); }}
             className="absolute left-3 top-1/2 -translate-y-1/2 z-10 text-white/70 hover:text-white p-3 rounded-full hover:bg-white/10 transition-colors"
           >
             <ChevronLeft size={32} />
           </button>
         )}
-        {/* Next */}
+        {/* Right arrow — next in LTR, prev in RTL */}
         {pairs.length > 1 && (
           <button
-            onClick={(e) => { e.stopPropagation(); next(); }}
+            onClick={(e) => { e.stopPropagation(); onRightArrow(); }}
             className="absolute right-3 top-1/2 -translate-y-1/2 z-10 text-white/70 hover:text-white p-3 rounded-full hover:bg-white/10 transition-colors"
           >
             <ChevronRight size={32} />
@@ -146,7 +152,8 @@ function PairLightbox({
 
 // ─── Public section ───────────────────────────────────────────────────────────
 export function BeforeAfter() {
-  const { t } = useLanguage();
+  const { t, dir } = useLanguage();
+  const isRTL = dir === 'rtl';
   const [pairs, setPairs] = useState<BAPair[]>([]);
   const [loading, setLoading] = useState(true);
   const [current, setCurrent] = useState(0);
@@ -164,14 +171,16 @@ export function BeforeAfter() {
   }, []);
 
   const count = pairs.length;
-  const prev = useCallback(() => { setDirection(-1); setCurrent((i) => (i - 1 + count) % count); }, [count]);
-  const next = useCallback(() => { setDirection(1);  setCurrent((i) => (i + 1) % count); }, [count]);
+  const prev = useCallback(() => { setDirection(isRTL ? 1 : -1); setCurrent((i) => (i - 1 + count) % count); }, [count, isRTL]);
+  const next = useCallback(() => { setDirection(isRTL ? -1 : 1); setCurrent((i) => (i + 1) % count); }, [count, isRTL]);
+  const onLeftArrow  = isRTL ? next : prev;
+  const onRightArrow = isRTL ? prev : next;
 
   useEffect(() => {
     if (count < 2 || isPaused) return;
-    const id = setTimeout(() => { setDirection(1); setCurrent((i) => (i + 1) % count); }, AUTOPLAY_INTERVAL);
+    const id = setTimeout(() => { setDirection(isRTL ? -1 : 1); setCurrent((i) => (i + 1) % count); }, AUTOPLAY_INTERVAL);
     return () => clearTimeout(id);
-  }, [current, count, isPaused]);
+  }, [current, count, isPaused, isRTL]);
 
   if (loading) {
     return (
@@ -230,13 +239,13 @@ export function BeforeAfter() {
             onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
             onTouchEnd={(e) => {
               const delta = e.changedTouches[0].clientX - touchStartX.current;
-              if (Math.abs(delta) > 50) delta < 0 ? next() : prev();
+              if (Math.abs(delta) > 50) delta < 0 ? onRightArrow() : onLeftArrow();
             }}
           >
             <div className="relative flex items-center justify-center gap-4" dir="ltr">
               {count > 1 && (
                 <button
-                  onClick={prev}
+                  onClick={onLeftArrow}
                   className="flex-none z-20 bg-background border border-border shadow-lg rounded-full p-3 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200"
                   aria-label="Previous"
                 >
@@ -312,7 +321,7 @@ export function BeforeAfter() {
 
               {count > 1 && (
                 <button
-                  onClick={next}
+                  onClick={onRightArrow}
                   className="flex-none z-20 bg-background border border-border shadow-lg rounded-full p-3 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200"
                   aria-label="Next"
                 >
@@ -327,7 +336,7 @@ export function BeforeAfter() {
                 {pairs.map((_, i) => (
                   <button
                     key={i}
-                    onClick={() => { setDirection(i > current ? 1 : -1); setCurrent(i); }}
+                    onClick={() => { setDirection((i > current ? 1 : -1) * (isRTL ? -1 : 1)); setCurrent(i); }}
                     className={`h-1.5 rounded-full transition-all duration-200 ${
                       i === current ? 'bg-primary w-6' : 'bg-border w-1.5 hover:bg-primary/40'
                     }`}
