@@ -28,7 +28,13 @@ interface PricingPackage {
   featured?: boolean;
   services: PricingService[];
 }
-interface PricingData { packages: PricingPackage[]; }
+interface PricingCategory {
+  id: string;
+  nameAr: string;
+  nameEn: string;
+  packages: PricingPackage[];
+}
+interface PricingData { categories: PricingCategory[]; }
 
 // ─── Confirmation dialog ──────────────────────────────────────────────────────
 function ConfirmDialog({
@@ -709,18 +715,23 @@ function PricingPanel() {
   const [data, setData] = useState<PricingData | null>(null);
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState<Status>(null);
-  // Tracks which service is being dragged: { pkgIdx, svcIdx }
-  const svcDragSrc = useRef<{ pkgIdx: number; svcIdx: number } | null>(null);
-  const [svcDragTarget, setSvcDragTarget] = useState<{ pkgIdx: number; svcIdx: number } | null>(null);
+  const [openCats, setOpenCats] = useState<Record<string, boolean>>({});
+  const svcDragSrc = useRef<{ catIdx: number; pkgIdx: number; svcIdx: number } | null>(null);
+  const [svcDragTarget, setSvcDragTarget] = useState<{ catIdx: number; pkgIdx: number; svcIdx: number } | null>(null);
 
   useEffect(() => {
     fetch('/api/pricing')
       .then((r) => r.json())
-      .then((d: PricingData) => setData(d))
-      .catch(() => setData({ packages: [] }));
+      .then((d: PricingData) => {
+        setData(d);
+        if (d.categories?.length) {
+          setOpenCats({ [d.categories[0].id]: true });
+        }
+      })
+      .catch(() => setData({ categories: [] }));
   }, []);
 
-  // ── Persist to API ──────────────────────────────────────────────────────────
+  // ── Persist ──────────────────────────────────────────────────────────────────
   const save = async (updated: PricingData, silent = false) => {
     setSaving(true);
     if (!silent) setStatus(null);
@@ -732,92 +743,136 @@ function PricingPanel() {
       });
       if (!res.ok) throw new Error();
       setData(updated);
-      setStatus({ type: 'success', message: t('admin.saved') });
+      if (!silent) setStatus({ type: 'success', message: t('admin.saved') });
     } catch {
       setStatus({ type: 'error', message: 'Save failed' });
     }
     setSaving(false);
   };
 
-  // ── Package helpers ─────────────────────────────────────────────────────────
-  const updatePkg = (idx: number, patch: Partial<PricingPackage>) => {
+  // ── Category helpers ─────────────────────────────────────────────────────────
+  const updateCat = (catIdx: number, patch: Partial<PricingCategory>) => {
     if (!data) return;
-    const pkgs = [...data.packages];
-    pkgs[idx] = { ...pkgs[idx], ...patch };
-    setData({ packages: pkgs });
+    const cats = [...data.categories];
+    cats[catIdx] = { ...cats[catIdx], ...patch };
+    setData({ categories: cats });
   };
 
-  const removePkg = (idx: number) => {
+  const removeCat = (catIdx: number) => {
     if (!data) return;
-    const updated = { packages: data.packages.filter((_, i) => i !== idx) };
-    save(updated);
+    save({ categories: data.categories.filter((_, i) => i !== catIdx) });
   };
 
-  const movePkg = (idx: number, dir: -1 | 1) => {
+  const moveCat = (catIdx: number, dir: -1 | 1) => {
     if (!data) return;
-    const pkgs = [...data.packages];
-    const target = idx + dir;
-    if (target < 0 || target >= pkgs.length) return;
-    [pkgs[idx], pkgs[target]] = [pkgs[target], pkgs[idx]];
-    setData({ packages: pkgs });
+    const cats = [...data.categories];
+    const target = catIdx + dir;
+    if (target < 0 || target >= cats.length) return;
+    [cats[catIdx], cats[target]] = [cats[target], cats[catIdx]];
+    setData({ categories: cats });
   };
 
-  const addPkg = () => {
+  const addCat = () => {
     if (!data) return;
-    const newPkg: PricingPackage = {
-      id: `pkg-${Date.now()}`,
-      nameAr: '',
-      nameEn: 'New Package',
-      price: '$0',
-      featured: false,
-      services: [],
+    const newCat: PricingCategory = {
+      id: `cat-${Date.now()}`,
+      nameEn: 'New Category',
+      nameAr: 'تصنيف جديد',
+      packages: [],
     };
-    setData({ packages: [...data.packages, newPkg] });
+    setData({ categories: [...data.categories, newCat] });
+    setOpenCats((prev) => ({ ...prev, [newCat.id]: true }));
   };
 
-  // ── Service helpers ─────────────────────────────────────────────────────────
-  const addService = (pkgIdx: number) => {
+  // ── Package helpers ──────────────────────────────────────────────────────────
+  const updatePkg = (catIdx: number, pkgIdx: number, patch: Partial<PricingPackage>) => {
     if (!data) return;
-    const pkgs = [...data.packages];
+    const cats = [...data.categories];
+    const pkgs = [...cats[catIdx].packages];
+    pkgs[pkgIdx] = { ...pkgs[pkgIdx], ...patch };
+    cats[catIdx] = { ...cats[catIdx], packages: pkgs };
+    setData({ categories: cats });
+  };
+
+  const removePkg = (catIdx: number, pkgIdx: number) => {
+    if (!data) return;
+    const cats = [...data.categories];
+    cats[catIdx] = { ...cats[catIdx], packages: cats[catIdx].packages.filter((_, i) => i !== pkgIdx) };
+    save({ categories: cats });
+  };
+
+  const movePkg = (catIdx: number, pkgIdx: number, dir: -1 | 1) => {
+    if (!data) return;
+    const cats = [...data.categories];
+    const pkgs = [...cats[catIdx].packages];
+    const target = pkgIdx + dir;
+    if (target < 0 || target >= pkgs.length) return;
+    [pkgs[pkgIdx], pkgs[target]] = [pkgs[target], pkgs[pkgIdx]];
+    cats[catIdx] = { ...cats[catIdx], packages: pkgs };
+    setData({ categories: cats });
+  };
+
+  const addPkg = (catIdx: number) => {
+    if (!data) return;
+    const cats = [...data.categories];
+    cats[catIdx] = {
+      ...cats[catIdx],
+      packages: [...cats[catIdx].packages, {
+        id: `pkg-${Date.now()}`,
+        nameAr: '',
+        nameEn: 'New Package',
+        price: '$0',
+        featured: false,
+        services: [],
+      }],
+    };
+    setData({ categories: cats });
+  };
+
+  // ── Service helpers ──────────────────────────────────────────────────────────
+  const addService = (catIdx: number, pkgIdx: number) => {
+    if (!data) return;
+    const cats = [...data.categories];
+    const pkgs = [...cats[catIdx].packages];
     pkgs[pkgIdx] = { ...pkgs[pkgIdx], services: [...pkgs[pkgIdx].services, { ar: '', en: '' }] };
-    setData({ packages: pkgs });
+    cats[catIdx] = { ...cats[catIdx], packages: pkgs };
+    setData({ categories: cats });
   };
 
-  const updateService = (pkgIdx: number, svcIdx: number, patch: Partial<PricingService>) => {
+  const updateService = (catIdx: number, pkgIdx: number, svcIdx: number, patch: Partial<PricingService>) => {
     if (!data) return;
-    const pkgs = [...data.packages];
+    const cats = [...data.categories];
+    const pkgs = [...cats[catIdx].packages];
     const svcs = [...pkgs[pkgIdx].services];
     svcs[svcIdx] = { ...svcs[svcIdx], ...patch };
     pkgs[pkgIdx] = { ...pkgs[pkgIdx], services: svcs };
-    setData({ packages: pkgs });
+    cats[catIdx] = { ...cats[catIdx], packages: pkgs };
+    setData({ categories: cats });
   };
 
-  // Delete service → auto-save immediately
-  const deleteService = (pkgIdx: number, svcIdx: number) => {
+  const deleteService = (catIdx: number, pkgIdx: number, svcIdx: number) => {
     if (!data) return;
-    const pkgs = [...data.packages];
-    pkgs[pkgIdx] = {
-      ...pkgs[pkgIdx],
-      services: pkgs[pkgIdx].services.filter((_, i) => i !== svcIdx),
-    };
-    const updated = { packages: pkgs };
-    save(updated);
+    const cats = [...data.categories];
+    const pkgs = [...cats[catIdx].packages];
+    pkgs[pkgIdx] = { ...pkgs[pkgIdx], services: pkgs[pkgIdx].services.filter((_, i) => i !== svcIdx) };
+    cats[catIdx] = { ...cats[catIdx], packages: pkgs };
+    save({ categories: cats });
   };
 
-  // Reorder services via drag-and-drop → auto-save
-  const dropService = (toPkgIdx: number, toSvcIdx: number) => {
+  const dropService = (toCatIdx: number, toPkgIdx: number, toSvcIdx: number) => {
     const src = svcDragSrc.current;
     setSvcDragTarget(null);
     svcDragSrc.current = null;
     if (!data || !src) return;
-    if (src.pkgIdx !== toPkgIdx || src.svcIdx === toSvcIdx) return;
-    const pkgs = [...data.packages];
+    if (src.catIdx !== toCatIdx || src.pkgIdx !== toPkgIdx || src.svcIdx === toSvcIdx) return;
+    const cats = [...data.categories];
+    const pkgs = [...cats[toCatIdx].packages];
     const svcs = [...pkgs[toPkgIdx].services];
     const [moved] = svcs.splice(src.svcIdx, 1);
     svcs.splice(toSvcIdx, 0, moved);
     pkgs[toPkgIdx] = { ...pkgs[toPkgIdx], services: svcs };
-    const updated = { packages: pkgs };
-    save(updated);
+    cats[toCatIdx] = { ...cats[toCatIdx], packages: pkgs };
+    save({ categories: cats });
   };
 
   if (!data) {
@@ -825,143 +880,160 @@ function PricingPanel() {
   }
 
   return (
-    <div className="space-y-5 pt-4">
-      {data.packages.map((pkg, pkgIdx) => (
-        <div key={pkg.id} className="border border-border rounded-2xl overflow-hidden">
+    <div className="space-y-4 pt-4">
+      {data.categories.map((cat, catIdx) => {
+        const isOpen = !!openCats[cat.id];
+        return (
+          <div key={cat.id} className="border border-border rounded-2xl overflow-hidden">
 
-          {/* ── Package header ── */}
-          <div className="bg-muted/30 px-4 py-4 flex items-start gap-3">
-            {/* Up/down reorder */}
-            <div className="flex flex-col gap-0.5 pt-1 flex-none">
-              <button
-                onClick={() => movePkg(pkgIdx, -1)}
-                disabled={pkgIdx === 0}
-                className="text-foreground/40 hover:text-foreground disabled:opacity-20 transition leading-none text-xs px-1"
-                title="Move package up"
-              >▲</button>
-              <button
-                onClick={() => movePkg(pkgIdx, 1)}
-                disabled={pkgIdx === data.packages.length - 1}
-                className="text-foreground/40 hover:text-foreground disabled:opacity-20 transition leading-none text-xs px-1"
-                title="Move package down"
-              >▼</button>
+            {/* ── Category header ── */}
+            <div className="bg-primary/5 px-4 py-3 flex items-center gap-3">
+              {/* Reorder */}
+              <div className="flex flex-col gap-0.5 flex-none">
+                <button onClick={() => moveCat(catIdx, -1)} disabled={catIdx === 0}
+                  className="text-foreground/40 hover:text-foreground disabled:opacity-20 transition text-xs px-1 leading-none" title="Move category up">▲</button>
+                <button onClick={() => moveCat(catIdx, 1)} disabled={catIdx === data.categories.length - 1}
+                  className="text-foreground/40 hover:text-foreground disabled:opacity-20 transition text-xs px-1 leading-none" title="Move category down">▼</button>
+              </div>
+
+              {/* Name inputs */}
+              <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <input value={cat.nameEn} onChange={(e) => updateCat(catIdx, { nameEn: e.target.value })}
+                  placeholder="Category name (EN)"
+                  className="rounded-xl border border-border bg-background px-3 py-1.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-primary/30" dir="ltr" />
+                <input value={cat.nameAr} onChange={(e) => updateCat(catIdx, { nameAr: e.target.value })}
+                  placeholder="اسم التصنيف (AR)"
+                  className="rounded-xl border border-border bg-background px-3 py-1.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-primary/30" dir="rtl" />
+              </div>
+
+              {/* Delete + collapse */}
+              <div className="flex items-center gap-2 flex-none">
+                <button onClick={() => removeCat(catIdx)} className="text-red-400 hover:text-red-600 transition" title="Delete category">
+                  <Trash2 size={15} />
+                </button>
+                <button onClick={() => setOpenCats((prev) => ({ ...prev, [cat.id]: !isOpen }))}
+                  className="text-foreground/40 hover:text-foreground transition">
+                  <ChevronDown size={17} className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+                </button>
+              </div>
             </div>
 
-            {/* Package fields */}
-            <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-2">
-              <input
-                value={pkg.nameEn}
-                onChange={(e) => updatePkg(pkgIdx, { nameEn: e.target.value })}
-                placeholder="Package name (EN)"
-                className="rounded-xl border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
-                dir="ltr"
-              />
-              <input
-                value={pkg.nameAr}
-                onChange={(e) => updatePkg(pkgIdx, { nameAr: e.target.value })}
-                placeholder="اسم الباقة (AR)"
-                className="rounded-xl border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
-                dir="rtl"
-              />
-              <input
-                value={pkg.price}
-                onChange={(e) => updatePkg(pkgIdx, { price: e.target.value })}
-                placeholder="$40"
-                className="rounded-xl border border-border bg-background px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/30"
-                dir="ltr"
-              />
-            </div>
+            {/* ── Packages (collapsible) ── */}
+            <AnimatePresence initial={false}>
+              {isOpen && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.22, ease: 'easeInOut' }}
+                  style={{ overflow: 'hidden' }}
+                >
+                  <div className="p-4 space-y-4 border-t border-border">
+                    {cat.packages.length === 0 && (
+                      <p className="text-xs text-foreground/30 text-center py-3">No packages yet — add one below.</p>
+                    )}
 
-            {/* Featured + delete package */}
-            <div className="flex items-center gap-3 flex-none">
-              <label className="flex items-center gap-1.5 text-xs text-foreground/50 cursor-pointer select-none">
-                <input
-                  type="checkbox"
-                  checked={!!pkg.featured}
-                  onChange={(e) => updatePkg(pkgIdx, { featured: e.target.checked })}
-                  className="rounded accent-primary"
-                />
-                {t('admin.featured')}
-              </label>
-              <button
-                onClick={() => removePkg(pkgIdx)}
-                className="text-red-400 hover:text-red-600 transition"
-                title="Delete this package"
-              >
-                <Trash2 size={16} />
-              </button>
-            </div>
+                    {cat.packages.map((pkg, pkgIdx) => (
+                      <div key={pkg.id} className="border border-border rounded-2xl overflow-hidden">
+
+                        {/* Package header */}
+                        <div className="bg-muted/30 px-4 py-4 flex items-start gap-3">
+                          <div className="flex flex-col gap-0.5 pt-1 flex-none">
+                            <button onClick={() => movePkg(catIdx, pkgIdx, -1)} disabled={pkgIdx === 0}
+                              className="text-foreground/40 hover:text-foreground disabled:opacity-20 transition text-xs px-1 leading-none" title="Move package up">▲</button>
+                            <button onClick={() => movePkg(catIdx, pkgIdx, 1)} disabled={pkgIdx === cat.packages.length - 1}
+                              className="text-foreground/40 hover:text-foreground disabled:opacity-20 transition text-xs px-1 leading-none" title="Move package down">▼</button>
+                          </div>
+
+                          <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-2">
+                            <input value={pkg.nameEn} onChange={(e) => updatePkg(catIdx, pkgIdx, { nameEn: e.target.value })}
+                              placeholder="Package name (EN)"
+                              className="rounded-xl border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" dir="ltr" />
+                            <input value={pkg.nameAr} onChange={(e) => updatePkg(catIdx, pkgIdx, { nameAr: e.target.value })}
+                              placeholder="اسم الباقة (AR)"
+                              className="rounded-xl border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" dir="rtl" />
+                            <input value={pkg.price} onChange={(e) => updatePkg(catIdx, pkgIdx, { price: e.target.value })}
+                              placeholder="$40"
+                              className="rounded-xl border border-border bg-background px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/30" dir="ltr" />
+                          </div>
+
+                          <div className="flex items-center gap-3 flex-none">
+                            <label className="flex items-center gap-1.5 text-xs text-foreground/50 cursor-pointer select-none">
+                              <input type="checkbox" checked={!!pkg.featured}
+                                onChange={(e) => updatePkg(catIdx, pkgIdx, { featured: e.target.checked })}
+                                className="rounded accent-primary" />
+                              {t('admin.featured')}
+                            </label>
+                            <button onClick={() => removePkg(catIdx, pkgIdx)}
+                              className="text-red-400 hover:text-red-600 transition" title="Delete package">
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Services list */}
+                        <div className="p-4 space-y-1.5">
+                          {pkg.services.length === 0 && (
+                            <p className="text-xs text-foreground/30 text-center py-2">No services yet — add one below.</p>
+                          )}
+
+                          {pkg.services.map((svc, svcIdx) => (
+                            <ServiceRow
+                              key={`${pkg.id}-${svcIdx}`}
+                              svc={svc}
+                              svcIdx={svcIdx}
+                              pkgIdx={pkgIdx}
+                              isOnly={pkg.services.length === 1}
+                              onUpdate={(patch) => updateService(catIdx, pkgIdx, svcIdx, patch)}
+                              onDelete={() => deleteService(catIdx, pkgIdx, svcIdx)}
+                              dragHandleProps={{
+                                onDragStart: () => { svcDragSrc.current = { catIdx, pkgIdx, svcIdx }; },
+                                onDragOver: (e) => { e.preventDefault(); setSvcDragTarget({ catIdx, pkgIdx, svcIdx }); },
+                                onDrop: () => dropService(catIdx, pkgIdx, svcIdx),
+                                isDragTarget:
+                                  svcDragTarget?.catIdx === catIdx &&
+                                  svcDragTarget?.pkgIdx === pkgIdx &&
+                                  svcDragTarget?.svcIdx === svcIdx,
+                              }}
+                            />
+                          ))}
+
+                          {pkg.services.length > 1 && (
+                            <p className="text-xs text-foreground/30 pt-1 pb-0.5">↕ Drag rows to reorder</p>
+                          )}
+
+                          <button onClick={() => addService(catIdx, pkgIdx)}
+                            className="flex items-center gap-1.5 text-sm text-primary hover:text-primary/80 transition mt-2 pt-1">
+                            <Plus size={14} /> {t('admin.add.service')}
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+
+                    <button onClick={() => addPkg(catIdx)}
+                      className="flex items-center gap-2 text-sm text-primary border border-primary/30 hover:border-primary rounded-xl px-4 py-2.5 transition w-full justify-center">
+                      <Plus size={14} /> {t('admin.add.package')}
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
+        );
+      })}
 
-          {/* ── Services list ── */}
-          <div className="p-4 space-y-1.5">
-            {pkg.services.length === 0 && (
-              <p className="text-xs text-foreground/30 text-center py-2">
-                No services yet — add one below.
-              </p>
-            )}
-
-            {pkg.services.map((svc, svcIdx) => (
-              <ServiceRow
-                key={`${pkg.id}-${svcIdx}`}
-                svc={svc}
-                svcIdx={svcIdx}
-                pkgIdx={pkgIdx}
-                isOnly={pkg.services.length === 1}
-                onUpdate={(patch) => updateService(pkgIdx, svcIdx, patch)}
-                onDelete={() => deleteService(pkgIdx, svcIdx)}
-                dragHandleProps={{
-                  onDragStart: () => {
-                    svcDragSrc.current = { pkgIdx, svcIdx };
-                  },
-                  onDragOver: (e) => {
-                    e.preventDefault();
-                    setSvcDragTarget({ pkgIdx, svcIdx });
-                  },
-                  onDrop: () => dropService(pkgIdx, svcIdx),
-                  isDragTarget:
-                    svcDragTarget?.pkgIdx === pkgIdx &&
-                    svcDragTarget?.svcIdx === svcIdx,
-                }}
-              />
-            ))}
-
-            {pkg.services.length > 1 && (
-              <p className="text-xs text-foreground/30 pt-1 pb-0.5">
-                ↕ Drag rows to reorder
-              </p>
-            )}
-
-            <button
-              onClick={() => addService(pkgIdx)}
-              className="flex items-center gap-1.5 text-sm text-primary hover:text-primary/80 transition mt-2 pt-1"
-            >
-              <Plus size={14} /> {t('admin.add.service')}
-            </button>
-          </div>
-        </div>
-      ))}
-
-      {/* Add package */}
-      <button
-        onClick={addPkg}
-        className="flex items-center gap-2 text-sm text-primary border border-primary/30 hover:border-primary rounded-xl px-4 py-3 transition w-full justify-center"
-      >
-        <Plus size={15} /> {t('admin.add.package')}
+      {/* Add category */}
+      <button onClick={addCat}
+        className="flex items-center gap-2 text-sm text-primary border border-dashed border-primary/40 hover:border-primary rounded-xl px-4 py-3 transition w-full justify-center">
+        <Plus size={15} /> {t('admin.add.category')}
       </button>
 
-      {/* Save all (for package field edits; service changes auto-save) */}
+      {/* Save all */}
       <div className="flex items-center gap-3 flex-wrap">
-        <Button
-          onClick={() => data && save(data)}
-          disabled={saving}
-          className="rounded-full gap-1.5"
-        >
+        <Button onClick={() => data && save(data)} disabled={saving} className="rounded-full gap-1.5">
           {saving ? t('admin.saving') : t('admin.save.all')}
         </Button>
-        <p className="text-xs text-foreground/40">
-          Service deletions & reorders save automatically.
-        </p>
+        <p className="text-xs text-foreground/40">Service deletions & reorders save automatically.</p>
         <StatusBanner status={status} />
       </div>
     </div>

@@ -127,6 +127,7 @@ const translations: Record<string, Record<Language, string>> = {
   'admin.revert': { ar: 'إعادة الصورة الافتراضية', en: 'Revert to Default' },
   'admin.saving': { ar: 'جارٍ الحفظ...', en: 'Saving...' },
   'admin.pricing': { ar: 'الأسعار', en: 'Pricing' },
+  'admin.add.category': { ar: 'إضافة تصنيف', en: 'Add Category' },
   'admin.add.package': { ar: 'إضافة باقة', en: 'Add Package' },
   'admin.add.service': { ar: 'إضافة خدمة', en: 'Add Service' },
   'admin.save.all': { ar: 'حفظ التغييرات', en: 'Save Changes' },
