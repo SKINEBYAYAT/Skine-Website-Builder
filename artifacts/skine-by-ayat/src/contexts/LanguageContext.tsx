@@ -142,7 +142,7 @@ const translations: Record<string, Record<Language, string>> = {
   'pricing.subtitle': { ar: 'اختاري الباقة المناسبة لبشرتك', en: 'Choose the package that suits your skin' },
   'pricing.popular': { ar: 'الأكثر طلبًا', en: 'Most Popular' },
   'pricing.session': { ar: 'جلسة', en: 'session' },
-  'pricing.cta': { ar: 'احجزي استشارتك', en: 'Book Consultation' },
+  'pricing.cta': { ar: 'احجز موعدك الآن', en: 'Book Your Appointment Now' },
 };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
