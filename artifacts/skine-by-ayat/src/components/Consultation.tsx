@@ -18,8 +18,6 @@ interface ConsultationData {
   price: string;
   subtitleAr: string;
   subtitleEn: string;
-  headingAr: string;
-  headingEn: string;
   items: ConsultationItem[];
 }
 
@@ -27,8 +25,6 @@ const DEFAULT_DATA: ConsultationData = {
   price: '$35',
   subtitleEn: 'Skin consultation and skincare routine planning',
   subtitleAr: 'استشارة جلدية وتخطيط روتين العناية',
-  headingEn: "What you'll receive during your consultation ✨",
-  headingAr: 'ما ستحصلين عليه خلال استشارتك ✨',
   items: [
     { id: 'skin-analysis',       titleEn: 'Skin Analysis',       titleAr: 'تحليل البشرة',    descEn: 'Skin type, tone, concerns, goals, and current routine assessment.',  descAr: 'تقييم نوع البشرة ودرجة لونها ومشكلاتها وأهدافك وروتينك الحالي.' },
     { id: 'personalized-routine',titleEn: 'Personalized Routine',titleAr: 'روتين مخصص',      descEn: "A skincare plan tailored to your skin's needs.",                    descAr: 'خطة عناية بالبشرة مصممة خصيصاً وفق احتياجاتك.' },
@@ -50,9 +46,8 @@ export function Consultation() {
       .catch(() => {});
   }, []);
 
-  const isRTL = dir === 'rtl';
-  const heading  = lang === 'ar' ? data.headingAr  : data.headingEn;
-  const subtitle = lang === 'ar' ? data.subtitleAr : data.subtitleEn;
+  const isRTL   = dir === 'rtl';
+  const tagline = lang === 'ar' ? data.subtitleAr : data.subtitleEn;
 
   return (
     <section id="consultation" className="py-24 bg-card/50">
@@ -86,12 +81,14 @@ export function Consultation() {
           whileHover={{ y: -6, transition: { duration: 0.2 } }}
           className="relative flex flex-col rounded-3xl border border-border bg-card shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300"
         >
-          {/* Card header: heading + price */}
+          {/* Card header: tagline + price */}
           <div className="p-8 pb-6">
-            <h3 className="text-xl font-bold text-foreground leading-snug">
-              {heading}
-            </h3>
-            <div className="flex items-baseline gap-1 mt-5">
+            {tagline && (
+              <h3 className="text-xl font-bold text-foreground leading-snug mb-5">
+                {tagline}
+              </h3>
+            )}
+            <div className="flex items-baseline gap-1">
               <span className="text-5xl font-extrabold tracking-tight text-foreground">
                 {data.price}
               </span>
@@ -99,11 +96,6 @@ export function Consultation() {
                 / {t('pricing.session')}
               </span>
             </div>
-            {subtitle && (
-              <p className="text-sm text-foreground/55 mt-2 leading-snug">
-                {subtitle}
-              </p>
-            )}
           </div>
 
           {/* Divider */}

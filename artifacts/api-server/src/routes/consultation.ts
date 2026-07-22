@@ -19,8 +19,6 @@ export interface ConsultationData {
   price: string;
   subtitleAr: string;
   subtitleEn: string;
-  headingAr: string;
-  headingEn: string;
   items: ConsultationItem[];
 }
 
@@ -28,8 +26,6 @@ const DEFAULT_CONSULTATION: ConsultationData = {
   price: '$35',
   subtitleEn: 'Skin consultation and skincare routine planning',
   subtitleAr: 'استشارة جلدية وتخطيط روتين العناية',
-  headingEn: "What you'll receive during your consultation ✨",
-  headingAr: 'ما ستحصلين عليه خلال استشارتك ✨',
   items: [
     {
       id: 'skin-analysis',
@@ -89,8 +85,6 @@ router.put('/consultation', (req, res) => {
     typeof body.price !== 'string' ||
     typeof body.subtitleEn !== 'string' ||
     typeof body.subtitleAr !== 'string' ||
-    typeof body.headingEn !== 'string' ||
-    typeof body.headingAr !== 'string' ||
     !Array.isArray(body.items)
   ) {
     return res.status(400).json({ error: 'Invalid consultation data' });
