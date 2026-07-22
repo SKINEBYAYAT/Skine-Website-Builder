@@ -28,6 +28,7 @@ export function Navbar() {
     { name: t('nav.about'), href: '#about' },
     { name: t('nav.services'), href: '#services' },
     { name: t('nav.consultation'), href: '#consultation' },
+    { name: t('nav.reviews'), href: '#reviews' },
     { name: t('nav.faq'), href: '#faq' },
     { name: t('nav.contact'), href: '#contact' },
   ];

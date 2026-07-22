@@ -5,9 +5,11 @@ import { Hero } from '@/components/Hero';
 import { About } from '@/components/About';
 import { Services } from '@/components/Services';
 import { Pricing } from '@/components/Pricing';
+import { Consultation } from '@/components/Consultation';
+import { Location } from '@/components/Location';
+import { WhatsAppSection } from '@/components/WhatsAppSection';
 import { ReviewsCarousel } from '@/components/ReviewsCarousel';
 import { BeforeAfter } from '@/components/BeforeAfter';
-import { Consultation } from '@/components/Consultation';
 import { FAQ } from '@/components/FAQ';
 import { Contact } from '@/components/Contact';
 import { Footer } from '@/components/Footer';
@@ -27,15 +29,17 @@ function MainSite() {
     <div className="min-h-screen w-full flex flex-col font-sans">
       <Navbar />
       <main className="flex-1 w-full">
-        <Hero />
-        <About />
-        <Services />
-        <Pricing />
-        <ReviewsCarousel />
-        <BeforeAfter />
-        <Consultation />
-        <FAQ />
-        <Contact />
+        {/* 1 */} <Hero />
+        {/* 2 */} <About />
+        {/* 3 */} <Services />
+        {/* 4 */} <Pricing />
+        {/* 5 */} <Consultation />
+        {/* 6 */} <Location />
+        {/* 7 */} <WhatsAppSection />
+        {/* 8 */} <ReviewsCarousel />
+        {/* 9 */} <BeforeAfter />
+        {/* 10 */} <FAQ />
+        {/* 11 */} <Contact />
       </main>
       <Footer />
     </div>

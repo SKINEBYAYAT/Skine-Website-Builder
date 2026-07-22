@@ -17,6 +17,7 @@ const translations: Record<string, Record<Language, string>> = {
   'nav.consultation': { ar: 'الاستشارة', en: 'Consultation' },
   'nav.faq': { ar: 'الأسئلة الشائعة', en: 'FAQ' },
   'nav.contact': { ar: 'تواصل معنا', en: 'Contact' },
+  'nav.reviews': { ar: 'آراء العملاء', en: 'Reviews' },
 
   // Hero
   'hero.title': { ar: 'بشرة صحية تبدأ بالعناية الصحيحة', en: 'Healthy Skin Starts with Proper Care' },
@@ -120,6 +121,11 @@ const translations: Record<string, Record<Language, string>> = {
   'admin.add.service': { ar: 'إضافة خدمة', en: 'Add Service' },
   'admin.save.all': { ar: 'حفظ التغييرات', en: 'Save Changes' },
   'admin.featured': { ar: 'مميز', en: 'Featured' },
+
+  // WhatsApp section
+  'whatsapp.title': { ar: 'تواصل معنا عبر واتساب', en: 'Chat with Us on WhatsApp' },
+  'whatsapp.desc': { ar: 'هل لديك سؤال أو تودين حجز استشارة؟ تواصلي معنا مباشرة عبر واتساب وسنرد عليك في أقرب وقت.', en: 'Have a question or want to book a consultation? Contact us directly on WhatsApp and we\'ll get back to you as soon as possible.' },
+  'whatsapp.cta': { ar: 'ابدئي المحادثة', en: 'Chat on WhatsApp' },
 
   // Pricing section
   'pricing.title': { ar: 'الأسعار', en: 'Pricing' },
