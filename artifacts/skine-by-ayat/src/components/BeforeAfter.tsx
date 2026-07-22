@@ -219,10 +219,6 @@ export function BeforeAfter() {
           transition={{ duration: 0.7 }}
           className="text-center mb-14"
         >
-          <div className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium">
-            <Sparkles size={16} />
-            <span>{t('beforeafter.title')}</span>
-          </div>
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
             {t('beforeafter.title')}
           </h2>

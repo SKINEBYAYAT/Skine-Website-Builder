@@ -61,10 +61,6 @@ export function Consultation() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <div className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium">
-              <CalendarCheck size={16} />
-              <span>{t('consultation.title')}</span>
-            </div>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
               {t('consultation.title')}
             </h2>
