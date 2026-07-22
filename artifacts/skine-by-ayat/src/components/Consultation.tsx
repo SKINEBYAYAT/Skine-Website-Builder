@@ -16,6 +16,8 @@ interface ConsultationItem {
 
 interface ConsultationData {
   price: string;
+  subtitleAr: string;
+  subtitleEn: string;
   headingAr: string;
   headingEn: string;
   items: ConsultationItem[];
@@ -23,6 +25,8 @@ interface ConsultationData {
 
 const DEFAULT_DATA: ConsultationData = {
   price: '$35',
+  subtitleEn: 'Skin consultation and skincare routine planning',
+  subtitleAr: 'استشارة جلدية وتخطيط روتين العناية',
   headingEn: "What you'll receive during your consultation ✨",
   headingAr: 'ما ستحصلين عليه خلال استشارتك ✨',
   items: [
@@ -47,7 +51,8 @@ export function Consultation() {
   }, []);
 
   const isRTL = dir === 'rtl';
-  const heading = lang === 'ar' ? data.headingAr : data.headingEn;
+  const heading  = lang === 'ar' ? data.headingAr  : data.headingEn;
+  const subtitle = lang === 'ar' ? data.subtitleAr : data.subtitleEn;
 
   return (
     <section id="consultation" className="py-24 bg-card/50">
@@ -94,6 +99,11 @@ export function Consultation() {
                 / {t('pricing.session')}
               </span>
             </div>
+            {subtitle && (
+              <p className="text-sm text-foreground/55 mt-2 leading-snug">
+                {subtitle}
+              </p>
+            )}
           </div>
 
           {/* Divider */}

@@ -55,6 +55,8 @@ interface ConsultationItem {
 }
 interface ConsultationData {
   price: string;
+  subtitleAr: string;
+  subtitleEn: string;
   headingAr: string;
   headingEn: string;
   items: ConsultationItem[];
@@ -1490,6 +1492,8 @@ function ConsultationPanel() {
 
   const DEFAULT: ConsultationData = {
     price: '$35',
+    subtitleEn: 'Skin consultation and skincare routine planning',
+    subtitleAr: 'استشارة جلدية وتخطيط روتين العناية',
     headingEn: "What you'll receive during your consultation ✨",
     headingAr: 'ما ستحصلين عليه خلال استشارتك ✨',
     items: [],
@@ -1586,6 +1590,30 @@ function ConsultationPanel() {
             placeholder="$35"
             className="w-32 rounded-xl border border-border bg-muted/20 px-3 py-1.5 text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/30 transition"
             dir="ltr"
+          />
+        </div>
+
+        {/* Subtitle EN */}
+        <div className="space-y-1.5">
+          <label className="text-sm font-medium text-foreground">Price Subtitle (EN)</label>
+          <input
+            value={data.subtitleEn}
+            onChange={(e) => updateField({ subtitleEn: e.target.value })}
+            placeholder="Skin consultation and skincare routine planning"
+            className="w-full rounded-xl border border-border bg-muted/20 px-3 py-2 text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/30 transition"
+            dir="ltr"
+          />
+        </div>
+
+        {/* Subtitle AR */}
+        <div className="space-y-1.5">
+          <label className="text-sm font-medium text-foreground">Price Subtitle (AR)</label>
+          <input
+            value={data.subtitleAr}
+            onChange={(e) => updateField({ subtitleAr: e.target.value })}
+            placeholder="استشارة جلدية وتخطيط روتين العناية"
+            className="w-full rounded-xl border border-border bg-muted/20 px-3 py-2 text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/30 transition"
+            dir="rtl"
           />
         </div>
 

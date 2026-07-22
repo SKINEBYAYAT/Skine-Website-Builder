@@ -1,83 +1,185 @@
 {
-  "packages": [
+  "categories": [
     {
-      "id": "basic-facial",
-      "nameAr": "فيشل أساسي",
-      "nameEn": "Basic Facial",
-      "price": "$40",
-      "services": [
+      "id": "facials",
+      "nameAr": "الفيشل",
+      "nameEn": "Facials",
+      "packages": [
         {
-          "ar": "تنظيف عميق",
-          "en": "Deep Cleansing"
+          "id": "basic-facial",
+          "nameAr": "فيشل أساسي",
+          "nameEn": "Basic Facial",
+          "price": "$40",
+          "services": [
+            {
+              "ar": "تنظيف عميق",
+              "en": "Deep Cleansing"
+            },
+            {
+              "ar": "تقشير لطيف",
+              "en": "Gentle Exfoliation"
+            },
+            {
+              "ar": "علاج الإنزيم",
+              "en": "Enzyme Therapy"
+            },
+            {
+              "ar": "استخراج عميق",
+              "en": "Deep Extraction"
+            },
+            {
+              "ar": "تدليك لمفاوي",
+              "en": "Lymphatic Massage"
+            },
+            {
+              "ar": "قناع مخصص",
+              "en": "Customized Mask"
+            },
+            {
+              "ar": "العناية النهائية",
+              "en": "Finishing Care"
+            }
+          ]
         },
         {
-          "ar": "تقشير لطيف",
-          "en": "Gentle Exfoliation"
-        },
-        {
-          "ar": "علاج الإنزيم",
-          "en": "Enzyme Therapy"
-        },
-        {
-          "ar": "استخراج عميق",
-          "en": "Deep Extraction"
-        },
-        {
-          "ar": "تدليك لمفاوي",
-          "en": "Lymphatic Massage"
-        },
-        {
-          "ar": "قناع مخصص",
-          "en": "Customized Mask"
-        },
-        {
-          "ar": "العناية النهائية",
-          "en": "Finishing Care"
+          "id": "hydrafacial",
+          "nameAr": "هيدرافيشل",
+          "nameEn": "Hydrafacial",
+          "price": "$45",
+          "featured": true,
+          "services": [
+            {
+              "ar": "تنظيف عميق",
+              "en": "Deep Cleansing"
+            },
+            {
+              "ar": "تقشير لطيف",
+              "en": "Gentle Exfoliation"
+            },
+            {
+              "ar": "علاج الإنزيم",
+              "en": "Enzyme Therapy"
+            },
+            {
+              "ar": "استخراج عميق",
+              "en": "Deep Extraction"
+            },
+            {
+              "ar": "هيدرا ديرمابريجن",
+              "en": "Hydra Dermabrasion"
+            },
+            {
+              "ar": "حقن الأكسجين",
+              "en": "Oxygen Infusion"
+            },
+            {
+              "ar": "تدليك لمفاوي",
+              "en": "Lymphatic Massage"
+            },
+            {
+              "ar": "قناع مخصص",
+              "en": "Customized Mask"
+            },
+            {
+              "ar": "العناية النهائية",
+              "en": "Finishing Care"
+            }
+          ]
         }
       ]
     },
     {
-      "id": "hydrafacial",
-      "nameAr": "هيدرافيشل",
-      "nameEn": "Hydrafacial",
-      "price": "$45",
-      "featured": true,
-      "services": [
+      "id": "bundles",
+      "nameAr": "الباقات",
+      "nameEn": "Bundles",
+      "packages": [
         {
-          "ar": "تنظيف عميق",
-          "en": "Deep Cleansing"
+          "id": "glow-package",
+          "nameAr": "باقة التوهج",
+          "nameEn": "Glow Package",
+          "price": "$45",
+          "services": [
+            {
+              "ar": "فيشل أساسي",
+              "en": "Basic facial"
+            },
+            {
+              "ar": "تقشير ذكي آمن",
+              "en": "Safe smart peel"
+            }
+          ]
         },
         {
-          "ar": "تقشير لطيف",
-          "en": "Gentle Exfoliation"
+          "id": "treatment-package",
+          "nameAr": "باقة العلاج",
+          "nameEn": "Treatment Package",
+          "price": "$60",
+          "services": [
+            {
+              "ar": "فيشل أساسي",
+              "en": "Basic facial"
+            },
+            {
+              "ar": "جلسة إبر دقيقة",
+              "en": "Microneedling session"
+            }
+          ]
         },
         {
-          "ar": "علاج الإنزيم",
-          "en": "Enzyme Therapy"
+          "id": "full-care-package",
+          "nameAr": "باقة العناية الكاملة",
+          "nameEn": "Full Care Package",
+          "price": "$65",
+          "services": [
+            {
+              "ar": "فيشل أساسي",
+              "en": "Basic facial"
+            },
+            {
+              "ar": "تقشير ذكي",
+              "en": "Smart peel"
+            },
+            {
+              "ar": "إبر دقيقة",
+              "en": "Microneedling"
+            }
+          ]
         },
         {
-          "ar": "استخراج عميق",
-          "en": "Deep Extraction"
-        },
-        {
-          "ar": "هيدرا ديرمابريجن",
-          "en": "Hydra Dermabrasion"
-        },
-        {
-          "ar": "حقن الأكسجين",
-          "en": "Oxygen Infusion"
-        },
-        {
-          "ar": "تدليك لمفاوي",
-          "en": "Lymphatic Massage"
-        },
-        {
-          "ar": "قناع مخصص",
-          "en": "Customized Mask"
-        },
-        {
-          "ar": "العناية النهائية",
-          "en": "Finishing Care"
+          "id": "rejuvenating-package",
+          "nameAr": "باقة التجديد",
+          "nameEn": "Rejuvenating Package",
+          "price": "$65",
+          "services": [
+            {
+              "ar": "فيشل أساسي",
+              "en": "Basic facial"
+            },
+            {
+              "ar": "تقشير الفاكهة العميق",
+              "en": "Hard fruit peel extract"
+            },
+            {
+              "ar": "تجديد البشرة",
+              "en": "Skin renewal"
+            },
+            {
+              "ar": "بشرة أكثر إشراقاً وتوحداً في اللون",
+              "en": "Brighter and more even skin tone"
+            },
+            {
+              "ar": "يُحسّن شدّ البشرة ونضارتها",
+              "en": "Improves skin firmness"
+            },
+            {
+              "ar": "ملمس بشرة أكثر نعومة",
+              "en": "Smooth skin texture"
+            },
+            {
+              "ar": "توهج صحي مشرق",
+              "en": "Radiant healthy glow"
+            }
+          ]
         }
       ]
     }
