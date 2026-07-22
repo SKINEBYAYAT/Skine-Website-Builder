@@ -614,12 +614,103 @@ function MapsPanel() {
   );
 }
 
+// ─── Service row (edit + drag + delete with confirm) ─────────────────────────
+function ServiceRow({
+  svc,
+  svcIdx,
+  pkgIdx,
+  isOnly,
+  onUpdate,
+  onDelete,
+  dragHandleProps,
+}: {
+  svc: PricingService;
+  svcIdx: number;
+  pkgIdx: number;
+  isOnly: boolean;
+  onUpdate: (patch: Partial<PricingService>) => void;
+  onDelete: () => void;
+  dragHandleProps: {
+    onDragStart: () => void;
+    onDragOver: (e: React.DragEvent) => void;
+    onDrop: () => void;
+    isDragTarget: boolean;
+  };
+}) {
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  return (
+    <>
+      {confirmDelete && (
+        <ConfirmDialog
+          message="Are you sure you want to delete this service? This cannot be undone."
+          onConfirm={() => { setConfirmDelete(false); onDelete(); }}
+          onCancel={() => setConfirmDelete(false)}
+        />
+      )}
+
+      <div
+        draggable
+        onDragStart={dragHandleProps.onDragStart}
+        onDragOver={dragHandleProps.onDragOver}
+        onDrop={dragHandleProps.onDrop}
+        className={`flex items-center gap-2 rounded-xl border transition-colors ${
+          dragHandleProps.isDragTarget
+            ? 'border-primary/50 bg-primary/5'
+            : 'border-border bg-background'
+        } px-2 py-1.5 group`}
+      >
+        {/* Drag handle */}
+        <div
+          className="cursor-grab active:cursor-grabbing text-foreground/25 hover:text-foreground/50 transition-colors flex-none px-0.5"
+          title="Drag to reorder"
+        >
+          <GripVertical size={15} />
+        </div>
+
+        {/* EN input */}
+        <input
+          value={svc.en}
+          onChange={(e) => onUpdate({ en: e.target.value })}
+          placeholder="Service name (EN)"
+          className="flex-1 min-w-0 bg-transparent text-sm text-foreground placeholder:text-foreground/30 focus:outline-none py-0.5"
+          dir="ltr"
+        />
+
+        {/* Divider */}
+        <div className="w-px h-5 bg-border flex-none" />
+
+        {/* AR input */}
+        <input
+          value={svc.ar}
+          onChange={(e) => onUpdate({ ar: e.target.value })}
+          placeholder="اسم الخدمة (AR)"
+          className="flex-1 min-w-0 bg-transparent text-sm text-foreground placeholder:text-foreground/30 focus:outline-none py-0.5"
+          dir="rtl"
+        />
+
+        {/* Delete button */}
+        <button
+          onClick={() => setConfirmDelete(true)}
+          title="Delete service"
+          className="flex-none p-1 rounded-lg text-foreground/30 hover:text-red-500 hover:bg-red-50 transition-colors opacity-0 group-hover:opacity-100"
+        >
+          <Trash2 size={14} />
+        </button>
+      </div>
+    </>
+  );
+}
+
 // ─── Pricing panel ────────────────────────────────────────────────────────────
 function PricingPanel() {
   const { t } = useLanguage();
   const [data, setData] = useState<PricingData | null>(null);
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState<Status>(null);
+  // Tracks which service is being dragged: { pkgIdx, svcIdx }
+  const svcDragSrc = useRef<{ pkgIdx: number; svcIdx: number } | null>(null);
+  const [svcDragTarget, setSvcDragTarget] = useState<{ pkgIdx: number; svcIdx: number } | null>(null);
 
   useEffect(() => {
     fetch('/api/pricing')
@@ -628,9 +719,10 @@ function PricingPanel() {
       .catch(() => setData({ packages: [] }));
   }, []);
 
-  const save = async (updated: PricingData) => {
+  // ── Persist to API ──────────────────────────────────────────────────────────
+  const save = async (updated: PricingData, silent = false) => {
     setSaving(true);
-    setStatus(null);
+    if (!silent) setStatus(null);
     try {
       const res = await fetch('/api/pricing', {
         method: 'PUT',
@@ -646,6 +738,7 @@ function PricingPanel() {
     setSaving(false);
   };
 
+  // ── Package helpers ─────────────────────────────────────────────────────────
   const updatePkg = (idx: number, patch: Partial<PricingPackage>) => {
     if (!data) return;
     const pkgs = [...data.packages];
@@ -655,7 +748,8 @@ function PricingPanel() {
 
   const removePkg = (idx: number) => {
     if (!data) return;
-    setData({ packages: data.packages.filter((_, i) => i !== idx) });
+    const updated = { packages: data.packages.filter((_, i) => i !== idx) };
+    save(updated);
   };
 
   const movePkg = (idx: number, dir: -1 | 1) => {
@@ -680,6 +774,7 @@ function PricingPanel() {
     setData({ packages: [...data.packages, newPkg] });
   };
 
+  // ── Service helpers ─────────────────────────────────────────────────────────
   const addService = (pkgIdx: number) => {
     if (!data) return;
     const pkgs = [...data.packages];
@@ -696,11 +791,32 @@ function PricingPanel() {
     setData({ packages: pkgs });
   };
 
-  const removeService = (pkgIdx: number, svcIdx: number) => {
+  // Delete service → auto-save immediately
+  const deleteService = (pkgIdx: number, svcIdx: number) => {
     if (!data) return;
     const pkgs = [...data.packages];
-    pkgs[pkgIdx] = { ...pkgs[pkgIdx], services: pkgs[pkgIdx].services.filter((_, i) => i !== svcIdx) };
-    setData({ packages: pkgs });
+    pkgs[pkgIdx] = {
+      ...pkgs[pkgIdx],
+      services: pkgs[pkgIdx].services.filter((_, i) => i !== svcIdx),
+    };
+    const updated = { packages: pkgs };
+    save(updated);
+  };
+
+  // Reorder services via drag-and-drop → auto-save
+  const dropService = (toPkgIdx: number, toSvcIdx: number) => {
+    const src = svcDragSrc.current;
+    setSvcDragTarget(null);
+    svcDragSrc.current = null;
+    if (!data || !src) return;
+    if (src.pkgIdx !== toPkgIdx || src.svcIdx === toSvcIdx) return;
+    const pkgs = [...data.packages];
+    const svcs = [...pkgs[toPkgIdx].services];
+    const [moved] = svcs.splice(src.svcIdx, 1);
+    svcs.splice(toSvcIdx, 0, moved);
+    pkgs[toPkgIdx] = { ...pkgs[toPkgIdx], services: svcs };
+    const updated = { packages: pkgs };
+    save(updated);
   };
 
   if (!data) {
@@ -711,65 +827,140 @@ function PricingPanel() {
     <div className="space-y-5 pt-4">
       {data.packages.map((pkg, pkgIdx) => (
         <div key={pkg.id} className="border border-border rounded-2xl overflow-hidden">
+
+          {/* ── Package header ── */}
           <div className="bg-muted/30 px-4 py-4 flex items-start gap-3">
+            {/* Up/down reorder */}
             <div className="flex flex-col gap-0.5 pt-1 flex-none">
-              <button onClick={() => movePkg(pkgIdx, -1)} disabled={pkgIdx === 0}
-                className="text-foreground/40 hover:text-foreground disabled:opacity-20 transition leading-none text-xs px-1" title="Move up">▲</button>
-              <button onClick={() => movePkg(pkgIdx, 1)} disabled={pkgIdx === data.packages.length - 1}
-                className="text-foreground/40 hover:text-foreground disabled:opacity-20 transition leading-none text-xs px-1" title="Move down">▼</button>
+              <button
+                onClick={() => movePkg(pkgIdx, -1)}
+                disabled={pkgIdx === 0}
+                className="text-foreground/40 hover:text-foreground disabled:opacity-20 transition leading-none text-xs px-1"
+                title="Move package up"
+              >▲</button>
+              <button
+                onClick={() => movePkg(pkgIdx, 1)}
+                disabled={pkgIdx === data.packages.length - 1}
+                className="text-foreground/40 hover:text-foreground disabled:opacity-20 transition leading-none text-xs px-1"
+                title="Move package down"
+              >▼</button>
             </div>
+
+            {/* Package fields */}
             <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-2">
-              <input value={pkg.nameEn} onChange={(e) => updatePkg(pkgIdx, { nameEn: e.target.value })}
+              <input
+                value={pkg.nameEn}
+                onChange={(e) => updatePkg(pkgIdx, { nameEn: e.target.value })}
                 placeholder="Package name (EN)"
-                className="rounded-xl border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" dir="ltr" />
-              <input value={pkg.nameAr} onChange={(e) => updatePkg(pkgIdx, { nameAr: e.target.value })}
+                className="rounded-xl border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                dir="ltr"
+              />
+              <input
+                value={pkg.nameAr}
+                onChange={(e) => updatePkg(pkgIdx, { nameAr: e.target.value })}
                 placeholder="اسم الباقة (AR)"
-                className="rounded-xl border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" dir="rtl" />
-              <input value={pkg.price} onChange={(e) => updatePkg(pkgIdx, { price: e.target.value })}
+                className="rounded-xl border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                dir="rtl"
+              />
+              <input
+                value={pkg.price}
+                onChange={(e) => updatePkg(pkgIdx, { price: e.target.value })}
                 placeholder="$40"
-                className="rounded-xl border border-border bg-background px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/30" dir="ltr" />
+                className="rounded-xl border border-border bg-background px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/30"
+                dir="ltr"
+              />
             </div>
+
+            {/* Featured + delete package */}
             <div className="flex items-center gap-3 flex-none">
               <label className="flex items-center gap-1.5 text-xs text-foreground/50 cursor-pointer select-none">
-                <input type="checkbox" checked={!!pkg.featured}
+                <input
+                  type="checkbox"
+                  checked={!!pkg.featured}
                   onChange={(e) => updatePkg(pkgIdx, { featured: e.target.checked })}
-                  className="rounded accent-primary" />
+                  className="rounded accent-primary"
+                />
                 {t('admin.featured')}
               </label>
-              <button onClick={() => removePkg(pkgIdx)} className="text-red-400 hover:text-red-600 transition" title="Remove package">
+              <button
+                onClick={() => removePkg(pkgIdx)}
+                className="text-red-400 hover:text-red-600 transition"
+                title="Delete this package"
+              >
                 <Trash2 size={16} />
               </button>
             </div>
           </div>
-          <div className="p-4 space-y-2">
+
+          {/* ── Services list ── */}
+          <div className="p-4 space-y-1.5">
+            {pkg.services.length === 0 && (
+              <p className="text-xs text-foreground/30 text-center py-2">
+                No services yet — add one below.
+              </p>
+            )}
+
             {pkg.services.map((svc, svcIdx) => (
-              <div key={svcIdx} className="flex items-center gap-2">
-                <input value={svc.en} onChange={(e) => updateService(pkgIdx, svcIdx, { en: e.target.value })}
-                  placeholder="Service (EN)"
-                  className="flex-1 rounded-xl border border-border bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" dir="ltr" />
-                <input value={svc.ar} onChange={(e) => updateService(pkgIdx, svcIdx, { ar: e.target.value })}
-                  placeholder="الخدمة (AR)"
-                  className="flex-1 rounded-xl border border-border bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" dir="rtl" />
-                <button onClick={() => removeService(pkgIdx, svcIdx)} className="text-red-400 hover:text-red-600 transition flex-none"><X size={15} /></button>
-              </div>
+              <ServiceRow
+                key={`${pkg.id}-${svcIdx}`}
+                svc={svc}
+                svcIdx={svcIdx}
+                pkgIdx={pkgIdx}
+                isOnly={pkg.services.length === 1}
+                onUpdate={(patch) => updateService(pkgIdx, svcIdx, patch)}
+                onDelete={() => deleteService(pkgIdx, svcIdx)}
+                dragHandleProps={{
+                  onDragStart: () => {
+                    svcDragSrc.current = { pkgIdx, svcIdx };
+                  },
+                  onDragOver: (e) => {
+                    e.preventDefault();
+                    setSvcDragTarget({ pkgIdx, svcIdx });
+                  },
+                  onDrop: () => dropService(pkgIdx, svcIdx),
+                  isDragTarget:
+                    svcDragTarget?.pkgIdx === pkgIdx &&
+                    svcDragTarget?.svcIdx === svcIdx,
+                }}
+              />
             ))}
-            <button onClick={() => addService(pkgIdx)}
-              className="flex items-center gap-1.5 text-sm text-primary hover:text-primary/80 transition mt-1">
+
+            {pkg.services.length > 1 && (
+              <p className="text-xs text-foreground/30 pt-1 pb-0.5">
+                ↕ Drag rows to reorder
+              </p>
+            )}
+
+            <button
+              onClick={() => addService(pkgIdx)}
+              className="flex items-center gap-1.5 text-sm text-primary hover:text-primary/80 transition mt-2 pt-1"
+            >
               <Plus size={14} /> {t('admin.add.service')}
             </button>
           </div>
         </div>
       ))}
 
-      <button onClick={addPkg}
-        className="flex items-center gap-2 text-sm text-primary border border-primary/30 hover:border-primary rounded-xl px-4 py-3 transition w-full justify-center">
+      {/* Add package */}
+      <button
+        onClick={addPkg}
+        className="flex items-center gap-2 text-sm text-primary border border-primary/30 hover:border-primary rounded-xl px-4 py-3 transition w-full justify-center"
+      >
         <Plus size={15} /> {t('admin.add.package')}
       </button>
 
+      {/* Save all (for package field edits; service changes auto-save) */}
       <div className="flex items-center gap-3 flex-wrap">
-        <Button onClick={() => data && save(data)} disabled={saving} className="rounded-full gap-1.5">
+        <Button
+          onClick={() => data && save(data)}
+          disabled={saving}
+          className="rounded-full gap-1.5"
+        >
           {saving ? t('admin.saving') : t('admin.save.all')}
         </Button>
+        <p className="text-xs text-foreground/40">
+          Service deletions & reorders save automatically.
+        </p>
         <StatusBanner status={status} />
       </div>
     </div>
