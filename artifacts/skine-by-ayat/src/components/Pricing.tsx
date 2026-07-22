@@ -98,16 +98,12 @@ export function Pricing() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: i * 0.15 }}
                 whileHover={{ y: -6, transition: { duration: 0.2 } }}
-                className={`relative flex flex-col rounded-3xl border shadow-lg overflow-hidden transition-shadow duration-300 hover:shadow-2xl ${
-                  isFeatured
-                    ? 'bg-primary text-primary-foreground border-primary'
-                    : 'bg-card border-border'
-                }`}
+                className="relative flex flex-col rounded-3xl border border-border bg-card shadow-lg overflow-hidden transition-shadow duration-300 hover:shadow-2xl"
               >
                 {/* Popular badge */}
                 {isFeatured && (
                   <div className="absolute top-5 end-5">
-                    <span className="bg-white/25 text-white text-xs font-semibold px-3 py-1 rounded-full tracking-wide">
+                    <span className="bg-primary text-primary-foreground text-xs font-semibold px-3 py-1 rounded-full tracking-wide">
                       {t('pricing.popular')}
                     </span>
                   </div>
@@ -115,60 +111,31 @@ export function Pricing() {
 
                 {/* Header */}
                 <div className="p-8 pb-6">
-                  <h3
-                    className={`text-xl font-bold ${
-                      isFeatured ? 'text-primary-foreground' : 'text-foreground'
-                    }`}
-                  >
+                  <h3 className="text-xl font-bold text-foreground">
                     {lang === 'ar' ? pkg.nameAr : pkg.nameEn}
                   </h3>
                   <div className="flex items-baseline gap-1 mt-5">
-                    <span
-                      className={`text-5xl font-extrabold tracking-tight ${
-                        isFeatured ? 'text-primary-foreground' : 'text-foreground'
-                      }`}
-                    >
+                    <span className="text-5xl font-extrabold tracking-tight text-foreground">
                       {pkg.price}
                     </span>
-                    <span
-                      className={`text-sm ms-1 ${
-                        isFeatured ? 'text-primary-foreground/70' : 'text-foreground/50'
-                      }`}
-                    >
+                    <span className="text-sm ms-1 text-foreground/50">
                       / {t('pricing.session')}
                     </span>
                   </div>
                 </div>
 
                 {/* Divider */}
-                <div
-                  className={`mx-8 h-px ${
-                    isFeatured ? 'bg-white/20' : 'bg-border'
-                  }`}
-                />
+                <div className="mx-8 h-px bg-border" />
 
                 {/* Services list + CTA */}
                 <div className="p-8 flex-1 flex flex-col">
                   <ul className="space-y-3.5 flex-1">
                     {pkg.services.map((svc, j) => (
                       <li key={j} className="flex items-center gap-3">
-                        <span
-                          className={`w-5 h-5 rounded-full flex items-center justify-center flex-none ${
-                            isFeatured ? 'bg-white/20' : 'bg-primary/10'
-                          }`}
-                        >
-                          <Check
-                            size={11}
-                            className={isFeatured ? 'text-white' : 'text-primary'}
-                          />
+                        <span className="w-5 h-5 rounded-full flex items-center justify-center flex-none bg-primary/10">
+                          <Check size={11} className="text-primary" />
                         </span>
-                        <span
-                          className={`text-sm ${
-                            isFeatured
-                              ? 'text-primary-foreground/90'
-                              : 'text-foreground/80'
-                          }`}
-                        >
+                        <span className="text-sm text-foreground/80">
                           {lang === 'ar' ? svc.ar : svc.en}
                         </span>
                       </li>
@@ -179,12 +146,8 @@ export function Pricing() {
                     onClick={() =>
                       window.open(JOTFORM_URL, '_blank', 'noopener,noreferrer')
                     }
-                    className={`w-full mt-8 rounded-full font-semibold text-base ${
-                      isFeatured
-                        ? 'bg-white text-primary hover:bg-white/90 border-0'
-                        : ''
-                    }`}
-                    variant={isFeatured ? 'default' : 'outline'}
+                    className="w-full mt-8 rounded-full font-semibold text-base"
+                    variant="outline"
                     size="lg"
                   >
                     {t('pricing.cta')}
