@@ -6,7 +6,6 @@ import { Services } from '@/components/Services';
 import { Pricing } from '@/components/Pricing';
 import { Consultation } from '@/components/Consultation';
 import { Location } from '@/components/Location';
-import { WhatsAppSection } from '@/components/WhatsAppSection';
 import { ReviewsCarousel } from '@/components/ReviewsCarousel';
 import { BeforeAfter } from '@/components/BeforeAfter';
 import { FAQ } from '@/components/FAQ';
@@ -33,7 +32,6 @@ function MainSite() {
         {/* 4 */} <Pricing />
         {/* 5 */} <Consultation />
         {/* 6 */} <Location />
-        {/* 7 */} <WhatsAppSection />
         {/* 8 */} <ReviewsCarousel />
         {/* 9 */} <BeforeAfter />
         {/* 10 */} <FAQ />
