@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Upload, Trash2, LogOut, Lock, CheckCircle, AlertCircle,
   ImageIcon, X, GripVertical, Map, ChevronDown, Plus,
-  DollarSign, RefreshCw,
+  DollarSign, RefreshCw, CalendarCheck,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -44,6 +44,21 @@ interface PricingCategory {
   packages: PricingPackage[];
 }
 interface PricingData { categories: PricingCategory[]; }
+
+// ─── Consultation types ───────────────────────────────────────────────────────
+interface ConsultationItem {
+  id: string;
+  titleAr: string;
+  titleEn: string;
+  descAr: string;
+  descEn: string;
+}
+interface ConsultationData {
+  price: string;
+  headingAr: string;
+  headingEn: string;
+  items: ConsultationItem[];
+}
 
 // ─── Confirmation dialog ──────────────────────────────────────────────────────
 function ConfirmDialog({
@@ -1359,6 +1374,299 @@ function PricingPanel() {
   );
 }
 
+// ─── Consultation item row ────────────────────────────────────────────────────
+function ConsultationItemRow({
+  item,
+  index,
+  isOnly,
+  onUpdate,
+  onDelete,
+  dragHandleProps,
+}: {
+  item: ConsultationItem;
+  index: number;
+  isOnly: boolean;
+  onUpdate: (patch: Partial<ConsultationItem>) => void;
+  onDelete: () => void;
+  dragHandleProps: {
+    onDragStart: () => void;
+    onDragOver: (e: React.DragEvent) => void;
+    onDrop: () => void;
+    isDragTarget: boolean;
+  };
+}) {
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  return (
+    <>
+      {confirmDelete && (
+        <ConfirmDialog
+          message="Delete this checklist item? This cannot be undone."
+          onConfirm={() => { setConfirmDelete(false); onDelete(); }}
+          onCancel={() => setConfirmDelete(false)}
+        />
+      )}
+
+      <div
+        draggable
+        onDragStart={dragHandleProps.onDragStart}
+        onDragOver={dragHandleProps.onDragOver}
+        onDrop={dragHandleProps.onDrop}
+        className={`rounded-2xl border transition-colors overflow-hidden ${
+          dragHandleProps.isDragTarget
+            ? 'border-primary/50 bg-primary/5'
+            : 'border-border bg-background'
+        }`}
+      >
+        {/* Row header */}
+        <div className="flex items-center gap-3 px-4 py-2.5 bg-muted/30 border-b border-border">
+          <div
+            className="cursor-grab active:cursor-grabbing text-foreground/30 hover:text-foreground/60 transition flex-none"
+            title="Drag to reorder"
+          >
+            <GripVertical size={15} />
+          </div>
+          <span className="text-xs font-medium text-foreground/50 flex-1">Item {index + 1}</span>
+          {!isOnly && (
+            <button
+              onClick={() => setConfirmDelete(true)}
+              className="flex items-center gap-1 text-xs text-red-400 hover:text-red-600 transition"
+            >
+              <Trash2 size={12} /> Delete
+            </button>
+          )}
+        </div>
+
+        {/* Fields */}
+        <div className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* English */}
+          <div className="space-y-2">
+            <p className="text-xs font-semibold text-foreground/40 uppercase tracking-wide">English</p>
+            <input
+              value={item.titleEn}
+              onChange={(e) => onUpdate({ titleEn: e.target.value })}
+              placeholder="Title (EN)"
+              className="w-full rounded-lg border border-border bg-muted/20 px-3 py-1.5 text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/30 transition"
+              dir="ltr"
+            />
+            <textarea
+              value={item.descEn}
+              onChange={(e) => onUpdate({ descEn: e.target.value })}
+              placeholder="Description (EN)"
+              rows={2}
+              className="w-full rounded-lg border border-border bg-muted/20 px-3 py-1.5 text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/30 transition resize-none"
+              dir="ltr"
+            />
+          </div>
+
+          {/* Arabic */}
+          <div className="space-y-2">
+            <p className="text-xs font-semibold text-foreground/40 uppercase tracking-wide">Arabic / العربية</p>
+            <input
+              value={item.titleAr}
+              onChange={(e) => onUpdate({ titleAr: e.target.value })}
+              placeholder="العنوان (AR)"
+              className="w-full rounded-lg border border-border bg-muted/20 px-3 py-1.5 text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/30 transition"
+              dir="rtl"
+            />
+            <textarea
+              value={item.descAr}
+              onChange={(e) => onUpdate({ descAr: e.target.value })}
+              placeholder="الوصف (AR)"
+              rows={2}
+              className="w-full rounded-lg border border-border bg-muted/20 px-3 py-1.5 text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/30 transition resize-none"
+              dir="rtl"
+            />
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+// ─── Consultation panel ───────────────────────────────────────────────────────
+function ConsultationPanel() {
+  const { t } = useLanguage();
+
+  const DEFAULT: ConsultationData = {
+    price: '$35',
+    headingEn: "What you'll receive during your consultation ✨",
+    headingAr: 'ما ستحصلين عليه خلال استشارتك ✨',
+    items: [],
+  };
+
+  const [data, setData] = useState<ConsultationData | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [status, setStatus] = useState<Status>(null);
+  const dragSrc = useRef<number | null>(null);
+  const [dragTarget, setDragTarget] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch('/api/consultation')
+      .then((r) => r.json())
+      .then((d: ConsultationData) => { if (d?.items) setData(d); })
+      .catch(() => setData(DEFAULT));
+  }, []);
+
+  const save = async (updated: ConsultationData, silent = false) => {
+    setSaving(true);
+    if (!silent) setStatus(null);
+    try {
+      const res = await fetch('/api/consultation', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updated),
+      });
+      if (!res.ok) throw new Error();
+      setData(updated);
+      if (!silent) setStatus({ type: 'success', message: t('admin.saved') });
+    } catch {
+      setStatus({ type: 'error', message: 'Save failed — please try again.' });
+    }
+    setSaving(false);
+  };
+
+  const updateField = (patch: Partial<ConsultationData>) => {
+    if (!data) return;
+    setData({ ...data, ...patch });
+  };
+
+  const updateItem = (idx: number, patch: Partial<ConsultationItem>) => {
+    if (!data) return;
+    const items = [...data.items];
+    items[idx] = { ...items[idx], ...patch };
+    setData({ ...data, items });
+  };
+
+  const deleteItem = (idx: number) => {
+    if (!data) return;
+    const updated = { ...data, items: data.items.filter((_, i) => i !== idx) };
+    save(updated);
+  };
+
+  const addItem = () => {
+    if (!data) return;
+    const newItem: ConsultationItem = {
+      id: `item-${Date.now()}`,
+      titleEn: '',
+      titleAr: '',
+      descEn: '',
+      descAr: '',
+    };
+    setData({ ...data, items: [...data.items, newItem] });
+  };
+
+  const dropItem = (toIdx: number) => {
+    const fromIdx = dragSrc.current;
+    setDragTarget(null);
+    dragSrc.current = null;
+    if (!data || fromIdx === null || fromIdx === toIdx) return;
+    const items = [...data.items];
+    const [moved] = items.splice(fromIdx, 1);
+    items.splice(toIdx, 0, moved);
+    save({ ...data, items });
+  };
+
+  if (!data) {
+    return <div className="text-center py-8 text-foreground/30 text-sm pt-4">Loading…</div>;
+  }
+
+  return (
+    <div className="space-y-5 pt-4">
+      {/* Settings: price + heading */}
+      <div className="rounded-2xl border border-border bg-background p-5 space-y-4">
+        <p className="text-xs font-semibold text-foreground/50 uppercase tracking-wide">Settings</p>
+
+        {/* Price */}
+        <div className="flex items-center gap-3">
+          <label className="text-sm font-medium text-foreground w-16 flex-none">Price</label>
+          <input
+            value={data.price}
+            onChange={(e) => updateField({ price: e.target.value })}
+            placeholder="$35"
+            className="w-32 rounded-xl border border-border bg-muted/20 px-3 py-1.5 text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/30 transition"
+            dir="ltr"
+          />
+        </div>
+
+        {/* Heading EN */}
+        <div className="space-y-1.5">
+          <label className="text-sm font-medium text-foreground">Heading (EN)</label>
+          <input
+            value={data.headingEn}
+            onChange={(e) => updateField({ headingEn: e.target.value })}
+            placeholder="What you'll receive during your consultation ✨"
+            className="w-full rounded-xl border border-border bg-muted/20 px-3 py-2 text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/30 transition"
+            dir="ltr"
+          />
+        </div>
+
+        {/* Heading AR */}
+        <div className="space-y-1.5">
+          <label className="text-sm font-medium text-foreground">Heading (AR)</label>
+          <input
+            value={data.headingAr}
+            onChange={(e) => updateField({ headingAr: e.target.value })}
+            placeholder="ما ستحصلين عليه خلال استشارتك ✨"
+            className="w-full rounded-xl border border-border bg-muted/20 px-3 py-2 text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/30 transition"
+            dir="rtl"
+          />
+        </div>
+      </div>
+
+      {/* Checklist items */}
+      <div className="space-y-3">
+        <p className="text-xs font-semibold text-foreground/50 uppercase tracking-wide">Checklist Items</p>
+
+        {data.items.length === 0 ? (
+          <div className="text-center py-8 text-foreground/30 text-sm border border-dashed border-border rounded-2xl">
+            No items yet — add one below.
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {data.items.map((item, i) => (
+              <ConsultationItemRow
+                key={item.id}
+                item={item}
+                index={i}
+                isOnly={data.items.length === 1}
+                onUpdate={(patch) => updateItem(i, patch)}
+                onDelete={() => deleteItem(i)}
+                dragHandleProps={{
+                  onDragStart: () => { dragSrc.current = i; },
+                  onDragOver: (e) => { e.preventDefault(); setDragTarget(i); },
+                  onDrop: () => dropItem(i),
+                  isDragTarget: dragTarget === i,
+                }}
+              />
+            ))}
+            <p className="text-center text-xs text-foreground/30 pt-1">
+              ↕ Drag items to reorder · {data.items.length} item{data.items.length !== 1 ? 's' : ''}
+            </p>
+          </div>
+        )}
+
+        {/* Add item */}
+        <button
+          onClick={addItem}
+          className="flex items-center gap-2 text-sm text-primary border border-dashed border-primary/40 hover:border-primary rounded-xl px-4 py-2.5 transition w-full justify-center"
+        >
+          <Plus size={14} /> Add Checklist Item
+        </button>
+      </div>
+
+      {/* Save all */}
+      <div className="flex items-center gap-3 flex-wrap">
+        <Button onClick={() => data && save(data)} disabled={saving} className="rounded-full gap-1.5">
+          {saving ? t('admin.saving') : t('admin.save.all')}
+        </Button>
+        <p className="text-xs text-foreground/40">Item deletions &amp; reorders save automatically.</p>
+        <StatusBanner status={status} />
+      </div>
+    </div>
+  );
+}
+
 // ─── Login screen ─────────────────────────────────────────────────────────────
 function LoginScreen({ onLogin }: { onLogin: () => void }) {
   const { t } = useLanguage();
@@ -1456,7 +1764,12 @@ export function Admin() {
           <PricingPanel />
         </Section>
 
-        {/* 2 — Client Reviews */}
+        {/* 2 — Consultation */}
+        <Section icon={<CalendarCheck size={17} />} title="Consultation" subtitle="Edit price, heading & checklist items">
+          <ConsultationPanel />
+        </Section>
+
+        {/* 3 — Client Reviews */}
         <Section icon={<ImageIcon size={17} />} title={t('admin.reviews')} subtitle="Upload, replace, reorder & delete review screenshots" defaultOpen>
           <CollectionPanel collection="reviews" />
         </Section>

@@ -5,6 +5,7 @@ import settingsRouter from "./settings";
 import siteImagesRouter from "./siteImages";
 import pricingRouter from "./pricing";
 import beforeAfterRouter from "./beforeAfter";
+import consultationRouter from "./consultation";
 
 const router: IRouter = Router();
 
@@ -15,5 +16,6 @@ router.use(imagesRouter);
 router.use(settingsRouter);
 router.use(siteImagesRouter);
 router.use(pricingRouter);
+router.use(consultationRouter);
 
 export default router;
