@@ -120,7 +120,11 @@ export function Consultation() {
             </ul>
 
             <Button
-              onClick={() => window.open(JOTFORM_URL, '_blank', 'noopener,noreferrer')}
+              onClick={() => window.open(
+                `${JOTFORM_URL}?input26=${encodeURIComponent('Consultation')}&price=${encodeURIComponent(data.price)}`,
+                '_blank',
+                'noopener,noreferrer'
+              )}
               className="w-full mt-8 rounded-full font-semibold text-base gap-2"
               variant="outline"
               size="lg"
