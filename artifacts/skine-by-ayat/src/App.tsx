@@ -32,8 +32,8 @@ function MainSite() {
         <BeforeAfter />
         <ReviewsCarousel />
         <Location />
-        <FAQ />
         <Contact />
+        <FAQ />
       </main>
       <Footer />
     </div>

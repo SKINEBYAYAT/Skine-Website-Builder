@@ -32,8 +32,8 @@ export function Navbar() {
     { name: t('nav.beforeafter'),  href: '#before-after' },
     { name: t('nav.reviews'),      href: '#reviews' },
     { name: t('nav.location'),     href: '#location' },
-    { name: t('nav.faq'),          href: '#faq' },
     { name: t('nav.contact'),      href: '#contact' },
+    { name: t('nav.faq'),          href: '#faq' },
   ];
 
   const scrollTo = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
