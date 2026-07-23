@@ -13,10 +13,13 @@ const translations: Record<string, Record<Language, string>> = {
   // Nav
   'nav.home': { ar: 'الرئيسية', en: 'Home' },
   'nav.about': { ar: 'من نحن', en: 'About' },
+  'nav.pricing': { ar: 'الأسعار', en: 'Pricing' },
   'nav.consultation': { ar: 'الاستشارة', en: 'Consultation' },
+  'nav.beforeafter': { ar: 'قبل وبعد', en: 'Before & After' },
+  'nav.reviews': { ar: 'آراء العملاء', en: 'Feedbacks' },
+  'nav.location': { ar: 'الموقع', en: 'Location' },
   'nav.faq': { ar: 'الأسئلة الشائعة', en: 'FAQ' },
-  'nav.contact': { ar: 'تواصل معنا', en: 'Contact' },
-  'nav.reviews': { ar: 'آراء العملاء', en: 'Reviews' },
+  'nav.contact': { ar: 'واتساب', en: 'WhatsApp' },
 
   // Hero
   'hero.para1': {
