@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from '@/components/ui/toaster';
 import { Navbar } from '@/components/Navbar';
 import { Hero } from '@/components/Hero';
+import { SectionNav } from '@/components/SectionNav';
 import { Pricing } from '@/components/Pricing';
 import { Consultation } from '@/components/Consultation';
 import { Location } from '@/components/Location';
@@ -27,6 +28,7 @@ function MainSite() {
       <Navbar />
       <main className="flex-1 w-full">
         <Hero />
+        <SectionNav />
         <Pricing />
         <Consultation />
         <BeforeAfter />
