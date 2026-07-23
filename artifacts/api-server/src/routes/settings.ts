@@ -38,7 +38,7 @@ router.put('/settings/:key', (req, res) => {
   const settings = readSettings();
   settings[key] = value;
   writeSettings(settings);
-  res.json({ success: true, key, value });
+  return res.json({ success: true, key, value });
 });
 
 // DELETE /settings/:key

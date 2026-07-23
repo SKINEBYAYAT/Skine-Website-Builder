@@ -46,7 +46,7 @@
           "nameAr": "هيدرافيشل",
           "nameEn": "Hydrafacial",
           "price": "$45",
-          "featured": true,
+          "featured": false,
           "services": [
             {
               "ar": "تنظيف عميق",
@@ -178,6 +178,47 @@
             {
               "ar": "توهج صحي مشرق",
               "en": "Radiant healthy glow"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cat-1784818858795",
+      "nameEn": "Offers",
+      "nameAr": "عروضات",
+      "packages": [
+        {
+          "id": "pkg-1784818874527",
+          "nameAr": "خطة شاملة للعناية بالبشرة",
+          "nameEn": "Complete skin plan",
+          "price": "$60",
+          "featured": false,
+          "services": [
+            {
+              "ar": "استشارة",
+              "en": "consultation"
+            },
+            {
+              "ar": "جلسة تنظيف بشرة",
+              "en": "facial"
+            },
+            {
+              "ar": "روتين عناية بالبشرة مُخصّص",
+              "en": "⁠personalized skincare routine"
+            }
+          ]
+        },
+        {
+          "id": "pkg-1784819097235",
+          "nameAr": "سلسلة جلسات الوخز بالإبر الدقيقة",
+          "nameEn": "Microneedling Series",
+          "price": "Special Offer",
+          "featured": false,
+          "services": [
+            {
+              "ar": "اشترِ 4 جلسات واحصل على الجلسة الخامسة مجاناً.",
+              "en": "Buy 4 sessions and get the 5th session free."
             }
           ]
         }

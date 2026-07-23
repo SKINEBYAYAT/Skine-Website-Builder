@@ -90,7 +90,7 @@ router.put('/consultation', (req, res) => {
     return res.status(400).json({ error: 'Invalid consultation data' });
   }
   writeConsultation(body as ConsultationData);
-  res.json({ success: true });
+  return res.json({ success: true });
 });
 
 export default router;

@@ -100,7 +100,7 @@ router.post(
     const pairs = readPairs();
     pairs.push(pair);
     writePairs(pairs);
-    res.status(201).json(pairWithUrls(pair));
+    return res.status(201).json(pairWithUrls(pair));
   },
 );
 
@@ -114,7 +114,7 @@ router.put('/before-after/reorder', (req, res) => {
   const map = new Map(pairs.map((p) => [p.id, p]));
   const reordered = (order as string[]).map((id) => map.get(id)).filter(Boolean) as BAPair[];
   writePairs(reordered);
-  res.json({ success: true });
+  return res.json({ success: true });
 });
 
 // ── PUT replace before image ──────────────────────────────────────────────────
@@ -126,7 +126,7 @@ router.put('/before-after/:id/before', upload.single('image'), (req, res) => {
   safeDelete(pairs[idx].beforeFilename);
   pairs[idx].beforeFilename = req.file.filename;
   writePairs(pairs);
-  res.json(pairWithUrls(pairs[idx]));
+  return res.json(pairWithUrls(pairs[idx]));
 });
 
 // ── PUT replace after image ───────────────────────────────────────────────────
@@ -138,7 +138,7 @@ router.put('/before-after/:id/after', upload.single('image'), (req, res) => {
   safeDelete(pairs[idx].afterFilename);
   pairs[idx].afterFilename = req.file.filename;
   writePairs(pairs);
-  res.json(pairWithUrls(pairs[idx]));
+  return res.json(pairWithUrls(pairs[idx]));
 });
 
 // ── DELETE pair ───────────────────────────────────────────────────────────────
@@ -150,7 +150,7 @@ router.delete('/before-after/:id', (req, res) => {
   safeDelete(pairs[idx].afterFilename);
   pairs.splice(idx, 1);
   writePairs(pairs);
-  res.json({ success: true });
+  return res.json({ success: true });
 });
 
 export default router;

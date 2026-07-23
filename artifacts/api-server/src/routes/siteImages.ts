@@ -57,20 +57,20 @@ const router = Router();
 
 // GET current image URL for a key
 router.get('/site-images/:key', (req, res) => {
-  const { key } = req.params;
+  const { key } = req.params as Record<string, string>;
   if (!isValidKey(key)) return res.status(400).json({ error: 'Invalid key' });
 
   const current = getCurrentFile(key);
   if (!current) return res.json({ url: null });
 
-  res.json({
+  return res.json({
     url: `/api/site-images/${key}/file/${encodeURIComponent(current)}`,
   });
 });
 
 // Serve the actual file
 router.get('/site-images/:key/file/:filename', (req, res) => {
-  const { key, filename } = req.params;
+  const { key, filename } = req.params as Record<string, string>;
   if (!isValidKey(key)) return res.status(400).json({ error: 'Invalid key' });
 
   const dir = getKeyDir(key);
@@ -81,12 +81,12 @@ router.get('/site-images/:key/file/:filename', (req, res) => {
   }
   if (!fs.existsSync(filePath)) return res.status(404).json({ error: 'Not found' });
 
-  res.sendFile(filePath);
+  return res.sendFile(filePath);
 });
 
 // Upload / replace image for a key
 router.post('/site-images/:key', upload.single('image'), (req, res) => {
-  const { key } = req.params;
+  const { key } = req.params as Record<string, string>;
   if (!isValidKey(key)) return res.status(400).json({ error: 'Invalid key' });
   if (!req.file) return res.status(400).json({ error: 'No file provided' });
 
@@ -103,14 +103,14 @@ router.post('/site-images/:key', upload.single('image'), (req, res) => {
     } catch {}
   });
 
-  res.status(201).json({
+  return res.status(201).json({
     url: `/api/site-images/${key}/file/${encodeURIComponent(req.file.filename)}`,
   });
 });
 
 // Delete (revert to default) image for a key
 router.delete('/site-images/:key', (req, res) => {
-  const { key } = req.params;
+  const { key } = req.params as Record<string, string>;
   if (!isValidKey(key)) return res.status(400).json({ error: 'Invalid key' });
 
   const dir = getKeyDir(key);
@@ -123,7 +123,7 @@ router.delete('/site-images/:key', (req, res) => {
     } catch {}
   });
 
-  res.json({ success: true });
+  return res.json({ success: true });
 });
 
 export default router;

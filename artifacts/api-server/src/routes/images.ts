@@ -79,7 +79,7 @@ const router = Router();
 
 // ── Serve a single image file ─────────────────────────────────────────────────
 router.get('/images/:collection/file/:filename', (req, res) => {
-  const { collection, filename } = req.params;
+  const { collection, filename } = req.params as Record<string, string>;
   if (!isValidCollection(collection)) return res.status(400).json({ error: 'Invalid collection' });
 
   const dir = collectionDir(collection);
@@ -91,12 +91,12 @@ router.get('/images/:collection/file/:filename', (req, res) => {
   }
   if (!fs.existsSync(filePath)) return res.status(404).json({ error: 'Not found' });
 
-  res.sendFile(filePath);
+  return res.sendFile(filePath);
 });
 
 // ── List images ───────────────────────────────────────────────────────────────
 router.get('/images/:collection', (req, res) => {
-  const { collection } = req.params;
+  const { collection } = req.params as Record<string, string>;
   if (!isValidCollection(collection)) return res.status(400).json({ error: 'Invalid collection' });
 
   const dir = collectionDir(collection);
@@ -105,12 +105,12 @@ router.get('/images/:collection', (req, res) => {
     filename,
     url: `/api/images/${collection}/file/${encodeURIComponent(filename)}`,
   }));
-  res.json({ images });
+  return res.json({ images });
 });
 
 // ── Upload image ──────────────────────────────────────────────────────────────
 router.post('/images/:collection', upload.single('image'), (req, res) => {
-  const { collection } = req.params;
+  const { collection } = req.params as Record<string, string>;
   if (!isValidCollection(collection)) return res.status(400).json({ error: 'Invalid collection' });
   if (!req.file) return res.status(400).json({ error: 'No file provided' });
 
@@ -119,7 +119,7 @@ router.post('/images/:collection', upload.single('image'), (req, res) => {
   order.push(req.file.filename);
   writeOrder(dir, order);
 
-  res.status(201).json({
+  return res.status(201).json({
     filename: req.file.filename,
     url: `/api/images/${collection}/file/${encodeURIComponent(req.file.filename)}`,
   });
@@ -127,7 +127,7 @@ router.post('/images/:collection', upload.single('image'), (req, res) => {
 
 // ── Delete image ──────────────────────────────────────────────────────────────
 router.delete('/images/:collection/:filename', (req, res) => {
-  const { collection, filename } = req.params;
+  const { collection, filename } = req.params as Record<string, string>;
   if (!isValidCollection(collection)) return res.status(400).json({ error: 'Invalid collection' });
 
   const dir = collectionDir(collection);
@@ -142,12 +142,12 @@ router.delete('/images/:collection/:filename', (req, res) => {
   const order = readOrder(dir).filter((f) => f !== filename);
   writeOrder(dir, order);
 
-  res.json({ success: true });
+  return res.json({ success: true });
 });
 
 // ── Reorder images ────────────────────────────────────────────────────────────
 router.put('/images/:collection/reorder', (req, res) => {
-  const { collection } = req.params;
+  const { collection } = req.params as Record<string, string>;
   if (!isValidCollection(collection)) return res.status(400).json({ error: 'Invalid collection' });
 
   const { order } = req.body as { order?: unknown };
@@ -157,7 +157,7 @@ router.put('/images/:collection/reorder', (req, res) => {
 
   const dir = collectionDir(collection);
   writeOrder(dir, order as string[]);
-  res.json({ success: true });
+  return res.json({ success: true });
 });
 
 export default router;

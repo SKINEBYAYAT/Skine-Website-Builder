@@ -166,7 +166,7 @@ router.put('/pricing', (req, res) => {
     return res.status(400).json({ error: 'Body must be { categories: [...] }' });
   }
   writePricing(body as PricingData);
-  res.json({ success: true });
+  return res.json({ success: true });
 });
 
 export default router;
