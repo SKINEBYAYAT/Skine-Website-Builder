@@ -1,9 +1,5 @@
-import { Instagram } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import logo from '@assets/IMG_7839_1784317781519.jpeg';
-
-const JOTFORM_URL = 'https://form.jotform.com/261913445488062';
-const INSTAGRAM_URL = 'https://instagram.com/skinebyayat';
 const DEV_URL = 'https://www.instagram.com/marwan.web.dev?igsh=NHZ1bm1saGpmcjBk&utm_source=qr';
 
 export function Footer() {
@@ -20,25 +16,6 @@ export function Footer() {
             </p>
           </div>
 
-          <div className="flex flex-col items-center md:items-end gap-6">
-            <div className="flex gap-4">
-              <a 
-                href={INSTAGRAM_URL}
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-card border border-card-border flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300"
-              >
-                <Instagram size={20} />
-              </a>
-            </div>
-            
-            <button 
-              onClick={() => window.open(JOTFORM_URL, '_blank', 'noopener,noreferrer')}
-              className="text-primary font-bold hover:underline underline-offset-4"
-            >
-              {t('nav.consultation')}
-            </button>
-          </div>
         </div>
 
         <div className="border-t border-border pt-8 flex flex-col items-center gap-3 text-sm text-muted-foreground">
