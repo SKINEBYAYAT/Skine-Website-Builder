@@ -38,21 +38,21 @@ export function SectionNav() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="flex flex-col gap-2.5"
+          className="rounded-3xl border border-border bg-card shadow-sm overflow-hidden"
         >
-          {links.map(({ key, href, Icon }, i) => (
-              <motion.div
+          <ul className="divide-y divide-border">
+            {links.map(({ key, href, Icon }, i) => (
+              <motion.li
                 key={href}
                 initial={{ opacity: 0, x: 12 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.35, delay: i * 0.05 }}
-                className="rounded-xl border border-border bg-card overflow-hidden shadow-sm"
               >
                 <a
                   href={href}
                   onClick={(e) => scrollTo(e, href)}
-                  className="flex items-center justify-between gap-3 px-5 py-3.5 text-sm font-medium text-foreground/80 hover:text-primary hover:bg-primary/5 transition-colors group"
+                  className="flex items-center justify-between gap-3 px-6 py-4 text-sm font-medium text-foreground/80 hover:text-primary hover:bg-primary/5 transition-colors group"
                 >
                   <span className="flex items-center gap-3">
                     <span className="flex-none w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
@@ -65,8 +65,9 @@ export function SectionNav() {
                     className="flex-none opacity-40 group-hover:opacity-80 rotate-[-90deg] rtl:rotate-90 transition-transform"
                   />
                 </a>
-              </motion.div>
+              </motion.li>
             ))}
+          </ul>
         </motion.div>
       </div>
     </section>
