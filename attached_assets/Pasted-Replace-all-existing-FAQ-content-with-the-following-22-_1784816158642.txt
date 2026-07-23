@@ -1,0 +1,73 @@
+Replace all existing FAQ content with the following 22 Q&A pairs. Do not display numbers in the UI (no "1.", "2." etc. visible on the site) — just the question as the accordion header and the answer as the expandable content, same as the current FAQ style/component.
+
+1. Q: How often should I get a facial?
+A: Most people benefit from a facial every 4–6 weeks, but the ideal frequency depends on your skin type and concerns.
+
+2. Q: Is a facial suitable for sensitive skin?
+A: Yes. Treatments can be customized using gentle products and techniques to suit sensitive skin.
+
+3. Q: What should I avoid after a facial?
+A: Avoid direct sun exposure, saunas, intense workouts, exfoliating products, and active ingredients like retinol or acids for 24–48 hours, depending on your treatment.
+
+4. Q: Are facials helpful for acne?
+A: Yes. Professional facials can help reduce congestion, manage breakouts, and improve overall skin health when combined with a proper home routine.
+
+5. Q: Can I get a facial if I'm pregnant?
+A: Many facial treatments are pregnancy-safe, but some ingredients and procedures should be avoided. Always let your specialist know if you're pregnant.
+
+6. Q: How long does a facial take?
+A: Most facial treatments take 60–90 minutes, while the first visit may take longer if it includes a detailed consultation.
+
+7. Q: Will one facial solve my skin concerns?
+A: A single facial can improve your skin's appearance, but long-term results require consistency and a personalized skincare routine.
+
+8. Q: How do I prepare for my appointment?
+A: Arrive with clean skin if possible, avoid strong exfoliants or retinoids for a few days beforehand, and let your specialist know about any allergies or medications.
+
+9. Q: Will extractions leave marks?
+A: When performed professionally, extractions are done carefully to minimize irritation and reduce the risk of scarring.
+
+10. Q: What if I don't know my skin type?
+A: That's completely fine. Your skin type and condition will be assessed during your consultation.
+
+11. Q: Can I book a facial even if I already have a skincare routine?
+A: Yes. Professional treatments complement your home routine and can help you achieve better, faster results.
+
+12. Q: Can I get a facial while taking Roaccutane?
+A: No. Facial treatments are not recommended during oral isotretinoin (Roaccutane) therapy due to increased skin sensitivity. Please book your facial after completing your treatment and following a professional skin assessment.
+
+13. Q: Can I get a facial if I have eczema, rosacea, or psoriasis?
+A: It depends on your skin condition. An assessment is required before treatment.
+
+14. Q: Can I have a facial after Botox or fillers?
+A: It's recommended to wait at least 2 weeks, or follow your injector's advice.
+
+15. Q: Can I get a facial before a special event?
+A: Yes. Ideally, book your appointment 5–7 days before your event for the best results.
+
+16. Q: Can I get a facial after laser treatment?
+A: No. Your skin should be fully healed before having a facial.
+
+17. Q: Can teenagers get facials?
+A: Yes. Age-appropriate treatments can help manage acne and maintain healthy skin.
+
+18. Q: Will extractions remove all my blackheads in one session?
+A: Not always. Depending on the severity of congestion, multiple sessions may be needed.
+
+19. Q: Can I exercise after a facial?
+A: It's recommended to avoid intense workouts for 24 hours.
+
+20. Q: Can I wash my face after a facial?
+A: It's best to wait until the next day, or follow your specialist's aftercare instructions.
+
+21. Q: Can I get a facial if I have sunburn?
+A: No. Wait until your skin has completely healed.
+
+22. Q: Do I need to bring my skincare products to the consultation?
+A: If possible, yes. It helps evaluate your current routine and make the best recommendations.
+
+Requirements:
+- Remove all previous FAQ questions/answers entirely.
+- Add Arabic translations for all 22 questions and answers (professional, natural skincare-clinic tone matching the rest of the site), since the site defaults to Arabic.
+- Keep the existing accordion UI, styling, and Admin Panel FAQ management (add/edit/delete/reorder) working the same way, just with this new content populated in.
+- Test that all 22 items render correctly, expand/collapse properly, and display correctly in both Arabic and English without visible numbering.

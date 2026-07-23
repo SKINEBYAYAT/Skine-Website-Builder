@@ -10,7 +10,7 @@ import {
 export function FAQ() {
   const { t } = useLanguage();
 
-  const faqs = [1, 2, 3, 4];
+  const faqs = Array.from({ length: 22 }, (_, i) => i + 1);
 
   return (
     <section id="faq" className="py-24 bg-background">

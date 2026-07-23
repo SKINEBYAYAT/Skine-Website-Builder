@@ -82,14 +82,72 @@ const translations: Record<string, Record<Language, string>> = {
 
   // FAQ
   'faq.title': { ar: 'الأسئلة الشائعة', en: 'Frequently Asked Questions' },
-  'faq.1.q': { ar: 'كيف يتم تقديم الاستشارة؟', en: 'How is the consultation conducted?' },
-  'faq.1.a': { ar: 'تتم الاستشارة عبر نموذج الحجز الإلكتروني، ثم نتواصل معك لتحليل بشرتك وتقديم روتين مخصص.', en: 'The consultation is done through our booking form, then we\'ll reach out to analyze your skin and provide a personalized routine.' },
-  'faq.2.q': { ar: 'هل الاستشارة مدفوعة؟', en: 'Is the consultation paid?' },
-  'faq.2.a': { ar: 'نعم، الاستشارة مدفوعة، لأنها لا تقتصر على التقييم الأولي، بل تشمل تشخيصًا دقيقًا لحالتك ووضع خطة علاجية مخصصة وفقًا لاحتياجاتك، لضمان أفضل النتائج.', en: 'Yes, the consultation is paid because it goes beyond an initial assessment. It includes a thorough evaluation of your skin condition and a personalized treatment plan tailored to your specific needs, ensuring the best possible results.' },
-  'faq.3.q': { ar: 'كم يستغرق وقت الاستشارة؟', en: 'How long does a consultation take?' },
-  'faq.3.a': { ar: 'تختلف المدة حسب نوع الاستشارة، وسيتم إبلاغك بالوقت المتوقع عند التواصل.', en: 'Duration varies by consultation type — you\'ll be informed of the estimated time when we contact you.' },
-  'faq.4.q': { ar: 'هل يمكنني إلغاء موعدي؟', en: 'Can I cancel my appointment?' },
-  'faq.4.a': { ar: 'نعم، يمكنك التواصل معنا قبل 24 ساعة من موعدك لإعادة الجدولة أو الإلغاء.', en: 'Yes, you can contact us at least 24 hours before your appointment to reschedule or cancel.' },
+
+  'faq.1.q': { ar: 'كم مرة يجب أن أحصل على جلسة فيشل؟', en: 'How often should I get a facial?' },
+  'faq.1.a': { ar: 'معظم الأشخاص يستفيدون من جلسة فيشل كل 4 إلى 6 أسابيع، لكن التكرار المثالي يعتمد على نوع بشرتك واحتياجاتها.', en: 'Most people benefit from a facial every 4–6 weeks, but the ideal frequency depends on your skin type and concerns.' },
+
+  'faq.2.q': { ar: 'هل الفيشل مناسب للبشرة الحساسة؟', en: 'Is a facial suitable for sensitive skin?' },
+  'faq.2.a': { ar: 'نعم. يمكن تخصيص العلاجات باستخدام منتجات وتقنيات لطيفة تناسب البشرة الحساسة.', en: 'Yes. Treatments can be customized using gentle products and techniques to suit sensitive skin.' },
+
+  'faq.3.q': { ar: 'ماذا يجب أن أتجنب بعد جلسة الفيشل؟', en: 'What should I avoid after a facial?' },
+  'faq.3.a': { ar: 'تجنبي التعرض المباشر لأشعة الشمس، والسونا، وممارسة الرياضة الشديدة، ومنتجات التقشير، والمكونات الفعّالة كالريتينول والأحماض لمدة 24 إلى 48 ساعة، وفقاً لنوع العلاج.', en: 'Avoid direct sun exposure, saunas, intense workouts, exfoliating products, and active ingredients like retinol or acids for 24–48 hours, depending on your treatment.' },
+
+  'faq.4.q': { ar: 'هل الفيشل مفيد في حالات حب الشباب؟', en: 'Are facials helpful for acne?' },
+  'faq.4.a': { ar: 'نعم. يمكن للفيشل الاحترافي المساعدة في تقليل الانسداد وإدارة البثور وتحسين صحة البشرة بشكل عام عند دمجه مع روتين عناية منزلي مناسب.', en: 'Yes. Professional facials can help reduce congestion, manage breakouts, and improve overall skin health when combined with a proper home routine.' },
+
+  'faq.5.q': { ar: 'هل يمكنني الحصول على جلسة فيشل أثناء الحمل؟', en: 'Can I get a facial if I\'m pregnant?' },
+  'faq.5.a': { ar: 'كثير من علاجات الفيشل آمنة أثناء الحمل، لكن يجب تجنب بعض المكونات والإجراءات. يُرجى إبلاغ المختصة دائماً إذا كنتِ حاملاً.', en: 'Many facial treatments are pregnancy-safe, but some ingredients and procedures should be avoided. Always let your specialist know if you\'re pregnant.' },
+
+  'faq.6.q': { ar: 'كم تستغرق جلسة الفيشل؟', en: 'How long does a facial take?' },
+  'faq.6.a': { ar: 'تستغرق معظم علاجات الفيشل من 60 إلى 90 دقيقة، وقد تستغرق الزيارة الأولى وقتاً أطول إذا تضمنت استشارة تفصيلية.', en: 'Most facial treatments take 60–90 minutes, while the first visit may take longer if it includes a detailed consultation.' },
+
+  'faq.7.q': { ar: 'هل ستحل جلسة فيشل واحدة مشاكل بشرتي؟', en: 'Will one facial solve my skin concerns?' },
+  'faq.7.a': { ar: 'يمكن لجلسة فيشل واحدة أن تحسّن مظهر بشرتك، لكن النتائج طويلة الأمد تتطلب الاستمرارية وروتين عناية مخصصاً.', en: 'A single facial can improve your skin\'s appearance, but long-term results require consistency and a personalized skincare routine.' },
+
+  'faq.8.q': { ar: 'كيف أستعد لموعدي؟', en: 'How do I prepare for my appointment?' },
+  'faq.8.a': { ar: 'احرصي على الحضور بوجه نظيف إن أمكن، وتجنبي المقشرات القوية والريتينويد لبضعة أيام قبل الجلسة، وأخبري المختصة بأي حساسيات أو أدوية تتناولينها.', en: 'Arrive with clean skin if possible, avoid strong exfoliants or retinoids for a few days beforehand, and let your specialist know about any allergies or medications.' },
+
+  'faq.9.q': { ar: 'هل ستترك عملية استخراج الشوائب علامات؟', en: 'Will extractions leave marks?' },
+  'faq.9.a': { ar: 'عند إجرائها بشكل احترافي، يتم الاستخراج بعناية لتقليل التهيج والحدّ من خطر تكوّن الندبات.', en: 'When performed professionally, extractions are done carefully to minimize irritation and reduce the risk of scarring.' },
+
+  'faq.10.q': { ar: 'ماذا لو لم أعرف نوع بشرتي؟', en: 'What if I don\'t know my skin type?' },
+  'faq.10.a': { ar: 'لا مشكلة في ذلك. سيتم تقييم نوع بشرتك وحالتها خلال جلسة الاستشارة.', en: 'That\'s completely fine. Your skin type and condition will be assessed during your consultation.' },
+
+  'faq.11.q': { ar: 'هل يمكنني حجز جلسة فيشل حتى لو كان لديّ روتين عناية بالفعل؟', en: 'Can I book a facial even if I already have a skincare routine?' },
+  'faq.11.a': { ar: 'نعم. العلاجات الاحترافية تكمل روتينك المنزلي وتساعدك على تحقيق نتائج أفضل وأسرع.', en: 'Yes. Professional treatments complement your home routine and can help you achieve better, faster results.' },
+
+  'faq.12.q': { ar: 'هل يمكنني الحصول على جلسة فيشل أثناء تناول الروأكوتان؟', en: 'Can I get a facial while taking Roaccutane?' },
+  'faq.12.a': { ar: 'لا. لا يُنصح بإجراء علاجات الفيشل أثناء العلاج بالإيزوتريتينوين الفموي (الروأكوتان) بسبب زيادة حساسية البشرة. يُرجى حجز جلستك بعد انتهاء العلاج واتباع تقييم متخصص لبشرتك.', en: 'No. Facial treatments are not recommended during oral isotretinoin (Roaccutane) therapy due to increased skin sensitivity. Please book your facial after completing your treatment and following a professional skin assessment.' },
+
+  'faq.13.q': { ar: 'هل يمكنني الحصول على فيشل إذا كنت أعاني من الأكزيما أو الروزيشيا أو الصدفية؟', en: 'Can I get a facial if I have eczema, rosacea, or psoriasis?' },
+  'faq.13.a': { ar: 'يعتمد ذلك على حالة بشرتك. يُشترط إجراء تقييم قبل العلاج.', en: 'It depends on your skin condition. An assessment is required before treatment.' },
+
+  'faq.14.q': { ar: 'هل يمكنني الحصول على فيشل بعد البوتوكس أو الفيلر؟', en: 'Can I have a facial after Botox or fillers?' },
+  'faq.14.a': { ar: 'يُنصح بالانتظار أسبوعين على الأقل، أو اتباع توصيات طبيبك المعالج.', en: 'It\'s recommended to wait at least 2 weeks, or follow your injector\'s advice.' },
+
+  'faq.15.q': { ar: 'هل يمكنني الحصول على فيشل قبل مناسبة خاصة؟', en: 'Can I get a facial before a special event?' },
+  'faq.15.a': { ar: 'نعم. يُفضّل حجز موعدك قبل 5 إلى 7 أيام من المناسبة للحصول على أفضل النتائج.', en: 'Yes. Ideally, book your appointment 5–7 days before your event for the best results.' },
+
+  'faq.16.q': { ar: 'هل يمكنني الحصول على فيشل بعد علاج الليزر؟', en: 'Can I get a facial after laser treatment?' },
+  'faq.16.a': { ar: 'لا. يجب أن تتعافى بشرتك بالكامل قبل إجراء جلسة فيشل.', en: 'No. Your skin should be fully healed before having a facial.' },
+
+  'faq.17.q': { ar: 'هل يمكن للمراهقين الحصول على جلسات فيشل؟', en: 'Can teenagers get facials?' },
+  'faq.17.a': { ar: 'نعم. يمكن للعلاجات المناسبة للعمر أن تساعد في إدارة حب الشباب والحفاظ على صحة البشرة.', en: 'Yes. Age-appropriate treatments can help manage acne and maintain healthy skin.' },
+
+  'faq.18.q': { ar: 'هل ستُزال جميع الرؤوس السوداء في جلسة واحدة؟', en: 'Will extractions remove all my blackheads in one session?' },
+  'faq.18.a': { ar: 'ليس دائماً. بحسب شدة الانسداد، قد تكون هناك حاجة لعدة جلسات.', en: 'Not always. Depending on the severity of congestion, multiple sessions may be needed.' },
+
+  'faq.19.q': { ar: 'هل يمكنني ممارسة الرياضة بعد الفيشل؟', en: 'Can I exercise after a facial?' },
+  'faq.19.a': { ar: 'يُنصح بتجنب التمارين الشديدة لمدة 24 ساعة.', en: 'It\'s recommended to avoid intense workouts for 24 hours.' },
+
+  'faq.20.q': { ar: 'هل يمكنني غسل وجهي بعد الفيشل؟', en: 'Can I wash my face after a facial?' },
+  'faq.20.a': { ar: 'يُفضّل الانتظار حتى اليوم التالي، أو اتباع تعليمات العناية ما بعد الجلسة الخاصة بك.', en: 'It\'s best to wait until the next day, or follow your specialist\'s aftercare instructions.' },
+
+  'faq.21.q': { ar: 'هل يمكنني الحصول على فيشل إذا كانت بشرتي محترقة بالشمس؟', en: 'Can I get a facial if I have sunburn?' },
+  'faq.21.a': { ar: 'لا. انتظري حتى تتعافى بشرتك تماماً.', en: 'No. Wait until your skin has completely healed.' },
+
+  'faq.22.q': { ar: 'هل يجب أن أحضر منتجاتي معي إلى الاستشارة؟', en: 'Do I need to bring my skincare products to the consultation?' },
+  'faq.22.a': { ar: 'إن أمكن، نعم. يساعد ذلك على تقييم روتينك الحالي وتقديم أفضل التوصيات.', en: 'If possible, yes. It helps evaluate your current routine and make the best recommendations.' },
 
   // Contact
   'contact.title': { ar: 'تواصل معنا', en: 'Contact Us' },
