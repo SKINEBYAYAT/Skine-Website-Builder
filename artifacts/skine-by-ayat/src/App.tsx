@@ -26,14 +26,14 @@ function MainSite() {
     <div className="min-h-screen w-full flex flex-col font-sans">
       <Navbar />
       <main className="flex-1 w-full">
-        {/* 1 */} <Hero />
-        {/* 4 */} <Pricing />
-        {/* 5 */} <Consultation />
-        {/* 6 */} <Location />
-        {/* 8 */} <ReviewsCarousel />
-        {/* 9 */} <BeforeAfter />
-        {/* 10 */} <FAQ />
-        {/* 11 */} <Contact />
+        <Hero />
+        <Pricing />
+        <Consultation />
+        <BeforeAfter />
+        <ReviewsCarousel />
+        <Location />
+        <FAQ />
+        <Contact />
       </main>
       <Footer />
     </div>
