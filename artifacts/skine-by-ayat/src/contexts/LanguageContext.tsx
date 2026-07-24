@@ -158,7 +158,7 @@ const translations: Record<string, Record<Language, string>> = {
   // Footer
   'footer.privacy': { ar: 'سياسة الخصوصية', en: 'Privacy Policy' },
   'footer.terms': { ar: 'الشروط والأحكام', en: 'Terms of Service' },
-  'footer.copyright': { ar: '© 2025 Skiné by Ayat — جميع الحقوق محفوظة', en: '© 2025 Skiné by Ayat — All rights reserved' },
+  'footer.copyright': { ar: '© 2025 Skiné by Ayat', en: '© 2025 Skiné by Ayat' },
 
   // Admin
   'admin.title': { ar: 'لوحة الإدارة', en: 'Admin Panel' },

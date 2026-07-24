@@ -19,13 +19,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-border pt-8 flex flex-col items-center gap-3 text-sm text-muted-foreground">
-          <div className="w-full flex flex-col md:flex-row justify-between items-center gap-4">
-            <p>{t('footer.copyright')}</p>
-            <div className="flex gap-6">
-              <a href="#" className="hover:text-primary transition-colors">{t('footer.privacy')}</a>
-              <a href="#" className="hover:text-primary transition-colors">{t('footer.terms')}</a>
-            </div>
-          </div>
+          <p>{t('footer.copyright')}</p>
 
           {/* Developer credit */}
           <p className="text-xs text-muted-foreground/60 mt-1">
