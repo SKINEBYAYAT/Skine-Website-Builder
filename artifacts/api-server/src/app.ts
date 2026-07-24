@@ -25,7 +25,14 @@ app.use(
     },
   }),
 );
-app.use(cors());
+// CORS_ORIGIN: comma-separated list of allowed origins (e.g. your Vercel URL).
+// If not set, all origins are allowed (fine for development; set it on Render).
+const rawCorsOrigin = process.env.CORS_ORIGIN;
+const corsOrigin: string | string[] | boolean = rawCorsOrigin
+  ? rawCorsOrigin.split(",").map((s) => s.trim())
+  : true;
+
+app.use(cors({ origin: corsOrigin, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
