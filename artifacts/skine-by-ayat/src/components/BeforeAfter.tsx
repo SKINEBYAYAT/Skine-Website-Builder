@@ -1,13 +1,27 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useRef, useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Sparkles, X, ZoomIn } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X, ZoomIn } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+
+// ─── Static assets — images baked in at build time ───────────────────────────
+import ba1Before from '@/assets/ba1-before.jpeg';
+import ba1After  from '@/assets/ba1-after.jpeg';
+import ba2Before from '@/assets/ba2-before.jpeg';
+import ba2After  from '@/assets/ba2-after.jpeg';
+import ba3Before from '@/assets/ba3-before.jpeg';
+import ba3After  from '@/assets/ba3-after.jpeg';
 
 interface BAPair {
   id: string;
   beforeUrl: string;
   afterUrl: string;
 }
+
+const PAIRS: BAPair[] = [
+  { id: 'ba-1', beforeUrl: ba1Before, afterUrl: ba1After },
+  { id: 'ba-2', beforeUrl: ba2Before, afterUrl: ba2After },
+  { id: 'ba-3', beforeUrl: ba3Before, afterUrl: ba3After },
+];
 
 const AUTOPLAY_INTERVAL = 5000;
 
@@ -29,7 +43,6 @@ function PairLightbox({
   const prev = useCallback(() => setIndex((i) => (i - 1 + pairs.length) % pairs.length), [pairs.length]);
   const next = useCallback(() => setIndex((i) => (i + 1) % pairs.length), [pairs.length]);
 
-  // RTL-aware arrow handlers: physical left = next in RTL, physical right = prev in RTL
   const onLeftArrow  = isRTL ? next : prev;
   const onRightArrow = isRTL ? prev : next;
 
@@ -57,7 +70,6 @@ function PairLightbox({
         onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
         onTouchEnd={(e) => {
           const d = e.changedTouches[0].clientX - touchStartX.current;
-          // Swipe left (d<0) → advance forward; in RTL forward = prev() since index direction is flipped
           if (Math.abs(d) > 50) d < 0 ? onRightArrow() : onLeftArrow();
         }}
       >
@@ -74,7 +86,6 @@ function PairLightbox({
           <X size={24} />
         </button>
 
-        {/* Left arrow — prev in LTR, next in RTL */}
         {pairs.length > 1 && (
           <button
             onClick={(e) => { e.stopPropagation(); onLeftArrow(); }}
@@ -83,7 +94,6 @@ function PairLightbox({
             <ChevronLeft size={32} />
           </button>
         )}
-        {/* Right arrow — next in LTR, prev in RTL */}
         {pairs.length > 1 && (
           <button
             onClick={(e) => { e.stopPropagation(); onRightArrow(); }}
@@ -103,7 +113,6 @@ function PairLightbox({
           className="flex gap-1 max-w-[92vw] max-h-[85vh] items-end"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Before */}
           <div className="flex flex-col items-center gap-2 flex-1 min-w-0">
             <span className="text-white/70 text-xs font-semibold uppercase tracking-widest">
               {t('beforeafter.before')}
@@ -115,10 +124,8 @@ function PairLightbox({
             />
           </div>
 
-          {/* Divider */}
           <div className="w-px self-stretch bg-white/20 flex-none mx-1" />
 
-          {/* After */}
           <div className="flex flex-col items-center gap-2 flex-1 min-w-0">
             <span className="text-white/70 text-xs font-semibold uppercase tracking-widest">
               {t('beforeafter.after')}
@@ -131,7 +138,6 @@ function PairLightbox({
           </div>
         </motion.div>
 
-        {/* Dot indicators */}
         {pairs.length > 1 && pairs.length <= 20 && (
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5">
             {pairs.map((_, i) => (
@@ -154,23 +160,13 @@ function PairLightbox({
 export function BeforeAfter() {
   const { t, dir } = useLanguage();
   const isRTL = dir === 'rtl';
-  const [pairs, setPairs] = useState<BAPair[]>([]);
-  const [loading, setLoading] = useState(true);
   const [current, setCurrent] = useState(0);
   const [direction, setDirection] = useState(0);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [isPaused, setIsPaused] = useState(false);
   const touchStartX = useRef(0);
 
-  useEffect(() => {
-    fetch('/api/before-after')
-      .then((r) => r.json())
-      .then((d) => setPairs(d.pairs ?? []))
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, []);
-
-  const count = pairs.length;
+  const count = PAIRS.length;
   const prev = useCallback(() => { setDirection(isRTL ? 1 : -1); setCurrent((i) => (i - 1 + count) % count); }, [count, isRTL]);
   const next = useCallback(() => { setDirection(isRTL ? -1 : 1); setCurrent((i) => (i + 1) % count); }, [count, isRTL]);
   const onLeftArrow  = isRTL ? next : prev;
@@ -181,21 +177,6 @@ export function BeforeAfter() {
     const id = setTimeout(() => { setDirection(isRTL ? -1 : 1); setCurrent((i) => (i + 1) % count); }, AUTOPLAY_INTERVAL);
     return () => clearTimeout(id);
   }, [current, count, isPaused, isRTL]);
-
-  if (loading) {
-    return (
-      <section id="before-after" className="py-24 bg-muted/30">
-        <div className="container mx-auto px-4 max-w-5xl flex justify-center gap-4">
-          {[...Array(2)].map((_, i) => (
-            <div key={i} className="flex gap-2">
-              <div className="w-36 h-64 bg-muted animate-pulse rounded-2xl" />
-              <div className="w-36 h-64 bg-muted animate-pulse rounded-2xl" />
-            </div>
-          ))}
-        </div>
-      </section>
-    );
-  }
 
   const slideVariants = {
     enter: (d: number) => ({ x: d > 0 ? 360 : -360, opacity: 0, scale: 0.9 }),
@@ -228,126 +209,118 @@ export function BeforeAfter() {
           </p>
         </motion.div>
 
-        {count === 0 ? (
-          <p className="text-center text-foreground/40 py-12">{t('beforeafter.empty')}</p>
-        ) : (
-          <div
-            onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
-            onTouchEnd={(e) => {
-              const delta = e.changedTouches[0].clientX - touchStartX.current;
-              if (Math.abs(delta) > 50) delta < 0 ? onRightArrow() : onLeftArrow();
-            }}
-          >
-            <div className="relative flex items-center justify-center gap-4" dir="ltr">
-              {count > 1 && (
-                <button
-                  onClick={onLeftArrow}
-                  className="flex-none z-20 bg-background border border-border shadow-lg rounded-full p-3 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200"
-                  aria-label="Previous"
+        <div
+          onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
+          onTouchEnd={(e) => {
+            const delta = e.changedTouches[0].clientX - touchStartX.current;
+            if (Math.abs(delta) > 50) delta < 0 ? onRightArrow() : onLeftArrow();
+          }}
+        >
+          <div className="relative flex items-center justify-center gap-4" dir="ltr">
+            {count > 1 && (
+              <button
+                onClick={onLeftArrow}
+                className="flex-none z-20 bg-background border border-border shadow-lg rounded-full p-3 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200"
+                aria-label="Previous"
+              >
+                <ChevronLeft size={22} />
+              </button>
+            )}
+
+            <div className="flex-1 max-w-2xl mx-auto overflow-hidden">
+              <AnimatePresence initial={false} custom={direction} mode="wait">
+                <motion.div
+                  key={current}
+                  custom={direction}
+                  variants={slideVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={{ type: 'spring', stiffness: 300, damping: 32 }}
+                  className="cursor-pointer group"
+                  onClick={() => setLightboxIndex(current)}
                 >
-                  <ChevronLeft size={22} />
-                </button>
-              )}
-
-              <div className="flex-1 max-w-2xl mx-auto overflow-hidden">
-                <AnimatePresence initial={false} custom={direction} mode="wait">
-                  <motion.div
-                    key={current}
-                    custom={direction}
-                    variants={slideVariants}
-                    initial="enter"
-                    animate="center"
-                    exit="exit"
-                    transition={{ type: 'spring', stiffness: 300, damping: 32 }}
-                    className="cursor-pointer group"
-                    onClick={() => setLightboxIndex(current)}
-                  >
-                    <div className="rounded-3xl overflow-hidden shadow-2xl ring-1 ring-border/20 group-hover:ring-primary/40 transition-all duration-300 bg-[#f9f4ef]">
-                      {/* Split view */}
-                      <div className="flex">
-                        {/* Before half */}
-                        <div className="flex-1 min-w-0 relative">
-                          <img
-                            src={pairs[current].beforeUrl}
-                            alt="Before"
-                            className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-                            style={{ maxHeight: '68vh', objectPosition: 'center top' }}
-                            loading="lazy"
-                          />
-                          <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/60 to-transparent py-3 px-3">
-                            <span className="text-white text-xs font-semibold uppercase tracking-widest">
-                              {t('beforeafter.before')}
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Divider */}
-                        <div className="w-0.5 bg-white/80 flex-none self-stretch z-10" />
-
-                        {/* After half */}
-                        <div className="flex-1 min-w-0 relative">
-                          <img
-                            src={pairs[current].afterUrl}
-                            alt="After"
-                            className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-                            style={{ maxHeight: '68vh', objectPosition: 'center top' }}
-                            loading="lazy"
-                          />
-                          <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/60 to-transparent py-3 px-3 text-right">
-                            <span className="text-white text-xs font-semibold uppercase tracking-widest">
-                              {t('beforeafter.after')}
-                            </span>
-                          </div>
+                  <div className="rounded-3xl overflow-hidden shadow-2xl ring-1 ring-border/20 group-hover:ring-primary/40 transition-all duration-300 bg-[#f9f4ef]">
+                    <div className="flex">
+                      {/* Before half */}
+                      <div className="flex-1 min-w-0 relative">
+                        <img
+                          src={PAIRS[current].beforeUrl}
+                          alt="Before"
+                          className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                          style={{ maxHeight: '68vh', objectPosition: 'center top' }}
+                        />
+                        <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/60 to-transparent py-3 px-3">
+                          <span className="text-white text-xs font-semibold uppercase tracking-widest">
+                            {t('beforeafter.before')}
+                          </span>
                         </div>
                       </div>
 
-                      {/* Footer */}
-                      <div className="px-4 py-3 flex items-center justify-between">
-                        <span className="text-foreground/40 text-xs">
-                          {current + 1} / {count}
-                        </span>
-                        <span className="flex items-center gap-1 text-primary/60 text-xs">
-                          <ZoomIn size={12} /> {t('beforeafter.title')}
-                        </span>
+                      <div className="w-0.5 bg-white/80 flex-none self-stretch z-10" />
+
+                      {/* After half */}
+                      <div className="flex-1 min-w-0 relative">
+                        <img
+                          src={PAIRS[current].afterUrl}
+                          alt="After"
+                          className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                          style={{ maxHeight: '68vh', objectPosition: 'center top' }}
+                        />
+                        <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/60 to-transparent py-3 px-3 text-right">
+                          <span className="text-white text-xs font-semibold uppercase tracking-widest">
+                            {t('beforeafter.after')}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </motion.div>
-                </AnimatePresence>
-              </div>
 
-              {count > 1 && (
-                <button
-                  onClick={onRightArrow}
-                  className="flex-none z-20 bg-background border border-border shadow-lg rounded-full p-3 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200"
-                  aria-label="Next"
-                >
-                  <ChevronRight size={22} />
-                </button>
-              )}
+                    {/* Footer */}
+                    <div className="px-4 py-3 flex items-center justify-between">
+                      <span className="text-foreground/40 text-xs">
+                        {current + 1} / {count}
+                      </span>
+                      <span className="flex items-center gap-1 text-primary/60 text-xs">
+                        <ZoomIn size={12} /> {t('beforeafter.title')}
+                      </span>
+                    </div>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
             </div>
 
-            {/* Dot strip */}
             {count > 1 && (
-              <div className="flex justify-center gap-2 mt-6">
-                {pairs.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => { setDirection((i > current ? 1 : -1) * (isRTL ? -1 : 1)); setCurrent(i); }}
-                    className={`h-1.5 rounded-full transition-all duration-200 ${
-                      i === current ? 'bg-primary w-6' : 'bg-border w-1.5 hover:bg-primary/40'
-                    }`}
-                    aria-label={`Go to pair ${i + 1}`}
-                  />
-                ))}
-              </div>
+              <button
+                onClick={onRightArrow}
+                className="flex-none z-20 bg-background border border-border shadow-lg rounded-full p-3 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200"
+                aria-label="Next"
+              >
+                <ChevronRight size={22} />
+              </button>
             )}
           </div>
-        )}
+
+          {/* Dot strip */}
+          {count > 1 && (
+            <div className="flex justify-center gap-2 mt-6">
+              {PAIRS.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => { setDirection((i > current ? 1 : -1) * (isRTL ? -1 : 1)); setCurrent(i); }}
+                  className={`h-1.5 rounded-full transition-all duration-200 ${
+                    i === current ? 'bg-primary w-6' : 'bg-border w-1.5 hover:bg-primary/40'
+                  }`}
+                  aria-label={`Go to pair ${i + 1}`}
+                />
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {lightboxIndex !== null && (
         <PairLightbox
-          pairs={pairs}
+          pairs={PAIRS}
           startIndex={lightboxIndex}
           onClose={() => setLightboxIndex(null)}
         />

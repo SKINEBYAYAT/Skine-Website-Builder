@@ -1,50 +1,49 @@
-import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Check, ArrowRight, CalendarCheck } from 'lucide-react';
+import { Check, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const JOTFORM_URL = 'https://form.jotform.com/261913445488062';
 
-interface ConsultationItem {
-  id: string;
-  titleAr: string;
-  titleEn: string;
-  descAr: string;
-  descEn: string;
-}
-
-interface ConsultationData {
-  price: string;
-  subtitleAr: string;
-  subtitleEn: string;
-  items: ConsultationItem[];
-}
-
-const DEFAULT_DATA: ConsultationData = {
+// ─── Static data — mirrors live consultation data ─────────────────────────────
+const data = {
   price: '$35',
   subtitleEn: 'Skin consultation and skincare routine planning',
   subtitleAr: 'استشارة جلدية وتخطيط روتين العناية',
   items: [
-    { id: 'skin-analysis',       titleEn: 'Skin Analysis',       titleAr: 'تحليل البشرة',    descEn: 'Skin type, tone, concerns, goals, and current routine assessment.',  descAr: 'تقييم نوع البشرة ودرجة لونها ومشكلاتها وأهدافك وروتينك الحالي.' },
-    { id: 'personalized-routine',titleEn: 'Personalized Routine',titleAr: 'روتين مخصص',      descEn: "A skincare plan tailored to your skin's needs.",                    descAr: 'خطة عناية بالبشرة مصممة خصيصاً وفق احتياجاتك.' },
-    { id: 'routine-guide',       titleEn: 'Routine Guide',       titleAr: 'دليل الروتين',    descEn: 'A clear schedule explaining what to use and when.',                  descAr: 'جدول واضح يشرح ما تستخدمينه ومتى.' },
-    { id: 'follow-up',           titleEn: 'Follow-Up',           titleAr: 'متابعة مستمرة',   descEn: 'Follow-up support is provided whenever necessary.',                  descAr: 'يُقدَّم دعم المتابعة كلما دعت الحاجة.' },
+    {
+      id: 'skin-analysis',
+      titleEn: 'Skin Analysis',
+      titleAr: 'تحليل البشرة',
+      descEn: 'Skin type, tone, concerns, goals, and current routine assessment.',
+      descAr: 'تقييم نوع البشرة ودرجة لونها ومشكلاتها وأهدافك وروتينك الحالي.',
+    },
+    {
+      id: 'personalized-routine',
+      titleEn: 'Personalized Routine',
+      titleAr: 'روتين مخصص',
+      descEn: "A skincare plan tailored to your skin's needs.",
+      descAr: 'خطة عناية بالبشرة مصممة خصيصاً وفق احتياجاتك.',
+    },
+    {
+      id: 'routine-guide',
+      titleEn: 'Routine Guide',
+      titleAr: 'دليل الروتين',
+      descEn: 'A clear schedule explaining what to use and when.',
+      descAr: 'جدول واضح يشرح ما تستخدمينه ومتى.',
+    },
+    {
+      id: 'follow-up',
+      titleEn: 'Follow-Up',
+      titleAr: 'متابعة مستمرة',
+      descEn: 'Follow-up support is provided whenever necessary.',
+      descAr: 'يُقدَّم دعم المتابعة كلما دعت الحاجة.',
+    },
   ],
 };
 
 export function Consultation() {
   const { t, lang, dir } = useLanguage();
-  const [data, setData] = useState<ConsultationData>(DEFAULT_DATA);
-
-  useEffect(() => {
-    fetch('/api/consultation')
-      .then((r) => r.json())
-      .then((d: ConsultationData) => {
-        if (d?.items) setData(d);
-      })
-      .catch(() => {});
-  }, []);
 
   const isRTL   = dir === 'rtl';
   const tagline = lang === 'ar' ? data.subtitleAr : data.subtitleEn;

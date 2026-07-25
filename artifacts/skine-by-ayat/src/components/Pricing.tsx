@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -21,9 +21,9 @@ interface PricingCategory {
   nameEn: string;
   packages: PricingPackage[];
 }
-interface PricingData { categories: PricingCategory[]; }
 
-const DEFAULT_CATEGORIES: PricingCategory[] = [
+// ─── Static data — mirrors live pricing.json exactly ──────────────────────────
+const STATIC_CATEGORIES: PricingCategory[] = [
   {
     id: 'facials',
     nameAr: 'الفيشل',
@@ -49,7 +49,7 @@ const DEFAULT_CATEGORIES: PricingCategory[] = [
         nameAr: 'هيدرافيشل',
         nameEn: 'Hydrafacial',
         price: '$45',
-        featured: true,
+        featured: false,
         services: [
           { ar: 'تنظيف عميق',        en: 'Deep Cleansing' },
           { ar: 'تقشير لطيف',        en: 'Gentle Exfoliation' },
@@ -64,13 +64,10 @@ const DEFAULT_CATEGORIES: PricingCategory[] = [
       },
     ],
   },
-  { id: 'glow-skin-treatment',  nameAr: 'علاج توهج البشرة',         nameEn: 'Glow Skin Treatment',    packages: [] },
-  { id: 'microneedling-peels',  nameAr: 'الإبر الدقيقة والتقشير',   nameEn: 'Microneedling & Peels',  packages: [] },
-  { id: 'bundle',               nameAr: 'الباقات المجمعة',           nameEn: 'Bundle',                 packages: [] },
   {
-    id: 'packages',
+    id: 'bundles',
     nameAr: 'الباقات',
-    nameEn: 'Packages',
+    nameEn: 'Bundles',
     packages: [
       {
         id: 'glow-package',
@@ -107,7 +104,7 @@ const DEFAULT_CATEGORIES: PricingCategory[] = [
         id: 'rejuvenating-package',
         nameAr: 'باقة التجديد',
         nameEn: 'Rejuvenating Package',
-        price: '$60',
+        price: '$65',
         services: [
           { ar: 'فيشل أساسي',                       en: 'Basic facial' },
           { ar: 'تقشير الفاكهة العميق',               en: 'Hard fruit peel extract' },
@@ -120,26 +117,45 @@ const DEFAULT_CATEGORIES: PricingCategory[] = [
       },
     ],
   },
+  {
+    id: 'cat-1784818858795',
+    nameAr: 'عروضات',
+    nameEn: 'Offers',
+    packages: [
+      {
+        id: 'pkg-1784818874527',
+        nameAr: 'خطة شاملة للعناية بالبشرة',
+        nameEn: 'Complete skin plan',
+        price: '$60',
+        featured: false,
+        services: [
+          { ar: 'استشارة',                    en: 'consultation' },
+          { ar: 'جلسة تنظيف بشرة',            en: 'facial' },
+          { ar: 'روتين عناية بالبشرة مُخصّص', en: '⁠personalized skincare routine' },
+        ],
+      },
+      {
+        id: 'pkg-1784819097235',
+        nameAr: 'سلسلة جلسات الوخز بالإبر الدقيقة',
+        nameEn: 'Microneedling Series',
+        price: 'Special Offer',
+        featured: false,
+        services: [
+          {
+            ar: 'اشترِ 4 جلسات واحصل على الجلسة الخامسة مجاناً.',
+            en: 'Buy 4 sessions and get the 5th session free.',
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 export function Pricing() {
   const { t, lang } = useLanguage();
-  const [categories, setCategories] = useState<PricingCategory[]>(DEFAULT_CATEGORIES);
-  const [activeTab, setActiveTab] = useState(DEFAULT_CATEGORIES[0].id);
+  const [activeTab, setActiveTab] = useState(STATIC_CATEGORIES[0].id);
 
-  useEffect(() => {
-    fetch('/api/pricing')
-      .then((r) => r.json())
-      .then((data: PricingData) => {
-        if (data?.categories?.length) {
-          setCategories(data.categories);
-          setActiveTab(data.categories[0].id);
-        }
-      })
-      .catch(() => {});
-  }, []);
-
-  const activeCategory = categories.find((c) => c.id === activeTab) ?? categories[0];
+  const activeCategory = STATIC_CATEGORIES.find((c) => c.id === activeTab) ?? STATIC_CATEGORIES[0];
 
   return (
     <section id="pricing" className="py-24 bg-card/30">
@@ -171,7 +187,7 @@ export function Pricing() {
           transition={{ duration: 0.5, delay: 0.1 }}
           className="flex flex-wrap gap-2 justify-center mb-10"
         >
-          {categories.map((cat) => (
+          {STATIC_CATEGORIES.map((cat) => (
             <button
               key={cat.id}
               onClick={() => setActiveTab(cat.id)}
