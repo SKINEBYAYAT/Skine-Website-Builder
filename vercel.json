@@ -1,6 +1,6 @@
 {
-  "buildCommand": "pnpm install --frozen-lockfile && pnpm --filter @workspace/skine-by-ayat run build",
-  "outputDirectory": "artifacts/skine-by-ayat/dist/public",
+  "buildCommand": "cd ../.. && pnpm install --frozen-lockfile && pnpm --filter @workspace/skine-by-ayat run build",
+  "outputDirectory": "dist/public",
   "installCommand": "pnpm install --frozen-lockfile",
   "framework": null,
   "rewrites": [
