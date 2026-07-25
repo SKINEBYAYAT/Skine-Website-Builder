@@ -114,13 +114,8 @@ const STATIC_CATEGORIES: PricingCategory[] = [
         nameEn: 'Rejuvenating Package',
         price: '$65',
         services: [
-          { ar: 'فيشل أساسي',                       en: 'Basic facial' },
-          { ar: 'تقشير الفاكهة العميق',               en: 'Hard fruit peel extract' },
-          { ar: 'تجديد البشرة',                      en: 'Skin renewal' },
-          { ar: 'بشرة أكثر إشراقاً وتوحداً في اللون', en: 'Brighter and more even skin tone' },
-          { ar: 'يُحسّن شدّ البشرة ونضارتها',         en: 'Improves skin firmness' },
-          { ar: 'ملمس بشرة أكثر نعومة',               en: 'Smooth skin texture' },
-          { ar: 'توهج صحي مشرق',                     en: 'Radiant healthy glow' },
+          { ar: 'فيشل أساسي',          en: 'Basic facial' },
+          { ar: 'تقشير الفاكهة العميق', en: 'Hard fruit peel extract' },
         ],
       },
     ],
@@ -254,9 +249,11 @@ export function Pricing() {
                           <span className="text-5xl font-extrabold tracking-tight text-foreground">
                             {pkg.price}
                           </span>
-                          <span className="text-sm ms-1 text-foreground/50">
-                            / {t('pricing.session')}
-                          </span>
+                          {pkg.price.startsWith('$') && (
+                            <span className="text-sm ms-1 text-foreground/50">
+                              / {t('pricing.session')}
+                            </span>
+                          )}
                         </div>
                       </div>
 
