@@ -4,7 +4,15 @@ import { Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-const JOTFORM_URL = 'https://form.jotform.com/261913445488062';
+const WA_NUMBER = '96171538316';
+
+function buildWhatsAppUrl(pkgName: string, price: string, lang: 'ar' | 'en') {
+  const message =
+    lang === 'ar'
+      ? `مرحباً، أرغب بحجز باقة ${pkgName} (${price}/جلسة).`
+      : `Hi, I'd like to book the ${pkgName} package (${price}/session).`;
+  return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(message)}`;
+}
 
 interface PricingService { ar: string; en: string; }
 interface PricingPackage {
@@ -272,7 +280,11 @@ export function Pricing() {
 
                         <Button
                           onClick={() => window.open(
-                            `${JOTFORM_URL}?input26=${encodeURIComponent(pkg.nameEn)}&price=${encodeURIComponent(pkg.price)}`,
+                            buildWhatsAppUrl(
+                              lang === 'ar' ? pkg.nameAr : pkg.nameEn,
+                              pkg.price,
+                              lang,
+                            ),
                             '_blank',
                             'noopener,noreferrer'
                           )}
