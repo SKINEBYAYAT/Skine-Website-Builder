@@ -8,6 +8,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { convertToEmbedUrl, isShortLink } from '@/lib/mapsUtils';
+import { adminFetch as fetch, supabase } from '@/lib/supabase';
 
 // ─── Password ─────────────────────────────────────────────────────────────────
 const RAW_PW = import.meta.env.VITE_ADMIN_PASSWORD;
@@ -1668,17 +1669,16 @@ function ConsultationPanel() {
 }
 
 // ─── Login screen ─────────────────────────────────────────────────────────────
-function LoginScreen({ onLogin }: { onLogin: () => void }) {
+function LoginScreen() {
   const { t } = useLanguage();
   const [pw, setPw] = useState('');
+  const [email, setEmail] = useState('');
   const [error, setError] = useState('');
 
-  const attempt = () => {
-    if (pw === ADMIN_PASSWORD) {
-      onLogin();
-    } else {
-      setError(`${t('admin.wrong.password')} — try skine2025`);
-    }
+  const attempt = async () => {
+    setError('');
+    const { error: loginError } = await supabase.auth.signInWithPassword({ email, password: pw });
+    if (loginError) setError(loginError.message);
   };
 
   return (
@@ -1697,6 +1697,16 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
         </div>
 
         <form onSubmit={(e) => { e.preventDefault(); attempt(); }} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-1.5">Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full rounded-xl border border-border bg-muted/20 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition"
+            />
+          </div>
           <div>
             <label className="block text-sm font-medium text-foreground mb-1.5">
               {t('admin.password.label')}
@@ -1724,14 +1734,20 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
 // ─── Admin page root ──────────────────────────────────────────────────────────
 export function Admin() {
   const { t } = useLanguage();
-  const [authed, setAuthed] = useState(
-    () => sessionStorage.getItem('skine-admin-auth') === '1',
-  );
+  const [authed, setAuthed] = useState<boolean | null>(null);
 
-  const login = () => { sessionStorage.setItem('skine-admin-auth', '1'); setAuthed(true); };
-  const logout = () => { sessionStorage.removeItem('skine-admin-auth'); setAuthed(false); };
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setAuthed(Boolean(data.session)));
+    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+      setAuthed(Boolean(session));
+    });
+    return () => data.subscription.unsubscribe();
+  }, []);
 
-  if (!authed) return <LoginScreen onLogin={login} />;
+  const logout = () => { void supabase.auth.signOut(); };
+
+  if (authed === null) return null;
+  if (!authed) return <LoginScreen />;
 
   return (
     <div className="min-h-screen bg-muted/20">

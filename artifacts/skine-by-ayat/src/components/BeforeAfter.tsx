@@ -2,6 +2,7 @@ import { useRef, useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, X, ZoomIn } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { loadBeforeAfterPairs } from '@/lib/supabase';
 
 // ─── Static assets — images baked in at build time ───────────────────────────
 import ba1Before from '@/assets/ba1-before.jpeg';
@@ -17,7 +18,7 @@ interface BAPair {
   afterUrl: string;
 }
 
-const PAIRS: BAPair[] = [
+const DEFAULT_PAIRS: BAPair[] = [
   { id: 'ba-1', beforeUrl: ba1Before, afterUrl: ba1After },
   { id: 'ba-2', beforeUrl: ba2Before, afterUrl: ba2After },
   { id: 'ba-3', beforeUrl: ba3Before, afterUrl: ba3After },
@@ -166,7 +167,14 @@ export function BeforeAfter() {
   const [isPaused, setIsPaused] = useState(false);
   const touchStartX = useRef(0);
 
-  const count = PAIRS.length;
+  const [pairs, setPairs] = useState<BAPair[]>(DEFAULT_PAIRS);
+  const count = pairs.length;
+
+  useEffect(() => {
+    loadBeforeAfterPairs()
+      .then((uploaded) => { if (uploaded.length) setPairs(uploaded); })
+      .catch(() => { /* Keep built-in pairs when Supabase is unavailable. */ });
+  }, []);
   const prev = useCallback(() => { setDirection(isRTL ? 1 : -1); setCurrent((i) => (i - 1 + count) % count); }, [count, isRTL]);
   const next = useCallback(() => { setDirection(isRTL ? -1 : 1); setCurrent((i) => (i + 1) % count); }, [count, isRTL]);
   const onLeftArrow  = isRTL ? next : prev;
@@ -245,7 +253,7 @@ export function BeforeAfter() {
                       {/* Before half */}
                       <div className="flex-1 min-w-0 relative">
                         <img
-                          src={PAIRS[current].beforeUrl}
+                          src={pairs[current].beforeUrl}
                           alt="Before"
                           className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-[1.02]"
                           style={{ maxHeight: '68vh', objectPosition: 'center top' }}
@@ -262,7 +270,7 @@ export function BeforeAfter() {
                       {/* After half */}
                       <div className="flex-1 min-w-0 relative">
                         <img
-                          src={PAIRS[current].afterUrl}
+                          src={pairs[current].afterUrl}
                           alt="After"
                           className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-[1.02]"
                           style={{ maxHeight: '68vh', objectPosition: 'center top' }}
@@ -303,7 +311,7 @@ export function BeforeAfter() {
           {/* Dot strip */}
           {count > 1 && (
             <div className="flex justify-center gap-2 mt-6">
-              {PAIRS.map((_, i) => (
+              {pairs.map((_, i) => (
                 <button
                   key={i}
                   onClick={() => { setDirection((i > current ? 1 : -1) * (isRTL ? -1 : 1)); setCurrent(i); }}
@@ -320,7 +328,7 @@ export function BeforeAfter() {
 
       {lightboxIndex !== null && (
         <PairLightbox
-          pairs={PAIRS}
+          pairs={pairs}
           startIndex={lightboxIndex}
           onClose={() => setLightboxIndex(null)}
         />

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { ImageLightbox } from './ImageLightbox';
+import { loadReviewImages } from '@/lib/supabase';
 
 // ─── Static assets — images baked in at build time (ordered as in admin) ──────
 import review1 from '@/assets/review1.jpeg';
@@ -18,7 +19,7 @@ interface ReviewImage {
   url: string;
 }
 
-const IMAGES: ReviewImage[] = [
+const DEFAULT_IMAGES: ReviewImage[] = [
   { filename: 'review1.jpeg', url: review1 },
   { filename: 'review2.jpeg', url: review2 },
   { filename: 'review3.jpeg', url: review3 },
@@ -37,10 +38,17 @@ export function ReviewsCarousel() {
   const [direction, setDirection] = useState(0);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [isPaused, setIsPaused] = useState(false);
+  const [images, setImages] = useState<ReviewImage[]>(DEFAULT_IMAGES);
   const touchStartX = useRef(0);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const count = IMAGES.length;
+  const count = images.length;
+
+  useEffect(() => {
+    loadReviewImages()
+      .then((uploaded) => { if (uploaded.length) setImages(uploaded); })
+      .catch(() => { /* Keep built-in images when Supabase is unavailable. */ });
+  }, []);
 
   const prev = useCallback(() => {
     setDirection(isRTL ? 1 : -1);
@@ -130,7 +138,7 @@ export function ReviewsCarousel() {
                 >
                   <div className="rounded-3xl overflow-hidden shadow-xl ring-1 ring-border/20 hover:ring-primary/40 hover:shadow-2xl transition-all duration-300 bg-[#f9f4ef] group">
                     <img
-                      src={IMAGES[current].url}
+                      src={images[current].url}
                       alt={`Review ${current + 1}`}
                       className="w-full h-auto object-contain transition-transform duration-500 group-hover:scale-[1.02]"
                       style={{ maxHeight: '70vh' }}
@@ -159,7 +167,7 @@ export function ReviewsCarousel() {
           {/* Thumbnail strip */}
           {count > 1 && (
             <div className="flex justify-center gap-2 mt-6 flex-wrap">
-              {IMAGES.map((img, i) => (
+              {images.map((img, i) => (
                 <button
                   key={img.filename}
                   onClick={() => { setDirection((i > current ? 1 : -1) * (isRTL ? -1 : 1)); setCurrent(i); }}
@@ -185,7 +193,7 @@ export function ReviewsCarousel() {
       {/* Lightbox */}
       {lightboxIndex !== null && (
         <ImageLightbox
-          images={IMAGES}
+          images={images}
           startIndex={lightboxIndex}
           onClose={() => setLightboxIndex(null)}
         />
