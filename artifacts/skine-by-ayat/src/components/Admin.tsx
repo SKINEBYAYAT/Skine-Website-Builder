@@ -1062,9 +1062,6 @@ function PricingPanel() {
       .then((d: PricingData) => {
         const next = Array.isArray(d.categories) ? d : { categories: STATIC_CATEGORIES };
         setData(next);
-        if (next.categories.length) {
-          setOpenCats({ [next.categories[0].id]: true });
-        }
       })
       .catch(() => setData({ categories: [] }));
   }, []);
@@ -1797,7 +1794,7 @@ export function Admin() {
         </Section>
 
         {/* 3 — Client Reviews */}
-        <Section icon={<ImageIcon size={17} />} title={t('admin.reviews')} subtitle="Upload, replace, reorder & delete review screenshots" defaultOpen>
+        <Section icon={<ImageIcon size={17} />} title={t('admin.reviews')} subtitle="Upload, replace, reorder & delete review screenshots">
           <CollectionPanel collection="reviews" />
         </Section>
 

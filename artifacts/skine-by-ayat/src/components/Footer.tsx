@@ -1,6 +1,6 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import logo from '@assets/IMG_7839_1784317781519.jpeg';
-const DEV_URL = 'https://www.instagram.com/marwan.web.dev?igsh=NHZ1bm1saGpmcjBk&utm_source=qr';
+const DEV_URL = 'https://marwan-web-dev.vercel.app';
 
 export function Footer() {
   const { t } = useLanguage();

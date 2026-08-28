@@ -49,17 +49,12 @@ export function Contact() {
         {/* Cards grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {/* Instagram card */}
-          <motion.a
-            href={INSTAGRAM_URL}
-            target="_blank"
-            rel="noopener noreferrer"
+          <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            whileHover={{ y: -6, scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="flex flex-col items-center gap-5 bg-card border border-border rounded-3xl shadow-md hover:shadow-xl p-10 cursor-pointer transition-shadow duration-300 group"
+            className="flex flex-col items-center gap-5 bg-card border border-border rounded-3xl shadow-md hover:shadow-xl p-10 transition-shadow duration-300 group"
           >
             <div className="w-20 h-20 rounded-full bg-[#E1306C]/10 flex items-center justify-center group-hover:bg-[#E1306C]/20 transition-colors duration-300">
               <Instagram size={36} className="text-[#E1306C]" />
@@ -71,7 +66,18 @@ export function Contact() {
                 {t('contact.instagram.subtitle')}
               </p>
             </div>
-          </motion.a>
+            <motion.a
+              href={INSTAGRAM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.04, y: -2 }}
+              whileTap={{ scale: 0.97 }}
+              className="inline-flex items-center gap-2 bg-[#E1306C] hover:bg-[#c9275d] text-white font-semibold text-sm px-6 py-3 rounded-full shadow-md hover:shadow-lg transition-all duration-300"
+            >
+              <Instagram size={18} />
+              {t('contact.instagram.cta')}
+            </motion.a>
+          </motion.div>
 
           {/* WhatsApp card */}
           <motion.div

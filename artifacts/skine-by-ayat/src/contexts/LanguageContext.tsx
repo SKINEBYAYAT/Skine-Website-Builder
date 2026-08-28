@@ -153,6 +153,7 @@ const translations: Record<string, Record<Language, string>> = {
   'contact.title': { ar: 'تواصل معنا', en: 'Contact Us' },
   'contact.whatsapp.subtitle': { ar: 'راسلينا مباشرة على واتساب', en: 'Message us directly on WhatsApp' },
   'contact.instagram.subtitle': { ar: 'تابعينا على إنستغرام', en: 'Follow us on Instagram' },
+  'contact.instagram.cta': { ar: 'تابعينا على إنستغرام', en: 'Follow on Instagram' },
   'contact.location': { ar: 'موقعنا', en: 'Our Location' },
 
   // Footer
