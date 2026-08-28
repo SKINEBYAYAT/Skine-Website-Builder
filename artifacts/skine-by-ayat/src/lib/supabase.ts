@@ -11,10 +11,28 @@ export const imageBucket = 'website-images';
 export const publicImageUrl = (path: string) =>
   supabase.storage.from(imageBucket).getPublicUrl(path).data.publicUrl;
 
+async function loadLocalCollection<T>(path: string, key: string): Promise<T[] | null> {
+  try {
+    const result = await window.fetch(path);
+    if (!result.ok) return null;
+    const data = await result.json() as Record<string, unknown>;
+    return Array.isArray(data[key]) ? data[key] as T[] : [];
+  } catch {
+    return null;
+  }
+}
+
 export async function loadReviewImages() {
   const { data, error } = await supabase.from('review_images')
     .select('id, storage_path').order('sort_order');
-  if (error) throw error;
+  if (error || !data?.length) {
+    const localImages = await loadLocalCollection<{ filename: string; url: string }>(
+      '/api/images/reviews',
+      'images',
+    );
+    if (localImages) return localImages;
+    if (error) throw error;
+  }
   return (data ?? []).map((row) => ({
     filename: row.id as string,
     storagePath: row.storage_path as string,
@@ -25,12 +43,48 @@ export async function loadReviewImages() {
 export async function loadBeforeAfterPairs() {
   const { data, error } = await supabase.from('before_after_pairs')
     .select('id, before_storage_path, after_storage_path').order('sort_order');
-  if (error) throw error;
+  if (error || !data?.length) {
+    const localPairs = await loadLocalCollection<{ id: string; beforeUrl: string; afterUrl: string }>(
+      '/api/before-after',
+      'pairs',
+    );
+    if (localPairs) return localPairs;
+    if (error) throw error;
+  }
   return (data ?? []).map((row) => ({
     id: row.id as string,
     beforeUrl: publicImageUrl(row.before_storage_path as string),
     afterUrl: publicImageUrl(row.after_storage_path as string),
   }));
+}
+
+export async function loadSiteContent<T>(key: string): Promise<T | null> {
+  const { data, error } = await supabase.from('site_content')
+    .select('content_value').eq('content_key', key).maybeSingle();
+  if (error) throw error;
+  return (data?.content_value as T | undefined) ?? null;
+}
+
+export async function loadSetting(key: string): Promise<string | null> {
+  const { data, error } = await supabase.from('site_settings')
+    .select('setting_value').eq('setting_key', key).maybeSingle();
+  if (error || !data) {
+    try {
+      const result = await window.fetch('/api/settings');
+      if (result.ok) {
+        const localSettings = await result.json() as Record<string, string>;
+        if (localSettings[key] !== undefined) return localSettings[key];
+      }
+    } catch {
+      // Fall through to the Supabase error or null value.
+    }
+    if (error) throw error;
+    return null;
+  }
+  const value = data.setting_value as { value?: string; url?: string; cleared?: boolean } | string | undefined;
+  if (typeof value === 'string') return value;
+  if (value?.cleared) return '';
+  return value?.value || value?.url || null;
 }
 
 const response = (body: unknown, status = 200) => new Response(JSON.stringify(body), {
@@ -50,8 +104,39 @@ async function uploadImage(file: File, folder: string) {
 export async function adminFetch(input: RequestInfo | URL, init: RequestInit = {}) {
   const path = typeof input === 'string' ? input : input.toString();
   const method = (init.method || 'GET').toUpperCase();
-  if (!path.startsWith('/api/images/reviews') && !path.startsWith('/api/before-after')) {
+  if (path.startsWith('/api/images/reviews') || path.startsWith('/api/before-after')) {
     return window.fetch(input, init);
+  }
+  if (path.startsWith('/api/settings')) {
+    return window.fetch(input, init);
+  }
+  if (path === '/api/pricing' || path === '/api/consultation') {
+    const key = path.slice('/api/'.length);
+    try {
+      if (method === 'GET') return response((await loadSiteContent(key)) ?? {});
+      if (method === 'PUT') {
+        const content_value = JSON.parse(init.body as string);
+        const { error } = await supabase.from('site_content').upsert({ content_key: key, content_value, updated_at: new Date().toISOString() });
+        if (error) throw error;
+        return response({ success: true });
+      }
+    } catch (error) {
+      return response({ error: error instanceof Error ? error.message : 'Supabase request failed' }, 500);
+    }
+  }
+  if (path === '/api/settings' || path.startsWith('/api/settings/')) {
+    try {
+      if (path === '/api/settings' && method === 'GET') return response({ maps_url: (await loadSetting('maps_url')) ?? '' });
+      if (method === 'PUT') {
+        const key = path.slice('/api/settings/'.length);
+        const value = JSON.parse(init.body as string).value ?? '';
+        const { error } = await supabase.from('site_settings').upsert({ setting_key: key, setting_value: { value, cleared: value === '' }, updated_at: new Date().toISOString() });
+        if (error) throw error;
+        return response({ success: true });
+      }
+    } catch (error) {
+      return response({ error: error instanceof Error ? error.message : 'Supabase request failed' }, 500);
+    }
   }
   try {
     if (path === '/api/images/reviews' && method === 'GET') return response({ images: await loadReviewImages() });

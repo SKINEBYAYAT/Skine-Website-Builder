@@ -9,6 +9,8 @@ import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { convertToEmbedUrl, isShortLink } from '@/lib/mapsUtils';
 import { adminFetch as fetch, supabase } from '@/lib/supabase';
+import { STATIC_CATEGORIES } from '@/components/Pricing';
+import { DEFAULT_CONSULTATION_DATA } from '@/components/Consultation';
 
 // ─── Password ─────────────────────────────────────────────────────────────────
 const RAW_PW = import.meta.env.VITE_ADMIN_PASSWORD;
@@ -1058,9 +1060,10 @@ function PricingPanel() {
     fetch('/api/pricing')
       .then((r) => r.json())
       .then((d: PricingData) => {
-        setData(d);
-        if (d.categories?.length) {
-          setOpenCats({ [d.categories[0].id]: true });
+        const next = Array.isArray(d.categories) ? d : { categories: STATIC_CATEGORIES };
+        setData(next);
+        if (next.categories.length) {
+          setOpenCats({ [next.categories[0].id]: true });
         }
       })
       .catch(() => setData({ categories: [] }));
@@ -1489,12 +1492,7 @@ function ConsultationItemRow({
 function ConsultationPanel() {
   const { t } = useLanguage();
 
-  const DEFAULT: ConsultationData = {
-    price: '$35',
-    subtitleEn: 'Skin consultation and skincare routine planning',
-    subtitleAr: 'استشارة جلدية وتخطيط روتين العناية',
-    items: [],
-  };
+  const DEFAULT: ConsultationData = DEFAULT_CONSULTATION_DATA;
 
   const [data, setData] = useState<ConsultationData | null>(null);
   const [saving, setSaving] = useState(false);
@@ -1505,7 +1503,7 @@ function ConsultationPanel() {
   useEffect(() => {
     fetch('/api/consultation')
       .then((r) => r.json())
-      .then((d: ConsultationData) => { if (d?.items) setData(d); })
+      .then((d: ConsultationData) => setData(d?.items ? d : DEFAULT))
       .catch(() => setData(DEFAULT));
   }, []);
 
@@ -1733,7 +1731,7 @@ function LoginScreen() {
 
 // ─── Admin page root ──────────────────────────────────────────────────────────
 export function Admin() {
-  const { t } = useLanguage();
+  const { t, lang, setLang } = useLanguage();
   const [authed, setAuthed] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -1745,6 +1743,7 @@ export function Admin() {
   }, []);
 
   const logout = () => { void supabase.auth.signOut(); };
+  const toggleLang = () => { setLang(lang === 'ar' ? 'en' : 'ar'); };
 
   if (authed === null) return null;
   if (!authed) return <LoginScreen />;
@@ -1763,9 +1762,21 @@ export function Admin() {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <a href="/" className="text-sm text-foreground/60 hover:text-foreground transition flex items-center gap-1.5">
-            <X size={14} /> {t('nav.home')}
-          </a>
+          <button
+            onClick={() => window.location.reload()}
+            className="p-2 rounded-full text-foreground/60 hover:text-foreground hover:bg-muted transition-colors"
+            aria-label="Refresh admin panel"
+            title="Refresh admin panel"
+          >
+            <RefreshCw size={16} />
+          </button>
+          <button
+            onClick={toggleLang}
+            className="text-sm font-semibold px-3 py-1 rounded-full border border-border hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200"
+            aria-label="Toggle language"
+          >
+            {lang === 'ar' ? 'English' : 'العربية'}
+          </button>
           <Button variant="outline" size="sm" onClick={logout} className="gap-1.5 rounded-full">
             <LogOut size={14} /> {t('admin.logout')}
           </Button>
