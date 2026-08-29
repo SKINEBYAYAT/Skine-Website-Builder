@@ -53,7 +53,6 @@ export async function loadReviewImages() {
       'images',
     );
     if (localImages) return localImages;
-    if (error) throw error;
     return DEFAULT_REVIEW_IMAGES;
   }
   return (data ?? []).map((row) => ({
@@ -72,7 +71,6 @@ export async function loadBeforeAfterPairs() {
       'pairs',
     );
     if (localPairs) return localPairs;
-    if (error) throw error;
     return DEFAULT_BEFORE_AFTER_PAIRS;
   }
   return (data ?? []).map((row) => ({
@@ -102,8 +100,7 @@ export async function loadSetting(key: string): Promise<string | null> {
     } catch {
       // Fall through to the Supabase error or null value.
     }
-    if (error) throw error;
-    return key === 'maps_url' ? DEFAULT_MAP_URL : null;
+    return key === 'maps_url' ? 'https://www.google.com/maps?q=Skin%C3%A9+By+Ayat+Clinic&output=embed' : null;
   }
   const value = data.setting_value as { value?: string; url?: string; cleared?: boolean } | string | undefined;
   if (typeof value === 'string') return value;
@@ -115,6 +112,48 @@ const response = (body: unknown, status = 200) => new Response(JSON.stringify(bo
   status,
   headers: { 'Content-Type': 'application/json' },
 });
+
+async function uploadDefaultAsset(url: string, path: string) {
+  const file = await fetch(url).then((result) => result.blob());
+  const { error } = await supabase.storage.from(imageBucket).upload(path, file, {
+    contentType: file.type || 'image/jpeg',
+    upsert: true,
+  });
+  if (error) throw error;
+  return path;
+}
+
+export async function migrateDefaultContent() {
+  try {
+    const [{ count: reviewCount, error: reviewError }, { count: pairCount, error: pairError }] = await Promise.all([
+      supabase.from('review_images').select('*', { count: 'exact', head: true }),
+      supabase.from('before_after_pairs').select('*', { count: 'exact', head: true }),
+    ]);
+    if (reviewError || pairError || (reviewCount ?? 0) > 0 || (pairCount ?? 0) > 0) return;
+
+    const reviewRows = await Promise.all(DEFAULT_REVIEW_IMAGES.map(async (image, sort_order) => ({
+      storage_path: await uploadDefaultAsset(image.url, `reviews/${image.filename}`),
+      sort_order,
+    })));
+    const { error: reviewsInsertError } = await supabase.from('review_images').insert(reviewRows);
+    if (reviewsInsertError) throw reviewsInsertError;
+
+    const pairRows = await Promise.all(DEFAULT_BEFORE_AFTER_PAIRS.map(async (pair, sort_order) => ({
+      before_storage_path: await uploadDefaultAsset(pair.beforeUrl, `before-after/${pair.id}-before.jpeg`),
+      after_storage_path: await uploadDefaultAsset(pair.afterUrl, `before-after/${pair.id}-after.jpeg`),
+      sort_order,
+    })));
+    const { error: pairsInsertError } = await supabase.from('before_after_pairs').insert(pairRows);
+    if (pairsInsertError) throw pairsInsertError;
+    await supabase.from('site_settings').upsert({
+      setting_key: 'maps_url',
+      setting_value: { value: 'https://www.google.com/maps?q=Skin%C3%A9+By+Ayat+Clinic&output=embed' },
+      updated_at: new Date().toISOString(),
+    });
+  } catch {
+    // Bundled defaults remain available when migration permissions are missing.
+  }
+}
 
 async function uploadImage(file: File, folder: string) {
   const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg';

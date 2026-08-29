@@ -8,7 +8,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { convertToEmbedUrl, isShortLink } from '@/lib/mapsUtils';
-import { adminFetch as fetch, supabase } from '@/lib/supabase';
+import { adminFetch as fetch, migrateDefaultContent, supabase } from '@/lib/supabase';
 import { STATIC_CATEGORIES } from '@/components/Pricing';
 import { DEFAULT_CONSULTATION_DATA } from '@/components/Consultation';
 
@@ -1732,7 +1732,10 @@ export function Admin() {
   const [authed, setAuthed] = useState<boolean | null>(null);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => setAuthed(Boolean(data.session)));
+    supabase.auth.getSession().then(async ({ data }) => {
+      if (data.session) await migrateDefaultContent();
+      setAuthed(Boolean(data.session));
+    });
     const { data } = supabase.auth.onAuthStateChange((_event, session) => {
       setAuthed(Boolean(session));
     });

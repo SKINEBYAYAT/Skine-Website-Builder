@@ -1,6 +1,9 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { MapPin } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { loadSetting } from '@/lib/supabase';
+import { convertToEmbedUrl } from '@/lib/mapsUtils';
 
 // ─── Static embed URL — extracted from live settings.json maps_url ────────────
 const EMBED_URL =
@@ -8,6 +11,18 @@ const EMBED_URL =
 
 export function Location() {
   const { t } = useLanguage();
+  const [embedUrl, setEmbedUrl] = useState(EMBED_URL);
+
+  useEffect(() => {
+    loadSetting('maps_url').then((saved) => {
+      if (saved === null) return;
+      if (saved === '') { setEmbedUrl(''); return; }
+      const converted = convertToEmbedUrl(saved);
+      if (converted) setEmbedUrl(converted);
+    }).catch(() => { /* Keep built-in map URL. */ });
+  }, []);
+
+  if (!embedUrl) return null;
 
   return (
     <section id="location" className="py-24 bg-background">
@@ -40,7 +55,7 @@ export function Location() {
           </div>
           <div className="rounded-3xl overflow-hidden shadow-lg border border-border">
             <iframe
-              src={EMBED_URL}
+              src={embedUrl}
               width="100%"
               height="420"
               style={{ border: 0, display: 'block' }}
