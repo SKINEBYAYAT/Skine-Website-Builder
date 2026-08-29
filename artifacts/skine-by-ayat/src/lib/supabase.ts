@@ -1,4 +1,17 @@
 import { createClient } from '@supabase/supabase-js';
+import review1 from '@/assets/review1.jpeg';
+import review2 from '@/assets/review2.jpeg';
+import review3 from '@/assets/review3.jpeg';
+import review4 from '@/assets/review4.jpeg';
+import review5 from '@/assets/review5.jpeg';
+import review6 from '@/assets/review6.jpeg';
+import review7 from '@/assets/review7.jpeg';
+import ba1Before from '@/assets/ba1-before.jpeg';
+import ba1After from '@/assets/ba1-after.jpeg';
+import ba2Before from '@/assets/ba2-before.jpeg';
+import ba2After from '@/assets/ba2-after.jpeg';
+import ba3Before from '@/assets/ba3-before.jpeg';
+import ba3After from '@/assets/ba3-after.jpeg';
 
 const url = import.meta.env.VITE_SUPABASE_URL;
 const key = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -10,6 +23,15 @@ export const imageBucket = 'website-images';
 
 export const publicImageUrl = (path: string) =>
   supabase.storage.from(imageBucket).getPublicUrl(path).data.publicUrl;
+
+const DEFAULT_REVIEW_IMAGES = [review1, review2, review3, review4, review5, review6, review7]
+  .map((url, index) => ({ filename: `review${index + 1}.jpeg`, url }));
+const DEFAULT_BEFORE_AFTER_PAIRS = [
+  { id: 'ba-1', beforeUrl: ba1Before, afterUrl: ba1After },
+  { id: 'ba-2', beforeUrl: ba2Before, afterUrl: ba2After },
+  { id: 'ba-3', beforeUrl: ba3Before, afterUrl: ba3After },
+];
+const DEFAULT_MAP_URL = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3313.282134595997!2d35.52329157628517!3d33.85661912803356!2m3!1f0!2f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x151f170038d7e3f7%3A0xdf1878910ef3200c!2sSkin%C3%A9%20By%20Ayat%20Clinic!5e0!3m2!1sen!2slb!4v1784821218341!5m2!1sen!2slb';
 
 async function loadLocalCollection<T>(path: string, key: string): Promise<T[] | null> {
   try {
@@ -32,6 +54,7 @@ export async function loadReviewImages() {
     );
     if (localImages) return localImages;
     if (error) throw error;
+    return DEFAULT_REVIEW_IMAGES;
   }
   return (data ?? []).map((row) => ({
     filename: row.id as string,
@@ -50,6 +73,7 @@ export async function loadBeforeAfterPairs() {
     );
     if (localPairs) return localPairs;
     if (error) throw error;
+    return DEFAULT_BEFORE_AFTER_PAIRS;
   }
   return (data ?? []).map((row) => ({
     id: row.id as string,
@@ -79,7 +103,7 @@ export async function loadSetting(key: string): Promise<string | null> {
       // Fall through to the Supabase error or null value.
     }
     if (error) throw error;
-    return null;
+    return key === 'maps_url' ? DEFAULT_MAP_URL : null;
   }
   const value = data.setting_value as { value?: string; url?: string; cleared?: boolean } | string | undefined;
   if (typeof value === 'string') return value;
@@ -104,12 +128,6 @@ async function uploadImage(file: File, folder: string) {
 export async function adminFetch(input: RequestInfo | URL, init: RequestInit = {}) {
   const path = typeof input === 'string' ? input : input.toString();
   const method = (init.method || 'GET').toUpperCase();
-  if (path.startsWith('/api/images/reviews') || path.startsWith('/api/before-after')) {
-    return window.fetch(input, init);
-  }
-  if (path.startsWith('/api/settings')) {
-    return window.fetch(input, init);
-  }
   if (path === '/api/pricing' || path === '/api/consultation') {
     const key = path.slice('/api/'.length);
     try {
