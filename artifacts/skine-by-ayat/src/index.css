@@ -147,3 +147,10 @@ section[id] { scroll-margin-top: 86px; }
 #pricing h2, #consultation h2, #before-after h2, #reviews h2, #location h2, #contact h2, #faq h2 { letter-spacing: -.035em; }
 @media (max-width: 1023px) { .editorial-hero { padding-top: 125px; } .editorial-hero-grid { min-height: auto; } .hero-image-wrap { height: 500px; min-height: 0; max-width: 680px; width: 100%; margin-inline: auto; } }
 @media (max-width: 640px) { .editorial-hero { padding: 115px 0 55px; } .hero-heading { font-size: clamp(3.1rem, 12vw, 4.5rem); } .hero-image-wrap { height: 430px; border-radius: 220px 220px 18px 18px; } .hero-copy { padding-inline: 2px; } .hero-description { line-height: 1.75; } }
+
+/* Text-led opening: no hero photography */
+.editorial-hero { background: radial-gradient(ellipse at 50% 42%, hsl(24 48% 91% / .68), transparent 58%), hsl(var(--background)); }
+.editorial-hero-grid { min-height: 620px; }
+.hero-copy .eyebrow { justify-content: center; }
+.hero-copy .hero-heading em { display: inline; }
+@media (max-width: 640px) { .editorial-hero-grid { min-height: 570px; } }
