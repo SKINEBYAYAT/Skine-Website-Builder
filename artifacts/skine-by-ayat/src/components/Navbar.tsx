@@ -70,25 +70,25 @@ export function Navbar() {
         className={cn(
           'fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-transparent',
           isScrolled
-            ? 'bg-background/80 backdrop-blur-md border-border py-3 shadow-sm'
-            : 'bg-transparent py-5'
+            ? 'bg-background/95 backdrop-blur-xl border-border py-2 shadow-sm'
+            : 'bg-background/95 py-3 border-border'
         )}
       >
-        <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-7xl flex items-center justify-between">
+        <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-7xl flex items-center justify-between gap-4">
           <a href="#" onClick={(e) => scrollTo(e, '#')} className="flex items-center gap-3">
-            <img src={logo} alt="Skiné by Ayat" className="h-12 w-auto rounded-md object-cover" />
-            <span className="font-bold text-xl tracking-tight hidden sm:block">Skiné by Ayat</span>
+            <img src={logo} alt="Skiné by Ayat" className="h-12 w-16 rounded-sm object-cover object-center" />
+            <span className="font-bold text-lg tracking-tight hidden sm:block">Skiné by Ayat</span>
           </a>
 
           {/* Desktop Nav */}
-          <div className="hidden xl:flex items-center gap-6 lg:gap-8">
-            <ul className="flex items-center gap-6">
+          <div className="hidden xl:flex items-center gap-4 lg:gap-6">
+            <ul className="flex items-center gap-4">
               {navLinks.map((link) => (
                 <li key={link.href}>
                   <a
                     href={link.href}
                     onClick={(e) => scrollTo(e, link.href)}
-                    className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors"
+                    className="text-sm font-medium text-foreground/70 hover:text-primary transition-colors"
                   >
                     {link.name}
                   </a>
