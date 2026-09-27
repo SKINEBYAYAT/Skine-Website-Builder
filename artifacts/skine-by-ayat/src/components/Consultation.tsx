@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Check, ArrowRight } from 'lucide-react';
+import { Check, ArrowRight, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -94,7 +94,9 @@ export function Consultation() {
           </div>
 
           {/* Divider */}
-          <div className="mx-8 h-px bg-border" />
+          <div className="package-ornament" aria-hidden="true">
+            <span /><Sparkles size={24} strokeWidth={1.2} /><span />
+          </div>
 
           {/* Checklist + CTA */}
           <div className="p-8 flex-1 flex flex-col">

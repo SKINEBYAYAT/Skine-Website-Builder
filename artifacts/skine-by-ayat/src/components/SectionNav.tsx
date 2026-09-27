@@ -3,6 +3,7 @@ import { ArrowDown } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const links = [
+  { key: 'nav.about', href: '#about' },
   { key: 'nav.pricing', href: '#pricing' },
   { key: 'nav.consultation', href: '#consultation' },
   { key: 'nav.beforeafter', href: '#before-after' },

@@ -176,20 +176,20 @@ body { overflow-x: hidden; }
 }
 
 /* A single rounded shortcut table, with shared cell borders. */
-.section-index-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; padding: 1px; border-radius: 22px; overflow: hidden; background: hsl(var(--border)); }
+.section-index-grid { position: relative; isolation: isolate; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; padding: 1px; border-radius: 22px; overflow: hidden; background: hsl(var(--border)); }
 .section-index-grid li { min-width: 0; background: hsl(var(--card)); }
-.section-index-grid li:last-child { grid-column: span 2; }
+.section-index-grid::after { content: ''; position: absolute; inset: 0; border: 1px solid hsl(var(--border)); border-radius: inherit; pointer-events: none; z-index: 1; }
 .section-index-grid a { height: 100%; min-height: 64px; justify-content: space-between; }
 .section-index-grid a:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: -4px; }
 .package-ornament { display: flex; align-items: center; gap: 14px; margin-inline: 28px; color: hsl(var(--muted-foreground) / .7); }
 .package-ornament span { flex: 1; height: 1px; background: hsl(var(--border)); }
 .package-ornament svg { flex: none; }
 .contact-card { display: grid; grid-template-columns: 44px minmax(0, 1fr); align-items: center; gap: 14px; padding: 20px; border: 1px solid hsl(var(--border)); border-radius: 20px; background: hsl(var(--card)); }
-#location.expandable-section, #faq.expandable-section { padding-block: 24px; }
+#about.expandable-section, #location.expandable-section, #faq.expandable-section { padding-block: 24px; }
 .section-disclosure { border: 1px solid hsl(var(--border)); border-radius: 20px; background: hsl(var(--card) / .55); overflow: hidden; }
 .section-disclosure > summary { list-style: none; display: flex; align-items: center; gap: 14px; padding: 22px 24px; cursor: pointer; }
 .section-disclosure > summary::-webkit-details-marker { display: none; }
-#location .section-disclosure h2, #faq .section-disclosure h2 { font-size: 1.25rem; font-weight: 600; line-height: 1.5; letter-spacing: normal; }
+#about .section-disclosure h2, #location .section-disclosure h2, #faq .section-disclosure h2 { font-size: 1.25rem; font-weight: 600; line-height: 1.5; letter-spacing: normal; }
 .section-disclosure > summary:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: -4px; border-radius: 20px; }
 .disclosure-chevron { margin-inline-start: auto; flex-shrink: 0; transition: transform .2s; }
 .section-disclosure[open] > summary .disclosure-chevron { transform: rotate(180deg); }
