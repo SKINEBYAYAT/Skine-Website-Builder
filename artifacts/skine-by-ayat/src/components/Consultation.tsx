@@ -6,7 +6,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 const JOTFORM_URL = 'https://form.jotform.com/261913445488062';
 
 // ─── Static data — mirrors live consultation data ─────────────────────────────
-const data = {
+export const DEFAULT_CONSULTATION_DATA = {
   price: '$35',
   subtitleEn: 'Skin consultation and skincare routine planning',
   subtitleAr: 'استشارة جلدية وتخطيط روتين العناية',
@@ -46,7 +46,7 @@ export function Consultation() {
   const { t, lang, dir } = useLanguage();
 
   const isRTL   = dir === 'rtl';
-  const tagline = lang === 'ar' ? data.subtitleAr : data.subtitleEn;
+  const tagline = lang === 'ar' ? DEFAULT_CONSULTATION_DATA.subtitleAr : DEFAULT_CONSULTATION_DATA.subtitleEn;
 
   return (
     <section id="consultation" className="py-24 bg-card/50">
@@ -85,7 +85,7 @@ export function Consultation() {
             )}
             <div className="flex items-baseline gap-1">
               <span className="text-5xl font-extrabold tracking-tight text-foreground">
-                {data.price}
+                {DEFAULT_CONSULTATION_DATA.price}
               </span>
               <span className="text-sm ms-1 text-foreground/50">
                 / {t('pricing.session')}
@@ -99,7 +99,7 @@ export function Consultation() {
           {/* Checklist + CTA */}
           <div className="p-8 flex-1 flex flex-col">
             <ul className="space-y-4 flex-1">
-              {data.items.map((item) => {
+              {DEFAULT_CONSULTATION_DATA.items.map((item) => {
                 const title = lang === 'ar' ? item.titleAr : item.titleEn;
                 const desc  = lang === 'ar' ? item.descAr  : item.descEn;
                 return (
@@ -120,7 +120,7 @@ export function Consultation() {
 
             <Button
               onClick={() => window.open(
-                `${JOTFORM_URL}?input26=${encodeURIComponent('Consultation')}&price=${encodeURIComponent(data.price)}`,
+                `${JOTFORM_URL}?input26=${encodeURIComponent('Consultation')}&price=${encodeURIComponent(DEFAULT_CONSULTATION_DATA.price)}`,
                 '_blank',
                 'noopener,noreferrer'
               )}

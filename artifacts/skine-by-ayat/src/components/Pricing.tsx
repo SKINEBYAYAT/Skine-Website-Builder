@@ -31,7 +31,7 @@ interface PricingCategory {
 }
 
 // ─── Static data — mirrors live pricing.json exactly ──────────────────────────
-const STATIC_CATEGORIES: PricingCategory[] = [
+export const STATIC_CATEGORIES: PricingCategory[] = [
   {
     id: 'facials',
     nameAr: 'الفيشل',
