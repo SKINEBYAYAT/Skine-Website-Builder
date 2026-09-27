@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion';
+import { HelpCircle } from 'lucide-react';
+import { ExpandableSection } from '@/components/ExpandableSection';
 import { useLanguage } from '@/contexts/LanguageContext';
 import {
   Accordion,
@@ -13,28 +14,7 @@ export function FAQ() {
   const faqs = Array.from({ length: 22 }, (_, i) => i + 1);
 
   return (
-    <section id="faq" className="py-24 bg-background">
-      <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-3xl">
-        <div className="text-center mb-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              {t('faq.title')}
-            </h2>
-            <div className="w-16 h-1 bg-primary mx-auto rounded-full"></div>
-          </motion.div>
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
+    <ExpandableSection id="faq" title={t('faq.title')} icon={HelpCircle}>
           <Accordion type="single" collapsible className="w-full space-y-4">
             {faqs.map((num) => (
               <AccordionItem 
@@ -51,8 +31,6 @@ export function FAQ() {
               </AccordionItem>
             ))}
           </Accordion>
-        </motion.div>
-      </div>
-    </section>
+    </ExpandableSection>
   );
 }

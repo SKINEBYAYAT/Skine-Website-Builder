@@ -1,6 +1,6 @@
 import { useRef, useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, X, ZoomIn } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { loadBeforeAfterPairs } from '@/lib/supabase';
 
@@ -283,15 +283,6 @@ export function BeforeAfter() {
                       </div>
                     </div>
 
-                    {/* Footer */}
-                    <div className="px-4 py-3 flex items-center justify-between">
-                      <span className="text-foreground/40 text-xs">
-                        {current + 1} / {count}
-                      </span>
-                      <span className="flex items-center gap-1 text-primary/60 text-xs">
-                        <ZoomIn size={12} /> {t('beforeafter.title')}
-                      </span>
-                    </div>
                   </div>
                 </motion.div>
               </AnimatePresence>

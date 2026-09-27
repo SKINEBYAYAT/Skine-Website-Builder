@@ -147,7 +147,7 @@ body { overflow-x: hidden; }
 .section-index-grid a > span:first-child { font: 600 .72rem 'Inter',sans-serif; color: hsl(20 41% 49%); }
 .section-index-arrow { margin-inline-start: auto; color: hsl(20 41% 49%); }
 #pricing { background: hsl(var(--muted) / .45); }
-#pricing .grid > div, #consultation .rounded-3xl { border-radius: 3px; box-shadow: none; background: hsl(var(--card)); }
+#pricing .grid > div, #consultation .rounded-3xl { border-radius: 24px; box-shadow: none; background: hsl(var(--card)); }
 #pricing .grid > div:hover, #consultation .rounded-3xl:hover { box-shadow: 0 18px 42px hsl(var(--foreground) / .09); }
 #pricing .grid > div h3 { font-size: 1.5rem; }
 #pricing .grid > div button, #consultation button { border-radius: 3px; }
@@ -176,4 +176,23 @@ body { overflow-x: hidden; }
   #pricing .grid > div .p-8, #consultation .rounded-3xl .p-8 { padding: 23px; }
   #pricing .grid > div .text-5xl, #consultation .text-5xl { font-size: 2.75rem; }
   #pricing h2, #consultation h2, #before-after h2, #reviews h2, #location h2, #contact h2, #faq h2 { font-size: 2.05rem; }
+}
+
+/* Shortcuts wrap evenly without numbering. */
+.section-index-grid { display: flex; flex-wrap: wrap; }
+.section-index-grid li { flex: 1 1 150px; border: 0 !important; }
+.section-index-grid a { min-height: 64px; justify-content: space-between; border-bottom: 1px solid hsl(var(--border)); }
+#location.expandable-section, #faq.expandable-section { padding-block: 24px; }
+.section-disclosure { border: 1px solid hsl(var(--border)); border-radius: 20px; background: hsl(var(--card) / .55); overflow: hidden; }
+.section-disclosure > summary { list-style: none; display: flex; align-items: center; gap: 14px; padding: 22px 24px; cursor: pointer; }
+.section-disclosure > summary::-webkit-details-marker { display: none; }
+#location .section-disclosure h2, #faq .section-disclosure h2 { font-size: 1.25rem; font-weight: 600; line-height: 1.5; letter-spacing: normal; }
+.section-disclosure > summary:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: -4px; border-radius: 20px; }
+.disclosure-chevron { margin-inline-start: auto; flex-shrink: 0; transition: transform .2s; }
+.section-disclosure[open] > summary .disclosure-chevron { transform: rotate(180deg); }
+.disclosure-content { padding: 0 20px 20px; }
+@media (max-width: 640px) {
+  .section-index-grid li { flex-basis: 44%; }
+  .section-disclosure > summary { padding: 18px; }
+  .disclosure-content { padding: 0 12px 12px; }
 }

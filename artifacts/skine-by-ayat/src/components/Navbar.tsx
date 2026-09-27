@@ -3,6 +3,7 @@ import { Menu, X, Moon, Sun, Instagram, ArrowUp } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Button } from '@/components/ui/button';
+import { navigateToSection } from '@/lib/sectionNavigation';
 import { cn } from '@/lib/utils';
 import logo from '@assets/IMG_7839_1784317781519.jpeg';
 
@@ -42,10 +43,7 @@ export function Navbar() {
     if (href === '#') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
-      const element = document.querySelector(href);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
+      navigateToSection(href);
     }
   };
 

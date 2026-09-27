@@ -143,11 +143,6 @@ export function ReviewsCarousel() {
                       className="w-full h-auto object-contain transition-transform duration-500 group-hover:scale-[1.02]"
                       style={{ maxHeight: '70vh' }}
                     />
-                    <div className="px-4 py-3 text-center">
-                      <span className="text-foreground/40 text-xs">
-                        {t('reviews.title')} {current + 1} / {count}
-                      </span>
-                    </div>
                   </div>
                 </motion.div>
               </AnimatePresence>
