@@ -140,11 +140,8 @@ body { overflow-x: hidden; }
 .hero-description { max-width: 760px; margin-top: 31px; font-size: 1.08rem; line-height: 1.9; color: hsl(var(--foreground) / .72); }
 .hero-baseline { display: flex; justify-content: space-between; gap: 20px; border-top: 1px solid hsl(var(--border)); padding: 21px 0; color: hsl(var(--foreground) / .56); font: 600 .67rem/1.6 'Inter',sans-serif; letter-spacing: .13em; }
 .section-index { background: hsl(var(--background)); padding: 10px 0 68px; }
-.section-index-grid { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid hsl(var(--border)); border-bottom: 1px solid hsl(var(--border)); }
-.section-index-grid li + li { border-inline-start: 1px solid hsl(var(--border)); }
 .section-index-grid a { display: flex; align-items: center; gap: 9px; min-height: 83px; padding: 14px 20px; font-size: .92rem; font-weight: 700; transition: background .2s; }
 .section-index-grid a:hover { background: hsl(var(--secondary) / .12); }
-.section-index-grid a > span:first-child { font: 600 .72rem 'Inter',sans-serif; color: hsl(20 41% 49%); }
 .section-index-arrow { margin-inline-start: auto; color: hsl(20 41% 49%); }
 #pricing { background: hsl(var(--muted) / .45); }
 #pricing .grid > div, #consultation .rounded-3xl { border-radius: 24px; box-shadow: none; background: hsl(var(--card)); }
@@ -154,7 +151,7 @@ body { overflow-x: hidden; }
 #pricing h2, #consultation h2, #before-after h2, #reviews h2, #location h2, #contact h2, #faq h2 { letter-spacing: -.035em; font-size: clamp(2.15rem, 3.5vw, 3.5rem); }
 #pricing, #consultation, #before-after, #reviews, #location, #contact, #faq { position: relative; }
 @media (max-width: 1023px) { .hero-layout { grid-template-columns: 1fr; min-height: auto; gap: 50px; } }
-@media (max-width: 640px) { .editorial-hero { padding-top: 92px; } .hero-layout { padding-block: 55px 40px; gap: 45px; } .hero-heading { font-size: clamp(3rem, 11vw, 4.5rem); } .hero-description { line-height: 1.75; margin-top: 24px; } .hero-baseline span:last-child { display: none; } .section-index { padding-bottom: 45px; } .section-index-grid { grid-template-columns: repeat(2, 1fr); } .section-index-grid li:nth-child(3) { border-inline-start: 0; border-top: 1px solid hsl(var(--border)); } .section-index-grid li:nth-child(4) { border-top: 1px solid hsl(var(--border)); } .section-index-grid a { min-height: 70px; padding: 12px; } }
+@media (max-width: 640px) { .editorial-hero { padding-top: 92px; } .hero-layout { padding-block: 55px 40px; gap: 45px; } .hero-heading { font-size: clamp(3rem, 11vw, 4.5rem); } .hero-description { line-height: 1.75; margin-top: 24px; } .hero-baseline span:last-child { display: none; } .section-index { padding-bottom: 45px; } .section-index-grid a { min-height: 70px; padding: 12px; } }
 
 /* Compact phone layout */
 .hero-description-mobile { display: none; }
@@ -178,10 +175,16 @@ body { overflow-x: hidden; }
   #pricing h2, #consultation h2, #before-after h2, #reviews h2, #location h2, #contact h2, #faq h2 { font-size: 2.05rem; }
 }
 
-/* Shortcuts wrap evenly without numbering. */
-.section-index-grid { display: flex; flex-wrap: wrap; }
-.section-index-grid li { flex: 1 1 150px; border: 0 !important; }
-.section-index-grid a { min-height: 64px; justify-content: space-between; border-bottom: 1px solid hsl(var(--border)); }
+/* A single rounded shortcut table, with shared cell borders. */
+.section-index-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; padding: 1px; border-radius: 22px; overflow: hidden; background: hsl(var(--border)); }
+.section-index-grid li { min-width: 0; background: hsl(var(--card)); }
+.section-index-grid li:last-child { grid-column: span 2; }
+.section-index-grid a { height: 100%; min-height: 64px; justify-content: space-between; }
+.section-index-grid a:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: -4px; }
+.package-ornament { display: flex; align-items: center; gap: 14px; margin-inline: 28px; color: hsl(var(--muted-foreground) / .7); }
+.package-ornament span { flex: 1; height: 1px; background: hsl(var(--border)); }
+.package-ornament svg { flex: none; }
+.contact-card { display: grid; grid-template-columns: 44px minmax(0, 1fr); align-items: center; gap: 14px; padding: 20px; border: 1px solid hsl(var(--border)); border-radius: 20px; background: hsl(var(--card)); }
 #location.expandable-section, #faq.expandable-section { padding-block: 24px; }
 .section-disclosure { border: 1px solid hsl(var(--border)); border-radius: 20px; background: hsl(var(--card) / .55); overflow: hidden; }
 .section-disclosure > summary { list-style: none; display: flex; align-items: center; gap: 14px; padding: 22px 24px; cursor: pointer; }
@@ -192,7 +195,8 @@ body { overflow-x: hidden; }
 .section-disclosure[open] > summary .disclosure-chevron { transform: rotate(180deg); }
 .disclosure-content { padding: 0 20px 20px; }
 @media (max-width: 640px) {
-  .section-index-grid li { flex-basis: 44%; }
+  .section-index-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .contact-card { padding: 16px; gap: 12px; }
   .section-disclosure > summary { padding: 18px; }
   .disclosure-content { padding: 0 12px 12px; }
 }

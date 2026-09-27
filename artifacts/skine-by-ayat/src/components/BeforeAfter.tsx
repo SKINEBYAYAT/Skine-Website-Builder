@@ -235,7 +235,7 @@ export function BeforeAfter() {
               </button>
             )}
 
-            <div className="flex-1 max-w-2xl mx-auto overflow-hidden">
+            <div className="flex-1 max-w-2xl mx-auto overflow-hidden rounded-3xl">
               <AnimatePresence initial={false} custom={direction} mode="wait">
                 <motion.div
                   key={current}
@@ -248,7 +248,7 @@ export function BeforeAfter() {
                   className="cursor-pointer group"
                   onClick={() => setLightboxIndex(current)}
                 >
-                  <div className="rounded-3xl overflow-hidden shadow-2xl ring-1 ring-border/20 group-hover:ring-primary/40 transition-all duration-300 bg-[#f9f4ef]">
+                  <div className="rounded-3xl overflow-hidden bg-transparent">
                     <div className="flex">
                       {/* Before half */}
                       <div className="flex-1 min-w-0 relative">

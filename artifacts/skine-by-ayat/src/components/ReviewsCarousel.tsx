@@ -123,7 +123,7 @@ export function ReviewsCarousel() {
             )}
 
             {/* Card */}
-            <div className="relative overflow-hidden flex-1 max-w-sm mx-auto">
+            <div className="relative overflow-hidden rounded-3xl flex-1 max-w-sm mx-auto">
               <AnimatePresence initial={false} custom={direction} mode="wait">
                 <motion.div
                   key={current}
@@ -136,7 +136,7 @@ export function ReviewsCarousel() {
                   className="cursor-pointer"
                   onClick={() => setLightboxIndex(current)}
                 >
-                  <div className="rounded-3xl overflow-hidden shadow-xl ring-1 ring-border/20 hover:ring-primary/40 hover:shadow-2xl transition-all duration-300 bg-[#f9f4ef] group">
+                  <div className="rounded-3xl overflow-hidden bg-transparent group">
                     <img
                       src={images[current].url}
                       alt={`Review ${current + 1}`}

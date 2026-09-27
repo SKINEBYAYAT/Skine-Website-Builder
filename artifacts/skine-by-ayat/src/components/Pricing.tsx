@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check } from 'lucide-react';
+import { Check, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -258,7 +258,9 @@ export function Pricing() {
                       </div>
 
                       {/* Divider */}
-                      <div className="mx-8 h-px bg-border" />
+                      <div className="package-ornament" aria-hidden="true">
+                        <span /><Sparkles size={24} strokeWidth={1.2} /><span />
+                      </div>
 
                       {/* Services list + CTA */}
                       <div className="p-8 flex-1 flex flex-col">

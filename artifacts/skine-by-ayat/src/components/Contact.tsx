@@ -32,7 +32,7 @@ export function Contact() {
     <section id="contact" className="py-24 bg-card/30">
       <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-3xl">
         {/* Heading */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -47,22 +47,22 @@ export function Contact() {
         </div>
 
         {/* Cards grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {/* Instagram card */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="flex flex-col items-center gap-5 bg-card border border-border rounded-3xl shadow-md hover:shadow-xl p-10 transition-shadow duration-300 group"
+            className="contact-card group"
           >
-            <div className="w-20 h-20 rounded-full bg-[#E1306C]/10 flex items-center justify-center group-hover:bg-[#E1306C]/20 transition-colors duration-300">
-              <Instagram size={36} className="text-[#E1306C]" />
+            <div className="w-11 h-11 rounded-full bg-[#E1306C]/10 flex items-center justify-center group-hover:bg-[#E1306C]/20 transition-colors duration-300">
+              <Instagram size={24} className="text-[#E1306C]" />
             </div>
-            <div className="text-center">
-              <h3 className="font-bold text-xl mb-1">Instagram</h3>
-              <p className="text-muted-foreground text-base font-medium">@skinebyayat</p>
-              <p className="text-muted-foreground text-sm mt-1">
+            <div className="min-w-0 text-start">
+              <h3 className="font-bold text-base mb-1">Instagram</h3>
+              <p className="text-muted-foreground text-sm font-medium">@skinebyayat</p>
+              <p className="text-muted-foreground text-xs mt-1">
                 {t('contact.instagram.subtitle')}
               </p>
             </div>
@@ -72,7 +72,7 @@ export function Contact() {
               rel="noopener noreferrer"
               whileHover={{ scale: 1.04, y: -2 }}
               whileTap={{ scale: 0.97 }}
-              className="inline-flex items-center gap-2 bg-[#E1306C] hover:bg-[#c9275d] text-white font-semibold text-sm px-6 py-3 rounded-full shadow-md hover:shadow-lg transition-all duration-300"
+              className="col-span-2 justify-center inline-flex items-center gap-2 bg-[#E1306C] hover:bg-[#c9275d] text-white font-semibold text-sm px-4 py-2.5 rounded-full transition-all duration-300"
             >
               <Instagram size={18} />
               {t('contact.instagram.cta')}
@@ -85,17 +85,17 @@ export function Contact() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="flex flex-col items-center gap-5 bg-card border border-border rounded-3xl shadow-md hover:shadow-xl p-10 transition-shadow duration-300"
+            className="contact-card"
           >
-            <div className="w-20 h-20 rounded-full bg-[#25D366]/10 flex items-center justify-center">
-              <WhatsAppIcon size={36} />
+            <div className="w-11 h-11 rounded-full bg-[#25D366]/10 flex items-center justify-center">
+              <WhatsAppIcon size={24} />
             </div>
-            <div className="text-center flex-1 flex flex-col gap-3">
-              <h3 className="font-bold text-xl">WhatsApp</h3>
-              <p className="text-foreground font-semibold text-base" dir="ltr">
+            <div className="min-w-0 text-start">
+              <h3 className="font-bold text-base">WhatsApp</h3>
+              <p className="text-foreground font-medium text-sm" dir="ltr">
                 {WHATSAPP_NUMBER_DISPLAY}
               </p>
-              <p className="text-muted-foreground text-sm leading-relaxed">
+              <p className="text-muted-foreground text-xs leading-relaxed mt-1">
                 {t('whatsapp.desc')}
               </p>
             </div>
@@ -105,7 +105,7 @@ export function Contact() {
               rel="noopener noreferrer"
               whileHover={{ scale: 1.04, y: -2 }}
               whileTap={{ scale: 0.97 }}
-              className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#20bb5a] text-white font-semibold text-sm px-6 py-3 rounded-full shadow-md hover:shadow-lg transition-all duration-300"
+              className="col-span-2 justify-center inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#20bb5a] text-white font-semibold text-sm px-4 py-2.5 rounded-full transition-all duration-300"
             >
               <WhatsAppIcon size={18} />
               {t('whatsapp.cta')}
