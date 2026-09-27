@@ -1,3 +1,4 @@
+import { ArrowDown } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const links = [
@@ -14,7 +15,7 @@ export function SectionNav() {
       <div className="container mx-auto max-w-7xl px-5 md:px-8">
         <ul className="section-index-grid">
           {links.map(({ key, href, number }) => (
-            <li key={href}><a href={href}><span>{number} /</span>{t(key)}<span className="section-index-arrow" aria-hidden="true">↗</span></a></li>
+            <li key={href}><a href={href}><span>{number} /</span>{t(key)}<ArrowDown className="section-index-arrow" size={16} aria-hidden="true" /></a></li>
           ))}
         </ul>
       </div>
