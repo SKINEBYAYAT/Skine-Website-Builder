@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Upload, Trash2, LogOut, Lock, CheckCircle, AlertCircle,
   ImageIcon, X, GripVertical, Map, ChevronDown, Plus,
-  DollarSign, RefreshCw, CalendarCheck,
+  DollarSign, RefreshCw, CalendarCheck, ChevronUp,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -964,12 +964,33 @@ function MapsPanel() {
   );
 }
 
+function DetailActions({ index, count, onMove, onDelete }: {
+  index: number;
+  count: number;
+  onMove: (direction: -1 | 1) => void;
+  onDelete: () => void;
+}) {
+  const { lang } = useLanguage();
+  const up = lang === 'ar' ? 'نقل للأعلى' : 'Move up';
+  const down = lang === 'ar' ? 'نقل للأسفل' : 'Move down';
+  const remove = lang === 'ar' ? 'حذف التفصيل' : 'Delete detail';
+  const buttonClass = 'inline-flex h-9 w-9 items-center justify-center rounded-lg hover:bg-primary/10 disabled:opacity-25 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-primary';
+  return (
+    <div className="flex items-center gap-1 flex-none">
+      <button type="button" className={buttonClass} title={up} aria-label={up} disabled={index === 0} onClick={() => onMove(-1)}><ChevronUp size={16} /></button>
+      <button type="button" className={buttonClass} title={down} aria-label={down} disabled={index === count - 1} onClick={() => onMove(1)}><ChevronDown size={16} /></button>
+      <button type="button" className={`${buttonClass} text-red-500 hover:bg-red-500/10`} title={remove} aria-label={remove} onClick={onDelete}><Trash2 size={15} /></button>
+    </div>
+  );
+}
+
 // ─── Service row (edit + drag + delete with confirm) ─────────────────────────
 function ServiceRow({
   svc,
   svcIdx,
   pkgIdx,
-  isOnly,
+  count,
+  onMove,
   onUpdate,
   onDelete,
   dragHandleProps,
@@ -977,7 +998,8 @@ function ServiceRow({
   svc: PricingService;
   svcIdx: number;
   pkgIdx: number;
-  isOnly: boolean;
+  count: number;
+  onMove: (direction: -1 | 1) => void;
   onUpdate: (patch: Partial<PricingService>) => void;
   onDelete: () => void;
   dragHandleProps: {
@@ -1004,7 +1026,7 @@ function ServiceRow({
         onDragStart={dragHandleProps.onDragStart}
         onDragOver={dragHandleProps.onDragOver}
         onDrop={dragHandleProps.onDrop}
-        className={`flex items-center gap-2 rounded-xl border transition-colors ${
+        className={`flex flex-wrap items-center gap-2 rounded-xl border transition-colors ${
           dragHandleProps.isDragTarget
             ? 'border-primary/50 bg-primary/5'
             : 'border-border bg-background'
@@ -1018,36 +1040,30 @@ function ServiceRow({
           <GripVertical size={15} />
         </div>
 
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 flex-1 min-w-0">
         {/* EN input */}
         <input
           value={svc.en}
           onChange={(e) => onUpdate({ en: e.target.value })}
           placeholder="Service name (EN)"
-          className="flex-1 min-w-0 bg-transparent text-sm text-foreground placeholder:text-foreground/30 focus:outline-none py-0.5"
+          className="w-full min-w-0 bg-transparent text-sm text-foreground placeholder:text-foreground/30 focus:outline-none py-0.5"
           dir="ltr"
         />
 
-        {/* Divider */}
-        <div className="w-px h-5 bg-border flex-none" />
 
         {/* AR input */}
         <input
           value={svc.ar}
           onChange={(e) => onUpdate({ ar: e.target.value })}
           placeholder="اسم الخدمة (AR)"
-          className="flex-1 min-w-0 bg-transparent text-sm text-foreground placeholder:text-foreground/30 focus:outline-none py-0.5"
+          className="w-full min-w-0 bg-transparent text-sm text-foreground placeholder:text-foreground/30 focus:outline-none py-0.5"
           dir="rtl"
         />
 
-        {/* Delete button — always visible */}
-        <button
-          onClick={() => setConfirmDelete(true)}
-          title="Delete service"
-          className="flex-none flex items-center gap-1.5 bg-red-500 hover:bg-red-600 active:bg-red-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg shadow-sm transition-colors"
-        >
-          <Trash2 size={13} />
-          Delete
-        </button>
+        </div>
+        <div className="w-full sm:w-auto flex justify-end">
+          <DetailActions index={svcIdx} count={count} onMove={onMove} onDelete={() => setConfirmDelete(true)} />
+        </div>
       </div>
     </>
   );
@@ -1210,6 +1226,7 @@ function PricingPanel() {
     setSvcDragTarget(null);
     svcDragSrc.current = null;
     if (!data || !src) return;
+    if (toSvcIdx < 0 || toSvcIdx >= data.categories[toCatIdx].packages[toPkgIdx].services.length) return;
     if (src.catIdx !== toCatIdx || src.pkgIdx !== toPkgIdx || src.svcIdx === toSvcIdx) return;
     const cats = [...data.categories];
     const pkgs = [...cats[toCatIdx].packages];
@@ -1330,7 +1347,11 @@ function PricingPanel() {
                               svc={svc}
                               svcIdx={svcIdx}
                               pkgIdx={pkgIdx}
-                              isOnly={pkg.services.length === 1}
+                              count={pkg.services.length}
+                              onMove={(direction) => {
+                                svcDragSrc.current = { catIdx, pkgIdx, svcIdx };
+                                dropService(catIdx, pkgIdx, svcIdx + direction);
+                              }}
                               onUpdate={(patch) => updateService(catIdx, pkgIdx, svcIdx, patch)}
                               onDelete={() => deleteService(catIdx, pkgIdx, svcIdx)}
                               dragHandleProps={{
@@ -1346,7 +1367,7 @@ function PricingPanel() {
                           ))}
 
                           {pkg.services.length > 1 && (
-                            <p className="text-xs text-foreground/30 pt-1 pb-0.5">↕ Drag rows to reorder</p>
+                            <p className="text-xs text-foreground/30 pt-1 pb-0.5">{t('admin.reorder.hint')}</p>
                           )}
 
                           <button onClick={() => addService(catIdx, pkgIdx)}
@@ -1391,14 +1412,16 @@ function PricingPanel() {
 function ConsultationItemRow({
   item,
   index,
-  isOnly,
+  count,
+  onMove,
   onUpdate,
   onDelete,
   dragHandleProps,
 }: {
   item: ConsultationItem;
   index: number;
-  isOnly: boolean;
+  count: number;
+  onMove: (direction: -1 | 1) => void;
   onUpdate: (patch: Partial<ConsultationItem>) => void;
   onDelete: () => void;
   dragHandleProps: {
@@ -1440,14 +1463,7 @@ function ConsultationItemRow({
             <GripVertical size={15} />
           </div>
           <span className="text-xs font-medium text-foreground/50 flex-1">Item {index + 1}</span>
-          {!isOnly && (
-            <button
-              onClick={() => setConfirmDelete(true)}
-              className="flex items-center gap-1 text-xs text-red-400 hover:text-red-600 transition"
-            >
-              <Trash2 size={12} /> Delete
-            </button>
-          )}
+          <DetailActions index={index} count={count} onMove={onMove} onDelete={() => setConfirmDelete(true)} />
         </div>
 
         {/* Fields */}
@@ -1572,7 +1588,7 @@ function ConsultationPanel() {
     const fromIdx = dragSrc.current;
     setDragTarget(null);
     dragSrc.current = null;
-    if (!data || fromIdx === null || fromIdx === toIdx) return;
+    if (!data || fromIdx === null || fromIdx === toIdx || toIdx < 0 || toIdx >= data.items.length) return;
     const items = [...data.items];
     const [moved] = items.splice(fromIdx, 1);
     items.splice(toIdx, 0, moved);
@@ -1642,7 +1658,8 @@ function ConsultationPanel() {
                 key={item.id}
                 item={item}
                 index={i}
-                isOnly={data.items.length === 1}
+                count={data.items.length}
+                onMove={(direction) => { dragSrc.current = i; dropItem(i + direction); }}
                 onUpdate={(patch) => updateItem(i, patch)}
                 onDelete={() => deleteItem(i)}
                 dragHandleProps={{
@@ -1654,7 +1671,7 @@ function ConsultationPanel() {
               />
             ))}
             <p className="text-center text-xs text-foreground/30 pt-1">
-              ↕ Drag items to reorder · {data.items.length} item{data.items.length !== 1 ? 's' : ''}
+              {t('admin.reorder.hint')}
             </p>
           </div>
         )}

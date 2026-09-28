@@ -10,6 +10,7 @@ interface LanguageContextType {
 }
 
 const translations: Record<string, Record<Language, string>> = {
+  'admin.reorder.hint': { ar: 'استخدمي الأسهم أو السحب لتغيير الترتيب. يُحفظ الترتيب تلقائياً.', en: 'Use the arrows or drag to reorder. Order saves automatically.' },
   // Nav
   'nav.home': { ar: 'الرئيسية', en: 'Home' },
   'nav.about': { ar: 'من نحن', en: 'About' },
