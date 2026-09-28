@@ -1022,46 +1022,42 @@ function ServiceRow({
       )}
 
       <div
-        draggable
-        onDragStart={dragHandleProps.onDragStart}
         onDragOver={dragHandleProps.onDragOver}
         onDrop={dragHandleProps.onDrop}
-        className={`flex flex-wrap items-center gap-2 rounded-xl border transition-colors ${
+        className={`space-y-3 rounded-xl border transition-colors ${
           dragHandleProps.isDragTarget
             ? 'border-primary/50 bg-primary/5'
             : 'border-border bg-background'
-        } px-2 py-1.5 group`}
+        } p-3 group`}
       >
-        {/* Drag handle */}
-        <div
-          className="cursor-grab active:cursor-grabbing text-foreground/25 hover:text-foreground/50 transition-colors flex-none px-0.5"
-          title="Drag to reorder"
-        >
-          <GripVertical size={15} />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 min-w-0">
+          <label className="block min-w-0 space-y-1.5" dir="ltr">
+            <span className="block text-xs font-semibold text-muted-foreground">English</span>
+            <input
+              value={svc.en}
+              onChange={(e) => onUpdate({ en: e.target.value })}
+              placeholder="Service name"
+              lang="en"
+              dir="ltr"
+              className="w-full min-w-0 rounded-lg border border-border bg-card px-3 py-2.5 text-base text-foreground placeholder:text-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
+            />
+          </label>
+          <label className="block min-w-0 space-y-1.5" dir="rtl">
+            <span className="block text-xs font-semibold text-muted-foreground">العربية</span>
+            <input
+              value={svc.ar}
+              onChange={(e) => onUpdate({ ar: e.target.value })}
+              placeholder="اسم الخدمة"
+              lang="ar"
+              dir="rtl"
+              className="w-full min-w-0 rounded-lg border border-border bg-card px-3 py-2.5 text-base text-foreground placeholder:text-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
+            />
+          </label>
         </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 flex-1 min-w-0">
-        {/* EN input */}
-        <input
-          value={svc.en}
-          onChange={(e) => onUpdate({ en: e.target.value })}
-          placeholder="Service name (EN)"
-          className="w-full min-w-0 bg-transparent text-sm text-foreground placeholder:text-foreground/30 focus:outline-none py-0.5"
-          dir="ltr"
-        />
-
-
-        {/* AR input */}
-        <input
-          value={svc.ar}
-          onChange={(e) => onUpdate({ ar: e.target.value })}
-          placeholder="اسم الخدمة (AR)"
-          className="w-full min-w-0 bg-transparent text-sm text-foreground placeholder:text-foreground/30 focus:outline-none py-0.5"
-          dir="rtl"
-        />
-
-        </div>
-        <div className="w-full sm:w-auto flex justify-end">
+        <div className="flex items-center justify-between border-t border-border/60 pt-2">
+          <div draggable onDragStart={dragHandleProps.onDragStart} title="Drag to reorder" className="cursor-grab active:cursor-grabbing p-2 text-muted-foreground">
+            <GripVertical size={15} />
+          </div>
           <DetailActions index={svcIdx} count={count} onMove={onMove} onDelete={() => setConfirmDelete(true)} />
         </div>
       </div>
