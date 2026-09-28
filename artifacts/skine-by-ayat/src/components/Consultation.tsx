@@ -48,7 +48,7 @@ export function Consultation() {
   const { t, lang, dir } = useLanguage();
 
   const { data: saved } = useQuery({ queryKey: ['site-content', 'consultation'], queryFn: () => loadSiteContent<typeof DEFAULT_CONSULTATION_DATA>('consultation'), retry: 1 });
-  const content = saved ?? DEFAULT_CONSULTATION_DATA;
+  const content = saved && Array.isArray(saved.items) ? saved : DEFAULT_CONSULTATION_DATA;
 
   const isRTL   = dir === 'rtl';
   const tagline = lang === 'ar' ? content.subtitleAr : content.subtitleEn;

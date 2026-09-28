@@ -159,7 +159,7 @@ export const STATIC_CATEGORIES: PricingCategory[] = [
 export function Pricing() {
   const { t, lang } = useLanguage();
   const { data: saved } = useQuery({ queryKey: ['site-content', 'pricing'], queryFn: () => loadSiteContent<{ categories: typeof STATIC_CATEGORIES }>('pricing'), retry: 1 });
-  const categories = saved?.categories ?? STATIC_CATEGORIES;
+  const categories = Array.isArray(saved?.categories) ? saved.categories : STATIC_CATEGORIES;
   const [activeTab, setActiveTab] = useState(STATIC_CATEGORIES[0].id);
 
   const activeCategory = categories.find((c) => c.id === activeTab) ?? categories[0];
