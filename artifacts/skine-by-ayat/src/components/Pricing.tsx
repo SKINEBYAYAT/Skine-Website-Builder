@@ -1,3 +1,5 @@
+import { useQuery } from '@tanstack/react-query';
+import { loadSiteContent } from '@/lib/supabase';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, Sparkles } from 'lucide-react';
@@ -156,9 +158,11 @@ export const STATIC_CATEGORIES: PricingCategory[] = [
 
 export function Pricing() {
   const { t, lang } = useLanguage();
+  const { data: saved } = useQuery({ queryKey: ['site-content', 'pricing'], queryFn: () => loadSiteContent<{ categories: typeof STATIC_CATEGORIES }>('pricing'), retry: 1 });
+  const categories = saved?.categories ?? STATIC_CATEGORIES;
   const [activeTab, setActiveTab] = useState(STATIC_CATEGORIES[0].id);
 
-  const activeCategory = STATIC_CATEGORIES.find((c) => c.id === activeTab) ?? STATIC_CATEGORIES[0];
+  const activeCategory = categories.find((c) => c.id === activeTab) ?? categories[0];
 
   return (
     <section id="pricing" className="py-24 bg-card/30">
@@ -190,12 +194,12 @@ export function Pricing() {
           transition={{ duration: 0.5, delay: 0.1 }}
           className="flex flex-wrap gap-2 justify-center mb-10"
         >
-          {STATIC_CATEGORIES.map((cat) => (
+          {categories.map((cat) => (
             <button
               key={cat.id}
               onClick={() => setActiveTab(cat.id)}
               className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                activeTab === cat.id
+                activeCategory?.id === cat.id
                   ? 'bg-primary text-primary-foreground shadow-sm'
                   : 'text-foreground/60 hover:text-foreground hover:bg-muted border border-border bg-card'
               }`}
@@ -208,7 +212,7 @@ export function Pricing() {
         {/* Cards */}
         <AnimatePresence mode="wait">
           <motion.div
-            key={activeTab}
+            key={activeCategory?.id}
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}

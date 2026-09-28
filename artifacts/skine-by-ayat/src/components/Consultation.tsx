@@ -1,3 +1,5 @@
+import { useQuery } from '@tanstack/react-query';
+import { loadSiteContent } from '@/lib/supabase';
 import { motion } from 'framer-motion';
 import { Check, ArrowRight, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -45,8 +47,11 @@ export const DEFAULT_CONSULTATION_DATA = {
 export function Consultation() {
   const { t, lang, dir } = useLanguage();
 
+  const { data: saved } = useQuery({ queryKey: ['site-content', 'consultation'], queryFn: () => loadSiteContent<typeof DEFAULT_CONSULTATION_DATA>('consultation'), retry: 1 });
+  const content = saved ?? DEFAULT_CONSULTATION_DATA;
+
   const isRTL   = dir === 'rtl';
-  const tagline = lang === 'ar' ? DEFAULT_CONSULTATION_DATA.subtitleAr : DEFAULT_CONSULTATION_DATA.subtitleEn;
+  const tagline = lang === 'ar' ? content.subtitleAr : content.subtitleEn;
 
   return (
     <section id="consultation" className="py-24 bg-card/50">
@@ -85,7 +90,7 @@ export function Consultation() {
             )}
             <div className="flex items-baseline gap-1">
               <span className="text-5xl font-extrabold tracking-tight text-foreground">
-                {DEFAULT_CONSULTATION_DATA.price}
+                {content.price}
               </span>
               <span className="text-sm ms-1 text-foreground/50">
                 / {t('pricing.session')}
@@ -101,7 +106,7 @@ export function Consultation() {
           {/* Checklist + CTA */}
           <div className="p-8 flex-1 flex flex-col">
             <ul className="space-y-4 flex-1">
-              {DEFAULT_CONSULTATION_DATA.items.map((item) => {
+              {content.items.map((item) => {
                 const title = lang === 'ar' ? item.titleAr : item.titleEn;
                 const desc  = lang === 'ar' ? item.descAr  : item.descEn;
                 return (
@@ -122,7 +127,7 @@ export function Consultation() {
 
             <Button
               onClick={() => window.open(
-                `${JOTFORM_URL}?input26=${encodeURIComponent('Consultation')}&price=${encodeURIComponent(DEFAULT_CONSULTATION_DATA.price)}`,
+                `${JOTFORM_URL}?input26=${encodeURIComponent('Consultation')}&price=${encodeURIComponent(content.price)}`,
                 '_blank',
                 'noopener,noreferrer'
               )}

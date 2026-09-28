@@ -108,6 +108,13 @@ export async function loadSetting(key: string): Promise<string | null> {
   return value?.value || value?.url || null;
 }
 
+export function requestErrorMessage(error: unknown): string {
+  if (error && typeof error === 'object' && 'message' in error && typeof error.message === 'string') {
+    return error.message;
+  }
+  return 'Request failed. Please try again.';
+}
+
 const response = (body: unknown, status = 200) => new Response(JSON.stringify(body), {
   status,
   headers: { 'Content-Type': 'application/json' },
@@ -173,12 +180,12 @@ export async function adminFetch(input: RequestInfo | URL, init: RequestInit = {
       if (method === 'GET') return response((await loadSiteContent(key)) ?? {});
       if (method === 'PUT') {
         const content_value = JSON.parse(init.body as string);
-        const { error } = await supabase.from('site_content').upsert({ content_key: key, content_value, updated_at: new Date().toISOString() });
+        const { error } = await supabase.from('site_content').upsert({ content_key: key, content_value, updated_at: new Date().toISOString() }, { onConflict: 'content_key' }).select('content_key').single();
         if (error) throw error;
         return response({ success: true });
       }
     } catch (error) {
-      return response({ error: error instanceof Error ? error.message : 'Supabase request failed' }, 500);
+      return response({ error: requestErrorMessage(error) }, 500);
     }
   }
   if (path === '/api/settings' || path.startsWith('/api/settings/')) {
@@ -192,7 +199,7 @@ export async function adminFetch(input: RequestInfo | URL, init: RequestInit = {
         return response({ success: true });
       }
     } catch (error) {
-      return response({ error: error instanceof Error ? error.message : 'Supabase request failed' }, 500);
+      return response({ error: requestErrorMessage(error) }, 500);
     }
   }
   try {
@@ -255,6 +262,6 @@ export async function adminFetch(input: RequestInfo | URL, init: RequestInit = {
     }
     return response({ error: 'Unsupported request' }, 404);
   } catch (error) {
-    return response({ error: error instanceof Error ? error.message : 'Supabase request failed' }, 500);
+    return response({ error: requestErrorMessage(error) }, 500);
   }
 }

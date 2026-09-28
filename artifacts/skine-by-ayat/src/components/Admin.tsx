@@ -8,9 +8,16 @@ import {
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { convertToEmbedUrl, isShortLink } from '@/lib/mapsUtils';
-import { adminFetch as fetch, migrateDefaultContent, supabase } from '@/lib/supabase';
+import { adminFetch as fetch, migrateDefaultContent, supabase, requestErrorMessage } from '@/lib/supabase';
 import { STATIC_CATEGORIES } from '@/components/Pricing';
 import { DEFAULT_CONSULTATION_DATA } from '@/components/Consultation';
+
+
+async function readAdminResponse(res: Response) {
+  const body = await res.json();
+  if (!res.ok) throw new Error(body.error || 'Request failed. Please try again.');
+  return body;
+}
 
 // ─── Password ─────────────────────────────────────────────────────────────────
 const RAW_PW = import.meta.env.VITE_ADMIN_PASSWORD;
@@ -1051,6 +1058,7 @@ function PricingPanel() {
   const { t } = useLanguage();
   const [data, setData] = useState<PricingData | null>(null);
   const [saving, setSaving] = useState(false);
+  const saveInFlight = useRef(false);
   const [status, setStatus] = useState<Status>(null);
   const [openCats, setOpenCats] = useState<Record<string, boolean>>({});
   const svcDragSrc = useRef<{ catIdx: number; pkgIdx: number; svcIdx: number } | null>(null);
@@ -1058,16 +1066,18 @@ function PricingPanel() {
 
   useEffect(() => {
     fetch('/api/pricing')
-      .then((r) => r.json())
+      .then(readAdminResponse)
       .then((d: PricingData) => {
         const next = Array.isArray(d.categories) ? d : { categories: STATIC_CATEGORIES };
         setData(next);
       })
-      .catch(() => setData({ categories: [] }));
+      .catch((error) => setStatus({ type: 'error', message: requestErrorMessage(error) }));
   }, []);
 
   // ── Persist ──────────────────────────────────────────────────────────────────
   const save = async (updated: PricingData, silent = false) => {
+    if (saveInFlight.current) return;
+    saveInFlight.current = true;
     setSaving(true);
     if (!silent) setStatus(null);
     try {
@@ -1076,12 +1086,13 @@ function PricingPanel() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updated),
       });
-      if (!res.ok) throw new Error();
+      await readAdminResponse(res);
       setData(updated);
       if (!silent) setStatus({ type: 'success', message: t('admin.saved') });
-    } catch {
-      setStatus({ type: 'error', message: 'Save failed' });
+    } catch (error) {
+      setStatus({ type: 'error', message: requestErrorMessage(error) });
     }
+    saveInFlight.current = false;
     setSaving(false);
   };
 
@@ -1211,11 +1222,12 @@ function PricingPanel() {
   };
 
   if (!data) {
+    if (status) return <StatusBanner status={status} />;
     return <div className="text-center py-8 text-foreground/30 text-sm pt-4">Loading…</div>;
   }
 
   return (
-    <div className="space-y-4 pt-4">
+    <fieldset disabled={saving} className="space-y-4 pt-4 min-w-0">
       {data.categories.map((cat, catIdx) => {
         const isOpen = !!openCats[cat.id];
         return (
@@ -1232,7 +1244,7 @@ function PricingPanel() {
               </div>
 
               {/* Name inputs */}
-              <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div className="flex-1 min-w-0 grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <input value={cat.nameEn} onChange={(e) => updateCat(catIdx, { nameEn: e.target.value })}
                   placeholder="Category name (EN)"
                   className="rounded-xl border border-border bg-background px-3 py-1.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-primary/30" dir="ltr" />
@@ -1243,7 +1255,7 @@ function PricingPanel() {
 
               {/* Delete + collapse */}
               <div className="flex items-center gap-2 flex-none">
-                <button onClick={() => removeCat(catIdx)} className="text-red-400 hover:text-red-600 transition" title="Delete category">
+                <button onClick={() => removeCat(catIdx)} className="min-h-11 min-w-11 inline-flex items-center justify-center text-red-400 hover:text-red-600 transition" title="Delete category">
                   <Trash2 size={15} />
                 </button>
                 <button onClick={() => setOpenCats((prev) => ({ ...prev, [cat.id]: !isOpen }))}
@@ -1280,7 +1292,7 @@ function PricingPanel() {
                               className="text-foreground/40 hover:text-foreground disabled:opacity-20 transition text-xs px-1 leading-none" title="Move package down">▼</button>
                           </div>
 
-                          <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-2">
+                          <div className="flex-1 min-w-0 grid grid-cols-1 sm:grid-cols-3 gap-2">
                             <input value={pkg.nameEn} onChange={(e) => updatePkg(catIdx, pkgIdx, { nameEn: e.target.value })}
                               placeholder="Package name (EN)"
                               className="rounded-xl border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" dir="ltr" />
@@ -1300,7 +1312,7 @@ function PricingPanel() {
                               {t('admin.featured')}
                             </label>
                             <button onClick={() => removePkg(catIdx, pkgIdx)}
-                              className="text-red-400 hover:text-red-600 transition" title="Delete package">
+                              className="min-h-11 min-w-11 inline-flex items-center justify-center text-red-400 hover:text-red-600 transition" title="Delete package">
                               <Trash2 size={16} />
                             </button>
                           </div>
@@ -1371,7 +1383,7 @@ function PricingPanel() {
         <p className="text-xs text-foreground/40">Service deletions & reorders save automatically.</p>
         <StatusBanner status={status} />
       </div>
-    </div>
+    </fieldset>
   );
 }
 
@@ -1493,18 +1505,21 @@ function ConsultationPanel() {
 
   const [data, setData] = useState<ConsultationData | null>(null);
   const [saving, setSaving] = useState(false);
+  const saveInFlight = useRef(false);
   const [status, setStatus] = useState<Status>(null);
   const dragSrc = useRef<number | null>(null);
   const [dragTarget, setDragTarget] = useState<number | null>(null);
 
   useEffect(() => {
     fetch('/api/consultation')
-      .then((r) => r.json())
+      .then(readAdminResponse)
       .then((d: ConsultationData) => setData(d?.items ? d : DEFAULT))
-      .catch(() => setData(DEFAULT));
+      .catch((error) => setStatus({ type: 'error', message: requestErrorMessage(error) }));
   }, []);
 
   const save = async (updated: ConsultationData, silent = false) => {
+    if (saveInFlight.current) return;
+    saveInFlight.current = true;
     setSaving(true);
     if (!silent) setStatus(null);
     try {
@@ -1513,12 +1528,13 @@ function ConsultationPanel() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updated),
       });
-      if (!res.ok) throw new Error();
+      await readAdminResponse(res);
       setData(updated);
       if (!silent) setStatus({ type: 'success', message: t('admin.saved') });
-    } catch {
-      setStatus({ type: 'error', message: 'Save failed — please try again.' });
+    } catch (error) {
+      setStatus({ type: 'error', message: requestErrorMessage(error) });
     }
+    saveInFlight.current = false;
     setSaving(false);
   };
 
@@ -1564,11 +1580,12 @@ function ConsultationPanel() {
   };
 
   if (!data) {
+    if (status) return <StatusBanner status={status} />;
     return <div className="text-center py-8 text-foreground/30 text-sm pt-4">Loading…</div>;
   }
 
   return (
-    <div className="space-y-5 pt-4">
+    <fieldset disabled={saving} className="space-y-5 pt-4 min-w-0">
       {/* Settings: price + heading */}
       <div className="rounded-2xl border border-border bg-background p-5 space-y-4">
         <p className="text-xs font-semibold text-foreground/50 uppercase tracking-wide">Settings</p>
@@ -1659,7 +1676,7 @@ function ConsultationPanel() {
         <p className="text-xs text-foreground/40">Item deletions &amp; reorders save automatically.</p>
         <StatusBanner status={status} />
       </div>
-    </div>
+    </fieldset>
   );
 }
 
