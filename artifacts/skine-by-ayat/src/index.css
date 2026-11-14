@@ -520,3 +520,8 @@ footer {
   }
   main > section[id] { padding-block:4rem; }
 }
+
+/* Keep every pricing package card the same color in light mode. */
+:root:not(.dark) #pricing .grid > div {
+  background: rgba(250,248,242,.84) !important;
+}
