@@ -1,63 +1,41 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1600">
-<defs>
- <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fbf8f0"/><stop offset="1" stop-color="#f4f0e7"/></linearGradient>
- <linearGradient id="leaf-fill" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#a9b99a"/><stop offset="1" stop-color="#d3ddc7"/></linearGradient>
- <linearGradient id="sage" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#dce5d4" stop-opacity=".68"/><stop offset="1" stop-color="#b9c9b1" stop-opacity=".28"/></linearGradient>
- <filter id="soft"><feGaussianBlur stdDeviation="2"/></filter>
- <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".72" numOctaves="2" seed="8"/><feColorMatrix values="0 0 0 0 .55 0 0 0 0 .54 0 0 0 0 .45 0 0 0 .1 0"/></filter>
- <g id="leaf-shape"><path d="M0 0 C-35 -25 -62 -17 -76 0 C-48 22 -20 22 0 0Z" fill="url(#leaf-fill)" stroke="#829779" stroke-opacity=".4" stroke-width="1.3"/><path d="M-70 0H0" stroke="#829779" stroke-opacity=".45"/></g>
- <g id="flower" fill="#fffdf5" stroke="#c9c9ad" stroke-width="1.2"><ellipse cy="-9" rx="4.5" ry="9"/><ellipse cx="8" cy="-3" rx="4.5" ry="9" transform="rotate(72 8 -3)"/><ellipse cx="5" cy="7" rx="4.5" ry="9" transform="rotate(144 5 7)"/><ellipse cx="-5" cy="7" rx="4.5" ry="9" transform="rotate(216 -5 7)"/><ellipse cx="-8" cy="-3" rx="4.5" ry="9" transform="rotate(288 -8 -3)"/><circle r="3" fill="#d8c89b" stroke="none"/></g>
-</defs>
-<rect width="900" height="1600" fill="url(#paper)"/>
-<!-- Oversized soft circles sit along the outer margins -->
-<g fill="url(#sage)" filter="url(#soft)"><circle cx="-95" cy="330" r="285"/><circle cx="975" cy="650" r="320"/><circle cx="-75" cy="1260" r="270"/><circle cx="940" cy="1450" r="260"/></g>
-<g fill="none" stroke="#bdcbb2" stroke-width="3" opacity=".3"><circle cx="-95" cy="330" r="285"/><circle cx="975" cy="650" r="320"/><circle cx="-75" cy="1260" r="270"/></g>
-<!-- Floating leaves only: no stems, twigs, or connecting lines -->
-<g>
- <use href="#leaf-shape" transform="translate(100 145) rotate(205) scale(.9)"/><use href="#leaf-shape" transform="translate(170 255) rotate(18) scale(.82)"/>
- <use href="#leaf-shape" transform="translate(85 470) rotate(205) scale(.88)"/><use href="#leaf-shape" transform="translate(155 585) rotate(18) scale(.82)"/>
- <use href="#leaf-shape" transform="translate(805 205) rotate(-25) scale(.9)"/><use href="#leaf-shape" transform="translate(735 320) rotate(200) scale(.82)"/>
- <use href="#leaf-shape" transform="translate(825 590) rotate(-25) scale(.88)"/><use href="#leaf-shape" transform="translate(755 700) rotate(200) scale(.82)"/>
- <use href="#leaf-shape" transform="translate(90 980) rotate(205) scale(.9)"/><use href="#leaf-shape" transform="translate(165 1090) rotate(18) scale(.82)"/>
- <use href="#leaf-shape" transform="translate(810 1030) rotate(-25) scale(.9)"/><use href="#leaf-shape" transform="translate(740 1140) rotate(200) scale(.82)"/>
- <use href="#leaf-shape" transform="translate(100 1450) rotate(205) scale(.88)"/><use href="#leaf-shape" transform="translate(800 1480) rotate(-25) scale(.88)"/>
-</g>
-<!-- Extra standalone leaf clusters along the margins; no connecting stems -->
-<g>
- <use href="#leaf-shape" transform="translate(35 185) rotate(205) scale(1.05)"/><use href="#leaf-shape" transform="translate(205 390) rotate(18) scale(.98)"/>
- <use href="#leaf-shape" transform="translate(35 740) rotate(205) scale(1.02)"/><use href="#leaf-shape" transform="translate(195 850) rotate(18) scale(.96)"/>
- <use href="#leaf-shape" transform="translate(35 1040) rotate(205) scale(1.04)"/><use href="#leaf-shape" transform="translate(195 1320) rotate(18) scale(.98)"/>
- <use href="#leaf-shape" transform="translate(865 185) rotate(-25) scale(1.05)"/><use href="#leaf-shape" transform="translate(695 390) rotate(200) scale(.98)"/>
- <use href="#leaf-shape" transform="translate(865 740) rotate(-25) scale(1.02)"/><use href="#leaf-shape" transform="translate(705 850) rotate(200) scale(.96)"/>
- <use href="#leaf-shape" transform="translate(865 1040) rotate(-25) scale(1.04)"/><use href="#leaf-shape" transform="translate(705 1320) rotate(200) scale(.98)"/>
-</g>
-<!-- Fuller floating-leaf framing, with clear center for mobile content -->
-<g>
- <use href="#leaf-shape" transform="translate(20 110) rotate(205) scale(0.95)"/>
- <use href="#leaf-shape" transform="translate(140 235) rotate(18) scale(0.9)"/>
- <use href="#leaf-shape" transform="translate(25 340) rotate(205) scale(1.02)"/>
- <use href="#leaf-shape" transform="translate(175 470) rotate(18) scale(0.92)"/>
- <use href="#leaf-shape" transform="translate(18 610) rotate(205) scale(0.96)"/>
- <use href="#leaf-shape" transform="translate(155 735) rotate(18) scale(0.9)"/>
- <use href="#leaf-shape" transform="translate(25 880) rotate(205) scale(1.02)"/>
- <use href="#leaf-shape" transform="translate(170 1010) rotate(18) scale(0.92)"/>
- <use href="#leaf-shape" transform="translate(20 1160) rotate(205) scale(0.96)"/>
- <use href="#leaf-shape" transform="translate(155 1280) rotate(18) scale(0.9)"/>
- <use href="#leaf-shape" transform="translate(25 1420) rotate(205) scale(1.02)"/>
- <use href="#leaf-shape" transform="translate(175 1530) rotate(18) scale(0.92)"/>
- <use href="#leaf-shape" transform="translate(880 110) rotate(-25) scale(0.95)"/>
- <use href="#leaf-shape" transform="translate(760 235) rotate(200) scale(0.9)"/>
- <use href="#leaf-shape" transform="translate(875 340) rotate(-25) scale(1.02)"/>
- <use href="#leaf-shape" transform="translate(725 470) rotate(200) scale(0.92)"/>
- <use href="#leaf-shape" transform="translate(882 610) rotate(-25) scale(0.96)"/>
- <use href="#leaf-shape" transform="translate(745 735) rotate(200) scale(0.9)"/>
- <use href="#leaf-shape" transform="translate(875 880) rotate(-25) scale(1.02)"/>
- <use href="#leaf-shape" transform="translate(730 1010) rotate(200) scale(0.92)"/>
- <use href="#leaf-shape" transform="translate(880 1160) rotate(-25) scale(0.96)"/>
- <use href="#leaf-shape" transform="translate(745 1280) rotate(200) scale(0.9)"/>
- <use href="#leaf-shape" transform="translate(875 1420) rotate(-25) scale(1.02)"/>
- <use href="#leaf-shape" transform="translate(725 1530) rotate(200) scale(0.92)"/>
-</g>
-<g><use href="#flower" transform="translate(55 390) scale(.8)"/><use href="#flower" transform="translate(840 820) scale(.75)"/><use href="#flower" transform="translate(65 1190) scale(.7)"/></g>
-<rect width="900" height="1600" filter="url(#grain)" opacity=".14"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1600" preserveAspectRatio="xMidYMid slice">
+ <defs>
+  <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fbf9f3"/><stop offset="1" stop-color="#f4f1e9"/></linearGradient>
+  <linearGradient id="leafTint" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#788568" stop-opacity=".76"/><stop offset=".48" stop-color="#aab49a" stop-opacity=".55"/><stop offset="1" stop-color="#d5dcc9" stop-opacity=".25"/></linearGradient>
+  <linearGradient id="sage" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#dce5d4" stop-opacity=".55"/><stop offset="1" stop-color="#b9c9b1" stop-opacity=".24"/></linearGradient>
+  <g id="botanical-leaf">
+  <path d="M0 0 C-72 -86 -184 -112 -258 0 C-185 104 -76 82 0 0Z" fill="url(#leafTint)" stroke="#737d62" stroke-opacity=".48" stroke-width="2"/>
+  <path d="M-247 0 Q-125 2 0 0" fill="none" stroke="#667257" stroke-opacity=".55" stroke-width="1.8"/>
+  <path d="M-190 -38 Q-142 -20 -108 0 M-150 -67 Q-112 -37 -80 -4 M-190 38 Q-142 20 -108 0 M-150 67 Q-112 37 -80 4 M-90 -48 Q-58 -24 -35 -3 M-90 48 Q-58 24 -35 3" fill="none" stroke="#78836a" stroke-opacity=".32" stroke-width="1.3"/>
+ </g>
+ </defs>
+ <rect width="900" height="1600" fill="url(#paper)"/>
+ <g fill="url(#sage)" opacity=".68"><circle cx="-120" cy="360" r="270"/><circle cx="1000" cy="700" r="300"/><circle cx="-100" cy="1300" r="260"/><circle cx="980" cy="1510" r="250"/></g>
+ <g><use href="#botanical-leaf" transform="translate(10 100) rotate(15) scale(0.9)" opacity="0.44"/>
+<use href="#botanical-leaf" transform="translate(90 30) rotate(48) scale(0.72)" opacity="0.22"/>
+<use href="#botanical-leaf" transform="translate(220 55) rotate(25) scale(0.72)" opacity="0.25"/>
+<use href="#botanical-leaf" transform="translate(390 8) rotate(5) scale(0.65)" opacity="0.18"/>
+<use href="#botanical-leaf" transform="translate(600 38) rotate(-20) scale(0.75)" opacity="0.2"/>
+<use href="#botanical-leaf" transform="translate(850 100) rotate(-155) scale(0.9)" opacity="0.42"/>
+<use href="#botanical-leaf" transform="translate(0 330) rotate(-8) scale(0.9)" opacity="0.38"/>
+<use href="#botanical-leaf" transform="translate(70 500) rotate(20) scale(0.78)" opacity="0.22"/>
+<use href="#botanical-leaf" transform="translate(5 760) rotate(-15) scale(0.94)" opacity="0.43"/>
+<use href="#botanical-leaf" transform="translate(90 960) rotate(18) scale(0.78)" opacity="0.22"/>
+<use href="#botanical-leaf" transform="translate(0 1190) rotate(-12) scale(0.94)" opacity="0.42"/>
+<use href="#botanical-leaf" transform="translate(90 1390) rotate(22) scale(0.82)" opacity="0.24"/>
+<use href="#botanical-leaf" transform="translate(890 340) rotate(170) scale(0.92)" opacity="0.42"/>
+<use href="#botanical-leaf" transform="translate(820 520) rotate(155) scale(0.8)" opacity="0.24"/>
+<use href="#botanical-leaf" transform="translate(890 760) rotate(185) scale(0.94)" opacity="0.42"/>
+<use href="#botanical-leaf" transform="translate(810 980) rotate(160) scale(0.78)" opacity="0.22"/>
+<use href="#botanical-leaf" transform="translate(890 1200) rotate(180) scale(0.94)" opacity="0.42"/>
+<use href="#botanical-leaf" transform="translate(810 1410) rotate(160) scale(0.82)" opacity="0.24"/>
+<use href="#botanical-leaf" transform="translate(30 1570) rotate(-20) scale(0.9)" opacity="0.42"/>
+<use href="#botanical-leaf" transform="translate(190 1590) rotate(-8) scale(0.76)" opacity="0.25"/>
+<use href="#botanical-leaf" transform="translate(390 1595) rotate(10) scale(0.8)" opacity="0.2"/>
+<use href="#botanical-leaf" transform="translate(600 1590) rotate(15) scale(0.76)" opacity="0.22"/>
+<use href="#botanical-leaf" transform="translate(780 1595) rotate(160) scale(0.85)" opacity="0.34"/>
+<use href="#botanical-leaf" transform="translate(0 80) rotate(35) scale(0.7)" opacity="0.2"/>
+<use href="#botanical-leaf" transform="translate(900 60) rotate(160) scale(0.7)" opacity="0.2"/>
+<use href="#botanical-leaf" transform="translate(0 1500) rotate(10) scale(0.75)" opacity="0.22"/>
+<use href="#botanical-leaf" transform="translate(900 1500) rotate(175) scale(0.75)" opacity="0.22"/></g>
+ </svg>
