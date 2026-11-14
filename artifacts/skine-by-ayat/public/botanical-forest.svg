@@ -37,6 +37,35 @@
  <use href="#leaf" transform="translate(1505 900) rotate(-25) scale(1.15)"/><use href="#leaf" transform="translate(1375 925) rotate(200) scale(1.02)"/>
  <use href="#leaf" transform="translate(1445 985) rotate(-25) scale(.98)"/>
 </g>
+<!-- Fuller floating-leaf framing, with open space preserved through the center -->
+<g>
+ <use href="#leaf" transform="translate(24 160) rotate(205) scale(1.12)"/>
+ <use href="#leaf" transform="translate(105 205) rotate(18) scale(0.95)"/>
+ <use href="#leaf" transform="translate(205 285) rotate(205) scale(1.08)"/>
+ <use href="#leaf" transform="translate(300 340) rotate(18) scale(0.88)"/>
+ <use href="#leaf" transform="translate(22 565) rotate(205) scale(1.02)"/>
+ <use href="#leaf" transform="translate(125 555) rotate(18) scale(0.94)"/>
+ <use href="#leaf" transform="translate(210 655) rotate(205) scale(1.06)"/>
+ <use href="#leaf" transform="translate(300 725) rotate(18) scale(0.9)"/>
+ <use href="#leaf" transform="translate(28 805) rotate(205) scale(1.08)"/>
+ <use href="#leaf" transform="translate(145 875) rotate(18) scale(0.96)"/>
+ <use href="#leaf" transform="translate(250 945) rotate(205) scale(0.92)"/>
+ <use href="#leaf" transform="translate(1575 160) rotate(-25) scale(1.12)"/>
+ <use href="#leaf" transform="translate(1495 205) rotate(200) scale(0.95)"/>
+ <use href="#leaf" transform="translate(1395 285) rotate(-25) scale(1.08)"/>
+ <use href="#leaf" transform="translate(1300 340) rotate(200) scale(0.88)"/>
+ <use href="#leaf" transform="translate(1578 565) rotate(-25) scale(1.02)"/>
+ <use href="#leaf" transform="translate(1475 555) rotate(200) scale(0.94)"/>
+ <use href="#leaf" transform="translate(1390 655) rotate(-25) scale(1.06)"/>
+ <use href="#leaf" transform="translate(1300 725) rotate(200) scale(0.9)"/>
+ <use href="#leaf" transform="translate(1572 805) rotate(-25) scale(1.08)"/>
+ <use href="#leaf" transform="translate(1455 875) rotate(200) scale(0.96)"/>
+ <use href="#leaf" transform="translate(1350 945) rotate(-25) scale(0.92)"/>
+ <use href="#leaf" transform="translate(420 90) rotate(205) scale(0.76)"/>
+ <use href="#leaf" transform="translate(1180 90) rotate(-25) scale(0.76)"/>
+ <use href="#leaf" transform="translate(430 925) rotate(18) scale(0.8)"/>
+ <use href="#leaf" transform="translate(1170 925) rotate(200) scale(0.8)"/>
+</g>
 <!-- A few small white blossoms, kept away from the content area -->
 <g><use href="#flower" transform="translate(55 390) scale(.95)"/><use href="#flower" transform="translate(125 700) scale(.75)"/><use href="#flower" transform="translate(1540 390) scale(.85)"/><use href="#flower" transform="translate(1485 700) scale(.72)"/></g>
 <rect width="1600" height="1000" filter="url(#grain)" opacity=".15"/>
