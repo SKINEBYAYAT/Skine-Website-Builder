@@ -434,7 +434,7 @@ body { overflow-x:hidden; }
   z-index:-1;
   pointer-events:none;
   background-color:#F6F2E9;
-  background-image:url('/botanical-forest.svg');
+  background-image:url('/botanical-forest-v2.svg');
   background-repeat:no-repeat;
   background-position:center center;
   background-size:cover;
@@ -514,7 +514,7 @@ footer {
 .dark footer { background:rgba(31,48,37,.86) !important; }
 @media(max-width:767px) {
   #root::before {
-    background-image:url('/botanical-forest-mobile.svg');
+    background-image:url('/botanical-forest-mobile-v2.svg');
     background-position:center center;
     background-size:cover;
   }
