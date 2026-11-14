@@ -702,3 +702,17 @@ html:not(.dark) #consultation .consultation-cta:hover {
 html:not(.dark) #contact .contact-card:nth-child(even) {
   background: rgba(250,248,242,.84) !important;
 }
+
+
+/* WhatsApp CTA uses its recognizable green, matching Instagram's pink CTA treatment. */
+#contact a.contact-cta-whatsapp,
+.dark #contact a.contact-cta-whatsapp {
+  background: #25D366 !important;
+  color: #FFFFFF !important;
+  border: 1px solid #25D366 !important;
+}
+#contact a.contact-cta-whatsapp:hover,
+.dark #contact a.contact-cta-whatsapp:hover {
+  background: #20BB5A !important;
+  border-color: #20BB5A !important;
+}
