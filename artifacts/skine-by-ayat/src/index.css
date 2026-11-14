@@ -529,3 +529,27 @@ footer {
 
 /* Keep all light-mode pricing packages on one consistent warm-ivory surface. */
 html:not(.dark) #pricing .grid > div { background:rgba(250,248,242,.84) !important; }
+
+
+/* Light-mode contact and consultation surfaces: one consistent soft sage treatment. */
+html:not(.dark) #contact .contact-card {
+  background: rgba(250,248,242,.88) !important;
+  border-color: rgba(159,169,143,.48) !important;
+}
+html:not(.dark) #contact .contact-card > a {
+  background: #DDE6DA !important;
+  color: #07583D !important;
+}
+html:not(.dark) #contact .contact-card > a:hover {
+  background: #CFDCCB !important;
+}
+html:not(.dark) #consultation .rounded-3xl {
+  background: rgba(250,248,242,.92) !important;
+  border-color: rgba(159,169,143,.55) !important;
+  color: #252722 !important;
+}
+html:not(.dark) #consultation .rounded-3xl h3,
+html:not(.dark) #consultation .rounded-3xl p,
+html:not(.dark) #consultation .rounded-3xl span {
+  color: #252722;
+}
