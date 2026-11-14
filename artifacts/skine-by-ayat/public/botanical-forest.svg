@@ -26,6 +26,17 @@
  <use href="#leaf" transform="translate(1490 770) rotate(-25) scale(1.02)"/><use href="#leaf" transform="translate(1410 845) rotate(200) scale(.9)"/>
  <use href="#leaf" transform="translate(55 955) rotate(205) scale(.9)"/><use href="#leaf" transform="translate(1540 955) rotate(-25) scale(.9)"/>
 </g>
+<!-- Additional visible leaf clusters, deliberately disconnected from one another -->
+<g>
+ <use href="#leaf" transform="translate(35 245) rotate(205) scale(1.18)"/><use href="#leaf" transform="translate(165 315) rotate(18) scale(1.08)"/>
+ <use href="#leaf" transform="translate(60 445) rotate(205) scale(1.1)"/><use href="#leaf" transform="translate(235 405) rotate(18) scale(1.12)"/>
+ <use href="#leaf" transform="translate(95 900) rotate(205) scale(1.15)"/><use href="#leaf" transform="translate(225 925) rotate(18) scale(1.02)"/>
+ <use href="#leaf" transform="translate(155 985) rotate(205) scale(.98)"/>
+ <use href="#leaf" transform="translate(1565 245) rotate(-25) scale(1.18)"/><use href="#leaf" transform="translate(1435 315) rotate(200) scale(1.08)"/>
+ <use href="#leaf" transform="translate(1540 445) rotate(-25) scale(1.1)"/><use href="#leaf" transform="translate(1365 405) rotate(200) scale(1.12)"/>
+ <use href="#leaf" transform="translate(1505 900) rotate(-25) scale(1.15)"/><use href="#leaf" transform="translate(1375 925) rotate(200) scale(1.02)"/>
+ <use href="#leaf" transform="translate(1445 985) rotate(-25) scale(.98)"/>
+</g>
 <!-- A few small white blossoms, kept away from the content area -->
 <g><use href="#flower" transform="translate(55 390) scale(.95)"/><use href="#flower" transform="translate(125 700) scale(.75)"/><use href="#flower" transform="translate(1540 390) scale(.85)"/><use href="#flower" transform="translate(1485 700) scale(.72)"/></g>
 <rect width="1600" height="1000" filter="url(#grain)" opacity=".15"/>
