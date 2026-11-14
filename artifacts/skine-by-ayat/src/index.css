@@ -667,3 +667,32 @@ html:not(.dark) #contact .contact-cta-whatsapp:hover,
 .dark #contact .contact-cta-whatsapp:hover {
   background: #F4F4F4 !important;
 }
+
+
+/* Final CTA color corrections: match the approved light surfaces exactly. */
+html:not(.dark) #contact a.contact-cta-whatsapp,
+.dark #contact a.contact-cta-whatsapp {
+  background: #FFFFFF !important;
+  color: #175238 !important;
+  border: 1px solid #E6E6E6 !important;
+}
+html:not(.dark) #contact a.contact-cta-whatsapp:hover,
+.dark #contact a.contact-cta-whatsapp:hover {
+  background: #F4F4F4 !important;
+}
+html:not(.dark) #consultation .consultation-cta {
+  background: rgba(250,248,242,.92) !important;
+  color: #252722 !important;
+  border: 1px solid rgba(159,169,143,.55) !important;
+}
+html:not(.dark) #consultation .consultation-cta:hover {
+  background: rgba(242,239,230,.98) !important;
+}
+.dark #consultation .consultation-cta {
+  background: rgba(31,48,37,.9) !important;
+  color: #F5F1EB !important;
+  border: 1px solid rgba(139,163,132,.34) !important;
+}
+.dark #consultation .consultation-cta:hover {
+  background: rgba(43,64,49,.96) !important;
+}
