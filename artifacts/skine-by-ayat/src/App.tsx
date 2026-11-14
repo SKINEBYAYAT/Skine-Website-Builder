@@ -25,7 +25,7 @@ const isAdmin =
 
 function MainSite() {
   return (
-    <div className="min-h-screen w-full flex flex-col font-sans">
+    <div className="site-shell min-h-screen w-full flex flex-col font-sans">
       <Navbar />
       <main className="flex-1 w-full">
         <Hero />
