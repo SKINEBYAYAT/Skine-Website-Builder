@@ -1,5 +1,4 @@
 import { useLanguage } from '@/contexts/LanguageContext';
-import logo from '@assets/IMG_7839_1784317781519.jpeg';
 const DEV_URL = 'https://marwan-web-dev.vercel.app';
 
 export function Footer() {
@@ -10,7 +9,7 @@ export function Footer() {
       <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-7xl">
         <div className="flex flex-col md:flex-row justify-between items-center md:items-start gap-8 mb-12">
           <div className="flex flex-col items-center md:items-start gap-4">
-            <img src={logo} alt="Skiné by Ayat" className="h-16 w-auto rounded-lg object-cover" />
+            <a href="#" aria-label="Skiné by Ayat home" className="brand-wordmark"><span className="brand-name">Skiné</span><span className="brand-by">By Ayat</span></a>
             <p className="text-muted-foreground text-center md:text-start max-w-xs mt-2">
               {t('hero.tagline')}
             </p>
