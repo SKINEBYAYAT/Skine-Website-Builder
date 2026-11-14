@@ -51,7 +51,7 @@ export function Navbar() {
       <nav className={cn('site-navbar fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-transparent', isScrolled ? 'bg-background/95 backdrop-blur-xl border-border py-2 shadow-sm' : 'bg-background/95 py-3 border-border')}>
         <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-7xl flex items-center justify-between gap-4">
           <a href="#" onClick={(e) => scrollTo(e, '#')} className="brand-wordmark" aria-label="Skiné by Ayat home">
-            <img src="/skine-header.webp" alt="Skiné by Ayat" className="brand-logo-image" width="579" height="242" decoding="async" />
+            <img src="/skine-header.png" alt="Skiné by Ayat" className="brand-logo-image" width="534" height="252" decoding="async" />
           </a>
           <div className="hidden xl:flex items-center gap-4 lg:gap-6">
             <ul className="flex items-center gap-4">{navLinks.map((link) => <li key={link.href}><a href={link.href} onClick={(e) => scrollTo(e, link.href)} className="text-sm font-medium text-foreground/70 hover:text-primary transition-colors">{link.name}</a></li>)}</ul>
@@ -60,7 +60,7 @@ export function Navbar() {
               <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-muted transition-colors text-foreground/80 hover:text-foreground" aria-label="Toggle theme">{theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}</button>
               <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full hover:bg-muted transition-colors text-foreground/80 hover:text-foreground" aria-label="Instagram"><Instagram size={18} /></a>
             </div>
-            <Button onClick={() => window.open(JOTFORM_URL, '_blank', 'noopener,noreferrer')} size="sm" className="rounded-full px-6">{t('nav.consultation')}</Button>
+            <Button onClick={() => window.open(JOTFORM_URL, '_blank', 'noopener,noreferrer')} size="sm" className="consultation-cta rounded-full px-6">{t('nav.consultation')}</Button>
           </div>
           <div className="flex items-center gap-3 xl:hidden">
             <button onClick={toggleLang} className="text-xs font-semibold px-3 py-2 rounded-full border border-border bg-secondary text-secondary-foreground">{langLabel}</button>
@@ -68,7 +68,7 @@ export function Navbar() {
             <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 text-foreground/80" aria-label="Toggle menu">{isMobileMenuOpen ? <X size={27} /> : <Menu size={27} />}</button>
           </div>
         </div>
-        {isMobileMenuOpen && <div className="xl:hidden absolute top-full left-0 right-0 bg-background border-b border-border shadow-lg p-4 flex flex-col gap-4 animate-in slide-in-from-top-4"><ul className="flex flex-col gap-4">{navLinks.map((link) => <li key={link.href}><a href={link.href} onClick={(e) => scrollTo(e, link.href)} className="block text-base font-medium p-2 hover:bg-muted rounded-md transition-colors">{link.name}</a></li>)}</ul><div className="flex items-center justify-between pt-4 border-t border-border"><a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 p-2 text-foreground/80 hover:text-foreground"><Instagram size={20} /><span className="text-sm">Instagram</span></a><Button onClick={() => { window.open(JOTFORM_URL, '_blank', 'noopener,noreferrer'); setIsMobileMenuOpen(false); }} size="sm" className="rounded-full">{t('nav.consultation')}</Button></div></div>}
+        {isMobileMenuOpen && <div className="xl:hidden absolute top-full left-0 right-0 bg-background border-b border-border shadow-lg p-4 flex flex-col gap-4 animate-in slide-in-from-top-4"><ul className="flex flex-col gap-4">{navLinks.map((link) => <li key={link.href}><a href={link.href} onClick={(e) => scrollTo(e, link.href)} className="block text-base font-medium p-2 hover:bg-muted rounded-md transition-colors">{link.name}</a></li>)}</ul><div className="flex items-center justify-between pt-4 border-t border-border"><a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 p-2 text-foreground/80 hover:text-foreground"><Instagram size={20} /><span className="text-sm">Instagram</span></a><Button onClick={() => { window.open(JOTFORM_URL, '_blank', 'noopener,noreferrer'); setIsMobileMenuOpen(false); }} size="sm" className="consultation-cta rounded-full">{t('nav.consultation')}</Button></div></div>}
       </nav>
       <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} aria-label="Back to top" className={cn('fixed bottom-6 z-50 p-3 rounded-full bg-primary text-primary-foreground shadow-lg transition-all duration-300 hover:scale-110', isRTL ? 'left-6' : 'right-6', showBackToTop ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-4 pointer-events-none')}><ArrowUp size={20} /></button>
     </>

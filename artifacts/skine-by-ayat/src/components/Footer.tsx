@@ -9,7 +9,9 @@ export function Footer() {
       <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-7xl">
         <div className="flex flex-col md:flex-row justify-between items-center md:items-start gap-8 mb-12">
           <div className="flex flex-col items-center md:items-start gap-4">
-            <a href="#" aria-label="Skiné by Ayat home" className="brand-wordmark"><span className="brand-name">Skiné</span><span className="brand-by">By Ayat</span></a>
+            <a href="#" aria-label="Skiné by Ayat home" className="brand-wordmark">
+              <img src="/skine-header.png" alt="Skiné by Ayat" className="brand-logo-image" width="534" height="252" decoding="async" />
+            </a>
             <p className="text-muted-foreground text-center md:text-start max-w-xs mt-2">
               {t('hero.tagline')}
             </p>

@@ -72,7 +72,7 @@ export function Contact() {
               rel="noopener noreferrer"
               whileHover={{ scale: 1.04, y: -2 }}
               whileTap={{ scale: 0.97 }}
-              className="col-span-2 justify-center inline-flex items-center gap-2 bg-[#E1306C] hover:bg-[#c9275d] text-white font-semibold text-sm px-4 py-2.5 rounded-full transition-all duration-300"
+              className="contact-cta contact-cta-instagram col-span-2 justify-center inline-flex items-center gap-2 bg-[#E1306C] hover:bg-[#c9275d] text-white font-semibold text-sm px-4 py-2.5 rounded-full transition-all duration-300"
             >
               <Instagram size={18} />
               {t('contact.instagram.cta')}
@@ -105,7 +105,7 @@ export function Contact() {
               rel="noopener noreferrer"
               whileHover={{ scale: 1.04, y: -2 }}
               whileTap={{ scale: 0.97 }}
-              className="col-span-2 justify-center inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#20bb5a] text-white font-semibold text-sm px-4 py-2.5 rounded-full transition-all duration-300"
+              className="contact-cta contact-cta-whatsapp col-span-2 justify-center inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#20bb5a] text-white font-semibold text-sm px-4 py-2.5 rounded-full transition-all duration-300"
             >
               <WhatsAppIcon size={18} />
               {t('whatsapp.cta')}

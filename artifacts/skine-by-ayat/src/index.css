@@ -529,3 +529,26 @@ footer {
 
 /* Keep all light-mode pricing packages on one consistent warm-ivory surface. */
 html:not(.dark) #pricing .grid > div { background:rgba(250,248,242,.84) !important; }
+
+html:not(.dark) #contact .contact-cta-instagram {
+  background:#F8E3EC !important;
+  color:#762545 !important;
+}
+html:not(.dark) #contact .contact-cta-instagram:hover {
+  background:#F1CEDC !important;
+}
+html:not(.dark) #contact .contact-cta-whatsapp {
+  background:#DDEFE2 !important;
+  color:#175238 !important;
+}
+html:not(.dark) #contact .contact-cta-whatsapp:hover {
+  background:#CBE5D3 !important;
+}
+html:not(.dark) .consultation-cta {
+  background:#DDE6DA !important;
+  border-color:#B8C8B3 !important;
+  color:#174B38 !important;
+}
+html:not(.dark) .consultation-cta:hover {
+  background:#CFDCCB !important;
+}

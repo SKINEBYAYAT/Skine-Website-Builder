@@ -131,7 +131,7 @@ export function Consultation() {
                 '_blank',
                 'noopener,noreferrer'
               )}
-              className="w-full mt-8 rounded-full font-semibold text-base gap-2"
+              className="consultation-cta w-full mt-8 rounded-full font-semibold text-base gap-2"
               variant="outline"
               size="lg"
             >
