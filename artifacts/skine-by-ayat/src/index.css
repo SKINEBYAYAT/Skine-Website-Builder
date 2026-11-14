@@ -647,3 +647,22 @@ html:not(.dark) .consultation-cta:hover {
 .dark .skine-admin .bg-muted\/30 { background: rgba(43,64,49,.72) !important; }
 .dark .skine-admin .text-muted-foreground { color: #C1CCBE !important; }
 .dark .skine-admin-login > div { background: var(--admin-card) !important; }
+
+
+/* Keep WhatsApp and consultation CTAs light in both themes. */
+.dark #contact .contact-cta-whatsapp {
+  background: #DDEFE2 !important;
+  color: #175238 !important;
+  border-color: #B9D8C2 !important;
+}
+.dark #contact .contact-cta-whatsapp:hover {
+  background: #CBE5D3 !important;
+}
+.dark .consultation-cta {
+  background: #DDE6DA !important;
+  border-color: #B8C8B3 !important;
+  color: #174B38 !important;
+}
+.dark .consultation-cta:hover {
+  background: #CFDCCB !important;
+}
