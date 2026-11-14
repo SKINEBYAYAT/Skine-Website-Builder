@@ -26,6 +26,13 @@
  <use href="#leaf" transform="translate(1490 770) rotate(-25) scale(1.02)"/><use href="#leaf" transform="translate(1410 845) rotate(200) scale(.9)"/>
  <use href="#leaf" transform="translate(55 955) rotate(205) scale(.9)"/><use href="#leaf" transform="translate(1540 955) rotate(-25) scale(.9)"/>
 </g>
+<!-- A few larger, clearly visible leaves tucked along the outer circles -->
+<g>
+ <use href="#leaf" transform="translate(18 440) rotate(180) scale(1.9)" opacity=".72"/>
+ <use href="#leaf" transform="translate(1582 455) rotate(0) scale(1.9)" opacity=".72"/>
+ <use href="#leaf" transform="translate(22 825) rotate(180) scale(1.7)" opacity=".62"/>
+ <use href="#leaf" transform="translate(1578 835) rotate(0) scale(1.7)" opacity=".62"/>
+</g>
 <!-- A few small white blossoms, kept away from the content area -->
 <g><use href="#flower" transform="translate(55 390) scale(.95)"/><use href="#flower" transform="translate(125 700) scale(.75)"/><use href="#flower" transform="translate(1540 390) scale(.85)"/><use href="#flower" transform="translate(1485 700) scale(.72)"/></g>
 <rect width="1600" height="1000" filter="url(#grain)" opacity=".15"/>
