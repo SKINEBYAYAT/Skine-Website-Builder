@@ -51,7 +51,7 @@ export function Navbar() {
       <nav className={cn('site-navbar fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-transparent', isScrolled ? 'bg-background/95 backdrop-blur-xl border-border py-2 shadow-sm' : 'bg-background/95 py-3 border-border')}>
         <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-7xl flex items-center justify-between gap-4">
           <a href="#" onClick={(e) => scrollTo(e, '#')} className="brand-wordmark" aria-label="Skiné by Ayat home">
-            <span className="brand-name">Skiné</span><span className="brand-by">By Ayat</span>
+            <img src="/skine-logo.svg" alt="Skiné by Ayat" className="brand-logo-image" />
           </a>
           <div className="hidden xl:flex items-center gap-4 lg:gap-6">
             <ul className="flex items-center gap-4">{navLinks.map((link) => <li key={link.href}><a href={link.href} onClick={(e) => scrollTo(e, link.href)} className="text-sm font-medium text-foreground/70 hover:text-primary transition-colors">{link.name}</a></li>)}</ul>
