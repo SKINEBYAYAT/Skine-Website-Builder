@@ -44,38 +44,37 @@
 }
 
 :root {
-  --background: 26 75% 89%;
-  --foreground: 25 32% 18%;
+  --background: 36 33% 94%;
+  --foreground: 84 7% 14%;
 
-  --card: 27 76% 93%;
-  --card-foreground: 25 72% 14%;
-  --card-border: 25 20% 88%;
+  --card: 40 43% 97%;
+  --card-foreground: 84 7% 14%;
+  --card-border: 35 21% 78%;
 
-  --popover: 27 76% 93%;
-  --popover-foreground: 25 72% 14%;
-  --popover-border: 25 20% 88%;
+  --popover: 40 43% 97%;
+  --popover-foreground: 84 7% 14%;
+  --popover-border: 35 21% 78%;
 
-  --primary: 23 39% 24%;
-  --primary-foreground: 29 54% 95%;
+  --primary: 160 85% 19%;
+  --primary-foreground: 36 33% 94%;
 
-  --secondary: 20 43% 68%;
-  --secondary-foreground: 29 54% 95%;
+  --secondary: 100 19% 87%;
+  --secondary-foreground: 160 85% 19%;
 
-  --muted: 25 61% 85%;
-  --muted-foreground: 25 40% 40%;
+  --muted: 100 19% 87%;
+  --muted-foreground: 152 24% 34%;
 
-  --accent: 20 43% 68%;
-  --accent-foreground: 29 54% 95%;
+  --accent: 100 19% 87%;
+  --accent-foreground: 160 85% 19%;
 
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 100%;
 
-  --border: 24 36% 74%;
-  --input: 24 36% 74%;
-  --ring: 25 72% 14%;
+  --border: 35 21% 78%;
+  --input: 35 21% 78%;
+  --ring: 160 85% 19%;
 
   --radius: 1rem;
-
   --app-font-sans: 'Tajawal', 'Cairo', sans-serif;
 }
 
@@ -84,35 +83,35 @@
 }
 
 .dark {
-  --background: 18 16% 12%;
-  --foreground: 29 50% 95%;
+  --background: 150 21% 11%;
+  --foreground: 36 33% 94%;
 
-  --card: 20 14% 16%;
-  --card-foreground: 29 50% 95%;
-  --card-border: 20 10% 25%;
+  --card: 148 19% 15%;
+  --card-foreground: 36 33% 94%;
+  --card-border: 144 14% 29%;
 
-  --popover: 20 14% 16%;
-  --popover-foreground: 29 50% 95%;
-  --popover-border: 20 10% 25%;
+  --popover: 148 19% 15%;
+  --popover-foreground: 36 33% 94%;
+  --popover-border: 144 14% 29%;
 
-  --primary: 29 50% 95%;
-  --primary-foreground: 18 16% 12%;
+  --primary: 133 18% 73%;
+  --primary-foreground: 150 21% 11%;
 
-  --secondary: 15 38% 43%;
-  --secondary-foreground: 29 50% 95%;
+  --secondary: 145 17% 25%;
+  --secondary-foreground: 36 33% 94%;
 
-  --muted: 18 16% 20%;
-  --muted-foreground: 29 20% 70%;
+  --muted: 145 17% 19%;
+  --muted-foreground: 128 14% 78%;
 
-  --accent: 15 38% 43%;
-  --accent-foreground: 29 50% 95%;
+  --accent: 145 17% 25%;
+  --accent-foreground: 36 33% 94%;
 
   --destructive: 0 62% 30%;
-  --destructive-foreground: 29 50% 95%;
+  --destructive-foreground: 36 33% 94%;
 
-  --border: 18 16% 25%;
-  --input: 18 16% 25%;
-  --ring: 29 50% 95%;
+  --border: 144 14% 29%;
+  --input: 144 14% 29%;
+  --ring: 133 18% 73%;
 }
 
 @layer base {
@@ -132,17 +131,17 @@ body { overflow-x: hidden; }
 .editorial-hero { padding-top: 110px; background: hsl(var(--background)); }
 .hero-layout { display: flex; justify-content: center; padding-block: 65px 75px; }
 .hero-copy { width: 100%; max-width: 900px; }
-.eyebrow { display: flex; align-items: center; gap: 14px; color: hsl(20 41% 49%); font: 700 .72rem/1.5 'Inter',sans-serif; letter-spacing: .15em; margin-bottom: 33px; }
+.eyebrow { display: flex; align-items: center; gap: 14px; color: hsl(var(--primary)); font: 700 .72rem/1.5 'Inter',sans-serif; letter-spacing: .15em; margin-bottom: 33px; }
 .eyebrow-line { width: 30px; height: 1px; background: currentColor; flex: none; }
 .hero-heading { font-size: clamp(3.6rem, 6vw, 6.4rem); font-weight: 500; line-height: 1.07; letter-spacing: -.055em; }
 :root[lang="en"] .hero-heading { font-family: Georgia, 'Times New Roman', serif; letter-spacing: -.055em; }
-.hero-heading em { color: hsl(20 42% 37%); font-weight: 400; font-style: normal; }
+.hero-heading em { color: hsl(var(--primary)); font-weight: 400; font-style: normal; }
 .hero-description { max-width: 760px; margin-top: 31px; font-size: 1.08rem; line-height: 1.9; color: hsl(var(--foreground) / .72); }
 .hero-baseline { display: flex; justify-content: space-between; gap: 20px; border-top: 1px solid hsl(var(--border)); padding: 21px 0; color: hsl(var(--foreground) / .56); font: 600 .67rem/1.6 'Inter',sans-serif; letter-spacing: .13em; }
 .section-index { background: hsl(var(--background)); padding: 10px 0 68px; }
 .section-index-grid a { display: flex; align-items: center; gap: 9px; min-height: 83px; padding: 14px 20px; font-size: .92rem; font-weight: 700; transition: background .2s; }
 .section-index-grid a:hover { background: hsl(var(--secondary) / .12); }
-.section-index-arrow { margin-inline-start: auto; color: hsl(20 41% 49%); }
+.section-index-arrow { margin-inline-start: auto; color: hsl(var(--primary)); }
 #pricing { background: hsl(var(--muted) / .45); }
 #pricing .grid > div, #consultation .rounded-3xl { border-radius: 24px; box-shadow: none; background: hsl(var(--card)); }
 #pricing .grid > div:hover, #consultation .rounded-3xl:hover { box-shadow: 0 18px 42px hsl(var(--foreground) / .09); }
