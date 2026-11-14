@@ -1,37 +1,36 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1600" preserveAspectRatio="xMidYMid slice">
- <defs>
-  <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fbf9f3"/><stop offset="1" stop-color="#f5f2ea"/></linearGradient>
-  <linearGradient id="leafFill" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#778365" stop-opacity=".86"/><stop offset=".52" stop-color="#aab498" stop-opacity=".68"/><stop offset="1" stop-color="#d8dfce" stop-opacity=".3"/></linearGradient>
-  <g id="leaf">
+<defs>
+ <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fbf9f3"/><stop offset="1" stop-color="#f5f2ea"/></linearGradient>
+ <linearGradient id="leafFill" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#778365" stop-opacity=".84"/><stop offset=".52" stop-color="#aab498" stop-opacity=".66"/><stop offset="1" stop-color="#d8dfce" stop-opacity=".28"/></linearGradient>
+ <g id="leaf">
   <path d="M0 0 C-48 -78 -142 -118 -226 -38 C-184 45 -82 74 0 0Z" fill="url(#leafFill)" stroke="#727b61" stroke-opacity=".55" stroke-width="1.8"/>
   <path d="M-215 -36 Q-112 -2 0 0" fill="none" stroke="#687354" stroke-opacity=".58" stroke-width="1.6"/>
   <path d="M-164 -58 Q-118 -35 -86 -8 M-126 -91 Q-91 -48 -60 -5 M-170 -10 Q-112 -4 -78 4 M-150 27 Q-112 14 -72 5 M-105 55 Q-74 26 -45 8" fill="none" stroke="#78836a" stroke-opacity=".35" stroke-width="1.2"/>
  </g>
- </defs>
- <rect width="900" height="1600" fill="url(#paper)"/>
- <g><use href="#leaf" transform="translate(0 0)  rotate(0) scale(0.72)" opacity="0.64"/>
-<use href="#leaf" transform="translate(75 12)  rotate(24) scale(0.5903999999999999)" opacity="0.3"/>
-<use href="#leaf" transform="translate(30 110)  rotate(52) scale(0.5616)" opacity="0.48"/>
-<use href="#leaf" transform="translate(130 85)  rotate(18) scale(0.46799999999999997)" opacity="0.24"/>
-<use href="#leaf" transform="translate(5 210)  rotate(72) scale(0.5184)" opacity="0.38"/>
-<use href="#leaf" transform="translate(165 190)  rotate(32) scale(0.48960000000000004)" opacity="0.22"/>
-<use href="#leaf" transform="translate(900 0) translate(0 0) scale(-1 1) rotate(0) scale(0.72)" opacity="0.64"/>
-<use href="#leaf" transform="translate(975 12) translate(0 0) scale(-1 1) rotate(24) scale(0.5903999999999999)" opacity="0.3"/>
-<use href="#leaf" transform="translate(930 110) translate(0 0) scale(-1 1) rotate(52) scale(0.5616)" opacity="0.48"/>
-<use href="#leaf" transform="translate(1030 85) translate(0 0) scale(-1 1) rotate(18) scale(0.46799999999999997)" opacity="0.24"/>
-<use href="#leaf" transform="translate(905 210) translate(0 0) scale(-1 1) rotate(72) scale(0.5184)" opacity="0.38"/>
-<use href="#leaf" transform="translate(1065 190) translate(0 0) scale(-1 1) rotate(32) scale(0.48960000000000004)" opacity="0.22"/>
-<use href="#leaf" transform="translate(0 1600)  rotate(0) scale(0.72)" opacity="0.64"/>
-<use href="#leaf" transform="translate(80 1595)  rotate(-28) scale(0.6192)" opacity="0.32"/>
-<use href="#leaf" transform="translate(28 1480)  rotate(-55) scale(0.576)" opacity="0.5"/>
-<use href="#leaf" transform="translate(145 1505)  rotate(-18) scale(0.48960000000000004)" opacity="0.24"/>
-<use href="#leaf" transform="translate(0 1360)  rotate(-72) scale(0.5616)" opacity="0.4"/>
-<use href="#leaf" transform="translate(175 1380)  rotate(-35) scale(0.48960000000000004)" opacity="0.22"/>
-<use href="#leaf" transform="translate(900 1600) translate(0 0) scale(-1 1) rotate(0) scale(0.72)" opacity="0.64"/>
-<use href="#leaf" transform="translate(980 1595) translate(0 0) scale(-1 1) rotate(-28) scale(0.6192)" opacity="0.32"/>
-<use href="#leaf" transform="translate(928 1480) translate(0 0) scale(-1 1) rotate(-55) scale(0.576)" opacity="0.5"/>
-<use href="#leaf" transform="translate(1045 1505) translate(0 0) scale(-1 1) rotate(-18) scale(0.48960000000000004)" opacity="0.24"/>
-<use href="#leaf" transform="translate(900 1360) translate(0 0) scale(-1 1) rotate(-72) scale(0.5616)" opacity="0.4"/>
-<use href="#leaf" transform="translate(1075 1380) translate(0 0) scale(-1 1) rotate(-35) scale(0.48960000000000004)" opacity="0.22"/>
+</defs>
+<rect width="900" height="1600" fill="url(#paper)"/>
+<!-- Top-left foliage cluster: leaves extend inward from the corner -->
+<g>
+ <use href="#leaf" transform="translate(235 115) rotate(8) scale(1.05)" opacity=".66"/>
+ <use href="#leaf" transform="translate(205 235) rotate(34) scale(.82)" opacity=".42"/>
+ <use href="#leaf" transform="translate(300 55) rotate(-12) scale(.72)" opacity=".27"/>
 </g>
- </svg>
+<!-- Top-right foliage cluster -->
+<g>
+ <use href="#leaf" transform="translate(665 105) scale(-1 1) rotate(-8) scale(1.05)" opacity=".66"/>
+ <use href="#leaf" transform="translate(695 235) scale(-1 1) rotate(-34) scale(.82)" opacity=".42"/>
+ <use href="#leaf" transform="translate(600 55) scale(-1 1) rotate(12) scale(.72)" opacity=".27"/>
+</g>
+<!-- Bottom-left foliage cluster -->
+<g>
+ <use href="#leaf" transform="translate(235 1485) rotate(-8) scale(1.05)" opacity=".66"/>
+ <use href="#leaf" transform="translate(205 1365) rotate(-34) scale(.82)" opacity=".42"/>
+ <use href="#leaf" transform="translate(300 1545) rotate(12) scale(.72)" opacity=".27"/>
+</g>
+<!-- Bottom-right foliage cluster -->
+<g>
+ <use href="#leaf" transform="translate(665 1495) scale(-1 1) rotate(8) scale(1.05)" opacity=".66"/>
+ <use href="#leaf" transform="translate(695 1365) scale(-1 1) rotate(34) scale(.82)" opacity=".42"/>
+ <use href="#leaf" transform="translate(600 1545) scale(-1 1) rotate(-12) scale(.72)" opacity=".27"/>
+</g>
+</svg>
