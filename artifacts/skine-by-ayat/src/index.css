@@ -716,3 +716,17 @@ html:not(.dark) #contact .contact-card:nth-child(even) {
   background: #20BB5A !important;
   border-color: #20BB5A !important;
 }
+
+
+/* Enforce WhatsApp green CTA over component utility classes and prior CTA overrides. */
+html body #root main #contact .contact-card a.contact-cta-whatsapp {
+  background-color: #25D366 !important;
+  background: #25D366 !important;
+  color: #FFFFFF !important;
+  border-color: #25D366 !important;
+}
+html body #root main #contact .contact-card a.contact-cta-whatsapp:hover {
+  background-color: #20BB5A !important;
+  background: #20BB5A !important;
+  border-color: #20BB5A !important;
+}
