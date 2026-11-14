@@ -485,3 +485,74 @@ footer { background:rgba(222,232,216,.88) !important; backdrop-filter:blur(12px)
  body::before { background-size:auto,auto,auto,auto,160vw auto; background-position:left top,right 15%,left 72%,right bottom,center 40%; }
  main > section[id] { padding-block:4rem; }
 }
+
+
+/* FINAL FIX: place the botanical forest canvas inside MAIN, above the body paint,
+   so it remains visible behind every section throughout the full page scroll. */
+body::before { content:none !important; display:none !important; }
+main {
+  position:relative !important;
+  isolation:isolate;
+  background-color:#F5F1EB !important;
+  background-image:
+    radial-gradient(circle at 12% 7%, rgba(196,211,188,.34) 0 145px, transparent 148px),
+    radial-gradient(circle at 88% 20%, rgba(205,218,197,.4) 0 205px, transparent 208px),
+    radial-gradient(circle at 16% 47%, rgba(201,215,193,.34) 0 180px, transparent 183px),
+    radial-gradient(circle at 84% 72%, rgba(193,210,186,.36) 0 220px, transparent 223px),
+    radial-gradient(circle at 50% 94%, rgba(210,221,202,.36) 0 190px, transparent 193px),
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201200%201400%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22leaf%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%239caf94%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23dce5d5%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%23789477%22%20stroke-linecap%3D%22round%22%20opacity%3D%22.28%22%3E%3Cpath%20stroke-width%3D%2213%22%20d%3D%22M75%201450C165%201120%20165%20840%2090%20580S55%20190%20205-50M1125%201450C1035%201120%201035%20840%201110%20580S1145%20190%20995-50M590%201450C520%201160%20560%20930%20600%20710S650%20330%20580-50%22%2F%3E%3Cpath%20stroke-width%3D%227%22%20d%3D%22M115%20700C270%20655%20330%20520%20355%20350M105%20900C-20%20800-10%20660%2025%20570M160%20430C280%20370%20300%20245%20280%20125M1085%20700C930%20655%20870%20520%20845%20350M1095%20900C1220%20800%201210%20660%201175%20570M1040%20430C920%20370%20900%20245%20920%20125M585%20820C440%20760%20420%20650%20430%20535M615%201020C760%20950%20780%20820%20770%20700%22%2F%3E%3C%2Fg%3E%3Cg%20fill%3D%22url(%23leaf)%22%20opacity%3D%22.42%22%3E%3Cellipse%20cx%3D%22290%22%20cy%3D%22470%22%20rx%3D%22112%22%20ry%3D%2243%22%20transform%3D%22rotate(-34%20290%20470)%22%2F%3E%3Cellipse%20cx%3D%2248%22%20cy%3D%22620%22%20rx%3D%22105%22%20ry%3D%2242%22%20transform%3D%22rotate(28%2048%20620)%22%2F%3E%3Cellipse%20cx%3D%22260%22%20cy%3D%22210%22%20rx%3D%2295%22%20ry%3D%2238%22%20transform%3D%22rotate(-27%20260%20210)%22%2F%3E%3Cellipse%20cx%3D%22910%22%20cy%3D%22470%22%20rx%3D%22112%22%20ry%3D%2243%22%20transform%3D%22rotate(34%20910%20470)%22%2F%3E%3Cellipse%20cx%3D%221152%22%20cy%3D%22620%22%20rx%3D%22105%22%20ry%3D%2242%22%20transform%3D%22rotate(-28%201152%20620)%22%2F%3E%3Cellipse%20cx%3D%22940%22%20cy%3D%22210%22%20rx%3D%2295%22%20ry%3D%2238%22%20transform%3D%22rotate(27%20940%20210)%22%2F%3E%3Cellipse%20cx%3D%22450%22%20cy%3D%22650%22%20rx%3D%22100%22%20ry%3D%2239%22%20transform%3D%22rotate(25%20450%20650)%22%2F%3E%3Cellipse%20cx%3D%22750%22%20cy%3D%22850%22%20rx%3D%22100%22%20ry%3D%2239%22%20transform%3D%22rotate(-25%20750%20850)%22%2F%3E%3C%2Fg%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%23b8c8ae%22%20stroke-width%3D%223%22%20opacity%3D%22.4%22%3E%3Ccircle%20cx%3D%22600%22%20cy%3D%22190%22%20r%3D%22155%22%2F%3E%3Ccircle%20cx%3D%22600%22%20cy%3D%22190%22%20r%3D%22210%22%2F%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%221130%22%20r%3D%22145%22%2F%3E%3Ccircle%20cx%3D%221080%22%20cy%3D%221130%22%20r%3D%22145%22%2F%3E%3Ccircle%20cx%3D%22600%22%20cy%3D%221180%22%20r%3D%22185%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") !important;
+  background-repeat:no-repeat,no-repeat,no-repeat,no-repeat,no-repeat,repeat-y !important;
+  background-size:auto,auto,auto,auto,auto,100% 1180px !important;
+  background-position:0 0,100% 14%,0 42%,100% 76%,50% 100%,center top !important;
+  background-attachment:scroll !important;
+}
+main > * {
+  position:relative;
+  z-index:1;
+}
+main > section,
+main > section[id],
+main > nav,
+main > div {
+  background-color:transparent !important;
+  background-image:none !important;
+}
+main > section[id]::before { content:none !important; display:none !important; }
+main > section#pricing,
+main > section#consultation,
+main > section#before-after,
+main > section#reviews,
+main > section#location,
+main > section#contact,
+main > section#faq,
+main > section#about {
+  background:transparent !important;
+}
+main .section-index { background:transparent !important; }
+main .section-index-grid li { background:rgba(249,247,241,.9) !important; }
+main .section-index-grid li:nth-child(4n+1),
+main .section-index-grid li:nth-child(4n+4) { background:rgba(218,229,214,.9) !important; }
+main .bg-card, main [class*="bg-card/"] { background-color:rgba(249,247,241,.91) !important; }
+main .bg-muted, main [class*="bg-muted/"] { background-color:rgba(222,232,216,.72) !important; }
+main .section-disclosure, main .contact-card { background:rgba(249,247,241,.9) !important; }
+footer { position:relative; z-index:1; background:rgba(222,232,216,.94) !important; }
+.dark main {
+  background-color:#17251D !important;
+  background-image:
+    radial-gradient(circle at 12% 7%, rgba(71,100,76,.27) 0 145px, transparent 148px),
+    radial-gradient(circle at 88% 20%, rgba(64,91,68,.31) 0 205px, transparent 208px),
+    radial-gradient(circle at 16% 47%, rgba(65,94,70,.25) 0 180px, transparent 183px),
+    radial-gradient(circle at 84% 72%, rgba(61,88,65,.28) 0 220px, transparent 223px),
+    radial-gradient(circle at 50% 94%, rgba(72,99,74,.25) 0 190px, transparent 193px),
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201200%201400%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22leaf%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%239caf94%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23dce5d5%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%23789477%22%20stroke-linecap%3D%22round%22%20opacity%3D%22.28%22%3E%3Cpath%20stroke-width%3D%2213%22%20d%3D%22M75%201450C165%201120%20165%20840%2090%20580S55%20190%20205-50M1125%201450C1035%201120%201035%20840%201110%20580S1145%20190%20995-50M590%201450C520%201160%20560%20930%20600%20710S650%20330%20580-50%22%2F%3E%3Cpath%20stroke-width%3D%227%22%20d%3D%22M115%20700C270%20655%20330%20520%20355%20350M105%20900C-20%20800-10%20660%2025%20570M160%20430C280%20370%20300%20245%20280%20125M1085%20700C930%20655%20870%20520%20845%20350M1095%20900C1220%20800%201210%20660%201175%20570M1040%20430C920%20370%20900%20245%20920%20125M585%20820C440%20760%20420%20650%20430%20535M615%201020C760%20950%20780%20820%20770%20700%22%2F%3E%3C%2Fg%3E%3Cg%20fill%3D%22url(%23leaf)%22%20opacity%3D%22.42%22%3E%3Cellipse%20cx%3D%22290%22%20cy%3D%22470%22%20rx%3D%22112%22%20ry%3D%2243%22%20transform%3D%22rotate(-34%20290%20470)%22%2F%3E%3Cellipse%20cx%3D%2248%22%20cy%3D%22620%22%20rx%3D%22105%22%20ry%3D%2242%22%20transform%3D%22rotate(28%2048%20620)%22%2F%3E%3Cellipse%20cx%3D%22260%22%20cy%3D%22210%22%20rx%3D%2295%22%20ry%3D%2238%22%20transform%3D%22rotate(-27%20260%20210)%22%2F%3E%3Cellipse%20cx%3D%22910%22%20cy%3D%22470%22%20rx%3D%22112%22%20ry%3D%2243%22%20transform%3D%22rotate(34%20910%20470)%22%2F%3E%3Cellipse%20cx%3D%221152%22%20cy%3D%22620%22%20rx%3D%22105%22%20ry%3D%2242%22%20transform%3D%22rotate(-28%201152%20620)%22%2F%3E%3Cellipse%20cx%3D%22940%22%20cy%3D%22210%22%20rx%3D%2295%22%20ry%3D%2238%22%20transform%3D%22rotate(27%20940%20210)%22%2F%3E%3Cellipse%20cx%3D%22450%22%20cy%3D%22650%22%20rx%3D%22100%22%20ry%3D%2239%22%20transform%3D%22rotate(25%20450%20650)%22%2F%3E%3Cellipse%20cx%3D%22750%22%20cy%3D%22850%22%20rx%3D%22100%22%20ry%3D%2239%22%20transform%3D%22rotate(-25%20750%20850)%22%2F%3E%3C%2Fg%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%23b8c8ae%22%20stroke-width%3D%223%22%20opacity%3D%22.4%22%3E%3Ccircle%20cx%3D%22600%22%20cy%3D%22190%22%20r%3D%22155%22%2F%3E%3Ccircle%20cx%3D%22600%22%20cy%3D%22190%22%20r%3D%22210%22%2F%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%221130%22%20r%3D%22145%22%2F%3E%3Ccircle%20cx%3D%221080%22%20cy%3D%221130%22%20r%3D%22145%22%2F%3E%3Ccircle%20cx%3D%22600%22%20cy%3D%221180%22%20r%3D%22185%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") !important;
+  background-blend-mode:normal,normal,normal,normal,normal,multiply !important;
+}
+.dark main .section-index-grid li { background:rgba(32,47,37,.94) !important; }
+.dark main .section-index-grid li:nth-child(4n+1),
+.dark main .section-index-grid li:nth-child(4n+4) { background:rgba(47,68,50,.94) !important; }
+.dark main .bg-card, .dark main [class*="bg-card/"],
+.dark main .section-disclosure, .dark main .contact-card { background:rgba(32,47,37,.94) !important; }
+.dark main .bg-muted, .dark main [class*="bg-muted/"] { background:rgba(47,68,50,.78) !important; }
+@media(max-width:767px) {
+ main { background-size:auto,auto,auto,auto,auto,150% 900px !important; }
+}
