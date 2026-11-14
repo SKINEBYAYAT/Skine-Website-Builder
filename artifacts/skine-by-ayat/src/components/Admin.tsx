@@ -1707,7 +1707,7 @@ function LoginScreen() {
   };
 
   return (
-    <div className="min-h-screen bg-muted/20 flex items-center justify-center px-4">
+    <div className="skine-admin skine-admin-login min-h-screen bg-muted/20 flex items-center justify-center px-4">
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
@@ -1779,7 +1779,7 @@ export function Admin() {
   if (!authed) return <LoginScreen />;
 
   return (
-    <div className="min-h-screen bg-muted/20">
+    <div className="skine-admin min-h-screen bg-muted/20">
       {/* Header */}
       <header className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b border-border px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
