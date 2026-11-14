@@ -1,11 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1600">
 <defs>
  <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fbf8f0"/><stop offset="1" stop-color="#f4f0e7"/></linearGradient>
- <linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#a9b99a"/><stop offset="1" stop-color="#d3ddc7"/></linearGradient>
+ <linearGradient id="leaf-gradient" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#a9b99a"/><stop offset="1" stop-color="#d3ddc7"/></linearGradient>
  <linearGradient id="sage" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#dce5d4" stop-opacity=".68"/><stop offset="1" stop-color="#b9c9b1" stop-opacity=".28"/></linearGradient>
  <filter id="soft"><feGaussianBlur stdDeviation="2"/></filter>
  <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".72" numOctaves="2" seed="8"/><feColorMatrix values="0 0 0 0 .55 0 0 0 0 .54 0 0 0 0 .45 0 0 0 .1 0"/></filter>
- <g id="leaf"><path d="M0 0 C-35 -25 -62 -17 -76 0 C-48 22 -20 22 0 0Z" fill="url(#leaf)" stroke="#829779" stroke-opacity=".4" stroke-width="1.3"/><path d="M-70 0H0" stroke="#829779" stroke-opacity=".45"/></g>
+ <g id="leaf-shape"><path d="M0 0 C-35 -25 -62 -17 -76 0 C-48 22 -20 22 0 0Z" fill="url(#leaf-gradient) stroke="#829779" stroke-opacity=".4" stroke-width="1.3"/><path d="M-70 0H0" stroke="#829779" stroke-opacity=".45"/></g>
  <g id="flower" fill="#fffdf5" stroke="#c9c9ad" stroke-width="1.2"><ellipse cy="-9" rx="4.5" ry="9"/><ellipse cx="8" cy="-3" rx="4.5" ry="9" transform="rotate(72 8 -3)"/><ellipse cx="5" cy="7" rx="4.5" ry="9" transform="rotate(144 5 7)"/><ellipse cx="-5" cy="7" rx="4.5" ry="9" transform="rotate(216 -5 7)"/><ellipse cx="-8" cy="-3" rx="4.5" ry="9" transform="rotate(288 -8 -3)"/><circle r="3" fill="#d8c89b" stroke="none"/></g>
 </defs>
 <rect width="900" height="1600" fill="url(#paper)"/>
@@ -14,20 +14,20 @@
 <g fill="none" stroke="#bdcbb2" stroke-width="3" opacity=".3"><circle cx="-95" cy="330" r="285"/><circle cx="975" cy="650" r="320"/><circle cx="-75" cy="1260" r="270"/></g>
 <!-- Floating leaves only: no stems, twigs, or connecting lines -->
 <g>
- <use href="#leaf" transform="translate(100 145) rotate(205) scale(.9)"/><use href="#leaf" transform="translate(170 255) rotate(18) scale(.82)"/>
- <use href="#leaf" transform="translate(85 470) rotate(205) scale(.88)"/><use href="#leaf" transform="translate(155 585) rotate(18) scale(.82)"/>
- <use href="#leaf" transform="translate(805 205) rotate(-25) scale(.9)"/><use href="#leaf" transform="translate(735 320) rotate(200) scale(.82)"/>
- <use href="#leaf" transform="translate(825 590) rotate(-25) scale(.88)"/><use href="#leaf" transform="translate(755 700) rotate(200) scale(.82)"/>
- <use href="#leaf" transform="translate(90 980) rotate(205) scale(.9)"/><use href="#leaf" transform="translate(165 1090) rotate(18) scale(.82)"/>
- <use href="#leaf" transform="translate(810 1030) rotate(-25) scale(.9)"/><use href="#leaf" transform="translate(740 1140) rotate(200) scale(.82)"/>
- <use href="#leaf" transform="translate(100 1450) rotate(205) scale(.88)"/><use href="#leaf" transform="translate(800 1480) rotate(-25) scale(.88)"/>
+ <use href="#leaf-shape" transform="translate(100 145) rotate(205) scale(.9)"/><use href="#leaf-shape" transform="translate(170 255) rotate(18) scale(.82)"/>
+ <use href="#leaf-shape" transform="translate(85 470) rotate(205) scale(.88)"/><use href="#leaf-shape" transform="translate(155 585) rotate(18) scale(.82)"/>
+ <use href="#leaf-shape" transform="translate(805 205) rotate(-25) scale(.9)"/><use href="#leaf-shape" transform="translate(735 320) rotate(200) scale(.82)"/>
+ <use href="#leaf-shape" transform="translate(825 590) rotate(-25) scale(.88)"/><use href="#leaf-shape" transform="translate(755 700) rotate(200) scale(.82)"/>
+ <use href="#leaf-shape" transform="translate(90 980) rotate(205) scale(.9)"/><use href="#leaf-shape" transform="translate(165 1090) rotate(18) scale(.82)"/>
+ <use href="#leaf-shape" transform="translate(810 1030) rotate(-25) scale(.9)"/><use href="#leaf-shape" transform="translate(740 1140) rotate(200) scale(.82)"/>
+ <use href="#leaf-shape" transform="translate(100 1450) rotate(205) scale(.88)"/><use href="#leaf-shape" transform="translate(800 1480) rotate(-25) scale(.88)"/>
 </g>
 <!-- A few larger, clearly visible leaves tucked along the outer circles -->
 <g>
- <use href="#leaf" transform="translate(8 690) rotate(180) scale(1.85)" opacity=".76"/>
- <use href="#leaf" transform="translate(892 900) rotate(0) scale(1.85)" opacity=".76"/>
- <use href="#leaf" transform="translate(12 1260) rotate(180) scale(1.75)" opacity=".68"/>
- <use href="#leaf" transform="translate(888 1390) rotate(0) scale(1.75)" opacity=".68"/>
+ <use href="#leaf-shape" transform="translate(8 690) rotate(180) scale(1.85)" opacity=".76"/>
+ <use href="#leaf-shape" transform="translate(892 900) rotate(0) scale(1.85)" opacity=".76"/>
+ <use href="#leaf-shape" transform="translate(12 1260) rotate(180) scale(1.75)" opacity=".68"/>
+ <use href="#leaf-shape" transform="translate(888 1390) rotate(0) scale(1.75)" opacity=".68"/>
 </g>
 <g><use href="#flower" transform="translate(55 390) scale(.8)"/><use href="#flower" transform="translate(840 820) scale(.75)"/><use href="#flower" transform="translate(65 1190) scale(.7)"/></g>
 <rect width="900" height="1600" filter="url(#grain)" opacity=".14"/>
