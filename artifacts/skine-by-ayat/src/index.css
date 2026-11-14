@@ -649,20 +649,21 @@ html:not(.dark) .consultation-cta:hover {
 .dark .skine-admin-login > div { background: var(--admin-card) !important; }
 
 
-/* Keep WhatsApp and consultation CTAs light in both themes. */
+/* Match the consultation card to the light pricing package cards,
+   and keep WhatsApp white like the Instagram contact button. */
+html:not(.dark) #consultation .rounded-3xl {
+  background: rgba(250,248,242,.84) !important;
+}
+.dark #consultation .rounded-3xl {
+  background: rgba(31,48,37,.9) !important;
+}
+html:not(.dark) #contact .contact-cta-whatsapp,
 .dark #contact .contact-cta-whatsapp {
-  background: #DDEFE2 !important;
+  background: #FFFFFF !important;
   color: #175238 !important;
-  border-color: #B9D8C2 !important;
+  border-color: #E6E6E6 !important;
 }
+html:not(.dark) #contact .contact-cta-whatsapp:hover,
 .dark #contact .contact-cta-whatsapp:hover {
-  background: #CBE5D3 !important;
-}
-.dark .consultation-cta {
-  background: #DDE6DA !important;
-  border-color: #B8C8B3 !important;
-  color: #174B38 !important;
-}
-.dark .consultation-cta:hover {
-  background: #CFDCCB !important;
+  background: #F4F4F4 !important;
 }
