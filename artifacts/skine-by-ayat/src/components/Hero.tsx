@@ -14,7 +14,6 @@ export function Hero() {
             <h1 className="hero-heading">{lang === 'ar' ? <>عناية تبدأ <em>بفهم بشرتكِ.</em></> : <>Skincare begins with <em>understanding.</em></>}</h1>
           </motion.div>
         </div>
-        <div className="hero-baseline"><span>SKINÉ BY AYAT</span><span>{lang === 'ar' ? 'استشارة · عناية · نتائج' : 'CONSULTATION · CARE · RESULTS'}</span><span>{lang === 'ar' ? 'اكتشفي المزيد ↓' : 'SCROLL TO EXPLORE ↓'}</span></div>
       </div>
       <div className="hero-botanical" aria-hidden="true"><span /><span /><span /></div>
     </section>
