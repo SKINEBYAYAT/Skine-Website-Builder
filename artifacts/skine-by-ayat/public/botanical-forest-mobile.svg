@@ -22,6 +22,15 @@
  <use href="#leaf" transform="translate(810 1030) rotate(-25) scale(.9)"/><use href="#leaf" transform="translate(740 1140) rotate(200) scale(.82)"/>
  <use href="#leaf" transform="translate(100 1450) rotate(205) scale(.88)"/><use href="#leaf" transform="translate(800 1480) rotate(-25) scale(.88)"/>
 </g>
+<!-- Extra standalone leaf clusters along the margins; no connecting stems -->
+<g>
+ <use href="#leaf" transform="translate(35 185) rotate(205) scale(1.05)"/><use href="#leaf" transform="translate(205 390) rotate(18) scale(.98)"/>
+ <use href="#leaf" transform="translate(35 740) rotate(205) scale(1.02)"/><use href="#leaf" transform="translate(195 850) rotate(18) scale(.96)"/>
+ <use href="#leaf" transform="translate(35 1040) rotate(205) scale(1.04)"/><use href="#leaf" transform="translate(195 1320) rotate(18) scale(.98)"/>
+ <use href="#leaf" transform="translate(865 185) rotate(-25) scale(1.05)"/><use href="#leaf" transform="translate(695 390) rotate(200) scale(.98)"/>
+ <use href="#leaf" transform="translate(865 740) rotate(-25) scale(1.02)"/><use href="#leaf" transform="translate(705 850) rotate(200) scale(.96)"/>
+ <use href="#leaf" transform="translate(865 1040) rotate(-25) scale(1.04)"/><use href="#leaf" transform="translate(705 1320) rotate(200) scale(.98)"/>
+</g>
 <g><use href="#flower" transform="translate(55 390) scale(.8)"/><use href="#flower" transform="translate(840 820) scale(.75)"/><use href="#flower" transform="translate(65 1190) scale(.7)"/></g>
 <rect width="900" height="1600" filter="url(#grain)" opacity=".14"/>
 </svg>
