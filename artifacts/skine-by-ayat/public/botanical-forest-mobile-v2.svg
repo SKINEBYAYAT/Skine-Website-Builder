@@ -22,6 +22,13 @@
  <use href="#leaf" transform="translate(810 1030) rotate(-25) scale(.9)"/><use href="#leaf" transform="translate(740 1140) rotate(200) scale(.82)"/>
  <use href="#leaf" transform="translate(100 1450) rotate(205) scale(.88)"/><use href="#leaf" transform="translate(800 1480) rotate(-25) scale(.88)"/>
 </g>
+<!-- A few larger, clearly visible leaves tucked along the outer circles -->
+<g>
+ <use href="#leaf" transform="translate(8 690) rotate(180) scale(1.85)" opacity=".76"/>
+ <use href="#leaf" transform="translate(892 900) rotate(0) scale(1.85)" opacity=".76"/>
+ <use href="#leaf" transform="translate(12 1260) rotate(180) scale(1.75)" opacity=".68"/>
+ <use href="#leaf" transform="translate(888 1390) rotate(0) scale(1.75)" opacity=".68"/>
+</g>
 <g><use href="#flower" transform="translate(55 390) scale(.8)"/><use href="#flower" transform="translate(840 820) scale(.75)"/><use href="#flower" transform="translate(65 1190) scale(.7)"/></g>
 <rect width="900" height="1600" filter="url(#grain)" opacity=".14"/>
 </svg>
